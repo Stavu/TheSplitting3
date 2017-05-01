@@ -164,4 +164,22 @@ public class InteractionManager : MonoBehaviour {
 
 
 
+
+	// Pick up item
+
+
+	public void PickUpItem (InventoryItem inventoryItem)
+	{
+
+		Debug.Log ("PickUpItem");
+
+		GameManager.playerData.inventory.AddItem (inventoryItem);
+			
+
+	}
+
+
+
+
+
 }

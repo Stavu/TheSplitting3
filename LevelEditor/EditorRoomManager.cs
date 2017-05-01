@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using System;
-
+using System.IO;
 
 
 
@@ -26,22 +26,23 @@ public class EditorRoomManager : MonoBehaviour {
 
 
 	public Room room; 
-
-
 	public Dictionary<Furniture,GameObject> furnitureGameObjectMap;
 
+	public static string roomToLoad;
+	public static bool loadRoomFromMemory = false;
 
-	public void CreateEmptyRoom(int myWidth, int myHeight)
+
+
+	public Room CreateEmptyRoom(int myWidth, int myHeight)
 	{
-		
-		room = new Room (myWidth,myHeight);
-		room.myFurnitureList = new List<Furniture> ();
+
+		Room tempRoom = new Room (myWidth,myHeight);
+		tempRoom.myFurnitureList = new List<Furniture> ();
 
 		furnitureGameObjectMap = new Dictionary<Furniture, GameObject> ();
 
-		EventsHandler.Invoke_cb_editorNewRoomCreated (room);
-		Utilities.AdjustOrthographicCamera (room);
 
+		return tempRoom;
 
 	}
 
@@ -53,26 +54,43 @@ public class EditorRoomManager : MonoBehaviour {
 
 	GameObject roomBackground;
 
-	public void SetRoomBackground(string name)
+	public void SetRoomBackground(string name = "abandoned_lobby_bg")
 	{
-		//Debug.Log ("set room bg");
+		
 
 		if (roomBackground != null) 
 		{
+			Destroy (roomBackground);			
+		}	
 
-			Destroy (roomBackground);		
-		
+
+		Sprite roomSprite;
+
+		if (loadRoomFromMemory == false) 
+		{
+			roomSprite = Resources.Load <Sprite> ("Sprites/Rooms/" + name);
+
+			int myWidth = (int)roomSprite.bounds.size.x;
+			int myHeight = (int)roomSprite.bounds.size.y;
+
+			room = CreateEmptyRoom (myWidth, myHeight);
+			room.bgName = name;	
+
+					
+		} else {
+
+			room = LoadRoom (roomToLoad);
+			roomSprite = Resources.Load <Sprite> ("Sprites/Rooms/" + room.bgName );
+
+
+
 		}
+			
+		EventsHandler.Invoke_cb_editorNewRoomCreated (room);
 
 
-		Sprite roomSprite = Resources.Load <Sprite> ("Sprites/Rooms/" + name);
 
-		int myWidth = (int) roomSprite.bounds.size.x;
-		int myHeight = (int) roomSprite.bounds.size.y;
-
-
-		CreateEmptyRoom (myWidth,myHeight);
-		room.bgName = name;
+		// Creating room object
 
 		GameObject obj = new GameObject (room.myName);
 
@@ -83,9 +101,9 @@ public class EditorRoomManager : MonoBehaviour {
 
 		roomBackground = obj;
 
+		Utilities.AdjustOrthographicCamera (room);
 
 	}
-
 
 
 	// Placing Furniture
@@ -98,13 +116,16 @@ public class EditorRoomManager : MonoBehaviour {
 		{
 			return;
 		}
+
 			
+		// If there's already a furniture on this tile, destroy it before creating a new furniture
+
 
 		if (tile.myFurniture != null)
 		{
 			room.myFurnitureList.Remove (tile.myFurniture);
 
-			Destroy (furnitureGameObjectMap [tile.myFurniture]);
+			Destroy(furnitureGameObjectMap [tile.myFurniture]);
 			furnitureGameObjectMap.Remove (tile.myFurniture);
 		}
 
@@ -115,18 +136,26 @@ public class EditorRoomManager : MonoBehaviour {
 
 		Furniture furn = new Furniture (furnitureName, tile.x, tile.y);
 
-		room.myFurnitureList.Add (furn);
+		// set default size
 
 		Sprite furnitureSprite = Resources.Load <Sprite> ("Sprites/Furniture/" + furnitureName);
-
-
-
-		// set default size
 
 		furn.mySize = new Vector2 (Mathf.Ceil(furnitureSprite.bounds.size.x), 1f);
 
 
+		room.myFurnitureList.Add (furn);
 
+		tile.myFurniture = furn;
+
+
+		EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn);
+
+
+
+
+
+		/*
+	
 		// create furniture object 
 
 		GameObject obj = new GameObject (furnitureName);
@@ -150,7 +179,7 @@ public class EditorRoomManager : MonoBehaviour {
 		tile.myFurniture = furn;
 
 		EventsHandler.Invoke_cb_editorFurniturePlaced (furn);
-	
+		*/
 
 	}
 
@@ -232,7 +261,6 @@ public class EditorRoomManager : MonoBehaviour {
 
 		tileNew.myFurniture = furn;
 
-
 		furnitureGameObjectMap[furn].transform.position = new Vector3 (furn.x + furn.mySize.x/2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
 
 		EventsHandler.Invoke_cb_editorFurnitureChanged (furn);
@@ -270,11 +298,46 @@ public class EditorRoomManager : MonoBehaviour {
 	{
 
 		string roomString = JsonUtility.ToJson (room);
-		Debug.Log ("roomString" + roomString);
+		//Debug.Log ("roomString" + roomString);
+		//Debug.Log(Application.persistentDataPath); 
+
+		string path = ("Assets/Resources/Jsons/Rooms/" + room.myName + ".json");
+	
+		using (FileStream fs = new FileStream(path, FileMode.Create))
+		{
+			using (StreamWriter writer = new StreamWriter(fs))
+			{
+				writer.Write(roomString);
+			}
+		}
+
+		UnityEditor.AssetDatabase.Refresh ();
 
 		return roomString;
 
 	}
+
+
+	public Room LoadRoom(string roomString)
+	{
+
+
+		Room tempRoom = JsonUtility.FromJson<Room> (roomString);
+
+		tempRoom.myGrid = new Grid (tempRoom.myWidth, tempRoom.myHeight);
+
+		foreach (Furniture furn in tempRoom.myFurnitureList) 
+		{
+			Tile tile = tempRoom.myGrid.GetTileAt (furn.x, furn.y);
+			tile.myFurniture = furn;
+
+		}
+
+		return tempRoom;
+
+	}
+
+
 
 
 

@@ -29,8 +29,9 @@ public class Player {
 	*/
 
 
-
 	public Color myTextColor;
+
+
 
 
 	public Player(string myName, Vector2 mySize, Vector3 myPos)
@@ -45,7 +46,7 @@ public class Player {
 
 		if (myName == "Daniel") 
 		{
-			Debug.Log ("color");
+			//Debug.Log ("color");
 			myTextColor = GameManager.instance.danielColor;
 		}
 

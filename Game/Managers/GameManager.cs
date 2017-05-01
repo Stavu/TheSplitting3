@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
+public enum InputState
+{
+
+	Character,
+	Inventory,
+	ActionBox,
+	Dialogue,
+	Settings
+
+}
+
+
+
 public class GameManager : MonoBehaviour {
-
-
-
-	public static bool actionBoxActive = false;
-	public static bool textBoxActive = false;
-	public Color danielColor;
-	public Color geMColor;
-	public Color llehctiMColor;
-	public Color StellaColor;
-
-	public static Room roomToLoad;
-
-
-	public Dictionary<string,Room> stringRoomMap = new Dictionary<string, Room> ();
-
 
 
 
@@ -37,8 +37,29 @@ public class GameManager : MonoBehaviour {
 
 
 
+	public static bool actionBoxActive = false;
+	public static bool textBoxActive = false;
+	public Color danielColor;
+	public Color geMColor;
+	public Color llehctiMColor;
+	public Color StellaColor;
+
+
+	public static Room roomToLoad;
+	public Dictionary<string,Room> stringRoomMap = new Dictionary<string, Room> ();
+
+
+	public static PlayerData playerData;
+
+	public InputState inputState = InputState.Character;
+
+
+
+
 	// Use this for initialization
-	public void Initialize () {
+
+	public void Initialize () 
+	{
 		
 		CreateRooms ();
 		if (roomToLoad == null) 
@@ -52,9 +73,19 @@ public class GameManager : MonoBehaviour {
 
 
 	// Update is called once per frame
+
 	void Update () 
 	{
-		
+
+		if (Input.GetKeyDown (KeyCode.R)) 
+		{
+
+			CreateNewData ();
+
+		}
+
+			
+
 	}
 
 
@@ -81,6 +112,68 @@ public class GameManager : MonoBehaviour {
 
 
 
+
+
+	/* ----- SAVING AND LOADING ----- */ 
+
+
+
+	public void CreatePlayerData()
+	{
+
+		if (playerData != null) 
+		{
+			//Debug.Log ("playerData is not null");
+			return;
+		}
+
+
+		if (PlayerPrefs.HasKey ("PlayerData")) 
+		{
+			
+			//Debug.Log ("Loading data from memory");
+			playerData = JsonUtility.FromJson<PlayerData> (PlayerPrefs.GetString ("PlayerData"));
+
+			Debug.Log(PlayerPrefs.GetString ("PlayerData"));
+
+		} else {
+			
+			CreateNewData ();
+
+		}
+	}
+
+
+
+	public void CreateNewData()
+	{
+
+		Debug.Log ("Creating new data");
+
+		playerData = new PlayerData ();
+
+		SaveData ();
+
+	}
+
+
+
+	public void SaveData()
+	{
+		
+		Debug.Log ("Saving data");
+
+		if (playerData != null) 
+		{
+
+			string data = JsonUtility.ToJson (playerData);
+			PlayerPrefs.SetString ("PlayerData", data);
+
+			Debug.Log (data);
+
+		}
+
+	}
 
 
 }

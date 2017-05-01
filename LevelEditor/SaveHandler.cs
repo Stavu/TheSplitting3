@@ -4,7 +4,6 @@ using UnityEngine;
 
 
 
-
 public class SaveHandler : MonoBehaviour {
 
 
@@ -28,12 +27,14 @@ public class SaveHandler : MonoBehaviour {
 	public void SaveToFile()
 	{
 
-		Debug.Log (EditorRoomManager.instance.room.bgName);
+		//Debug.Log (EditorRoomManager.instance.room.bgName);
 
 		EditorRoomManager.instance.SerializeRoom ();
-
-
+	
 	}
+
+
+
 
 
 }

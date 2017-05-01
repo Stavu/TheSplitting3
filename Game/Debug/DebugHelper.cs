@@ -66,7 +66,7 @@ public class DebugHelper : MonoBehaviour {
 		{
 
 			roomNameList.Add (roomString);
-			Debug.Log (roomString);
+			//Debug.Log (roomString);
 			
 		}
 

@@ -84,7 +84,6 @@ public class EditorUI : MonoBehaviour {
 
 		Button furnButton = bgSelectPrefab.transform.FindChild ("NewFurnitureButton").GetComponent<Button>();
 
-
 		furnButton.onClick.AddListener (CreateFurnitureSelect);
 
 
@@ -94,6 +93,12 @@ public class EditorUI : MonoBehaviour {
 		InputField roomNameInput = bgSelectPrefab.transform.FindChild ("RoomNameInput").GetComponent<InputField> ();
 
 		roomNameInput.onEndEdit.AddListener (RoomNameChanged);
+
+		if (EditorRoomManager.instance.room.myName != null) 
+		{
+
+			roomNameInput.text = EditorRoomManager.instance.room.myName;
+		}
 
 
 	}

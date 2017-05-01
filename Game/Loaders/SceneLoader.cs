@@ -41,14 +41,15 @@ public class SceneLoader : MonoBehaviour {
 		PlayerManager.instance.Initialize ();
 		ActionBoxManager.instance.Initialize ();
 		InteractionManager.instance.Initialize ();	
-
-
+	
+		GameManager.instance.CreatePlayerData ();
 
 		RoomManager.instance.BuildRoom ();
 
 
 		FindObjectOfType<DebugHelper> ().Initialize ();
 
+		InventoryUI.instance.Initialize ();
 
 
 	}

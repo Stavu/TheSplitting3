@@ -11,13 +11,17 @@ public class SubInteraction {
 
 	public string interactionType;
 	public List<string> textList;
-	public List<Condition> myConditionList;
+	//public List<Condition> myConditionList;
+	public string rawText;
+	public Direction direction;
 	public string destinationRoomName;
-	public string itemToRecieveName;
+	//public string itemToRecieveFileName;
+	//public string itemToRecieveTitleName;
 	public string ItemToUseName;
 	public bool ItemToUseRemoveBool;
+	public List<InventoryItem> inventoryItems;
 
-
+	public InventoryItem inventoryItem;
 
 
 
@@ -42,35 +46,51 @@ public class SubInteraction {
 
 		switch (interactionType) {
 
-		case :
 
-			if (GameManager.actionBoxActive) 
-			{
+			case "showDialogue":
 
-				Debug.Log ("Interaction Interact look_at");
+				if (GameManager.actionBoxActive) 
+				{
 
-				InteractionManager.instance.DisplayText (PlayerManager.instance.myPlayer, textList [0]);
+				//	Debug.Log ("show dialogue");
+
+					InteractionManager.instance.DisplayText (PlayerManager.instance.myPlayer, textList [0]);
+
+				}
 
 
-			}
+				break;
 
 
-			break;
+
+			case "moveToRoom":
+
+				InteractionManager.instance.MoveToRoom (destinationRoomName, direction);
+
+				break;
+
+
+
+			case "pickUpItem":
+
+				Debug.Log ("subinteraction" + "pickUp Item");
+				InteractionManager.instance.PickUpItem (inventoryItem);
+
+
+				break;
+
+
+
+
+
+
+		}
 
 
 
 	}
 
 
-
-	public void EnterRoom(string name, Direction direction)
-	{
-
-
-		InteractionManager.instance.MoveToRoom (name, direction);
-
-
-	}
 
 
 

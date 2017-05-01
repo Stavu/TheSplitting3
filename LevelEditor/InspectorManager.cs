@@ -32,6 +32,8 @@ public class InspectorManager : MonoBehaviour {
 	GameObject inspectorObject;
 	GameObject interactionPanelObject;
 
+	Interaction loadedInteraction;
+
 	Furniture _chosenFurniture;
 	public Furniture chosenFurniture
 	{
@@ -58,10 +60,12 @@ public class InspectorManager : MonoBehaviour {
 
 
 
+
+
 	// Use this for initialization
 	void Start () 
-	{
-		
+	{		
+
 	}
 	
 	// Update is called once per frame
@@ -116,14 +120,15 @@ public class InspectorManager : MonoBehaviour {
 
 			if (chosenFurniture.myInteractionList.Count > i) {
 			
-				button.transform.FindChild ("Text").GetComponent<Text>().text = chosenFurniture.myInteractionList [i].myInteractionType.ToString ();
+				button.transform.FindChild ("Text").GetComponent<Text>().text = chosenFurniture.myInteractionList [i].myVerb;
 				Interaction interaction = chosenFurniture.myInteractionList [i];
-				button.onClick.AddListener (() => OpenEditInteractionPanel(interaction));	
+				button.onClick.AddListener (() => OpenInteractionPanel(interaction));	
 					
 
 			} else {
 
-				button.onClick.AddListener (CreateInteractionPanel);
+			
+				button.onClick.AddListener (() => OpenInteractionPanel(null));
 
 
 
@@ -223,101 +228,151 @@ public class InspectorManager : MonoBehaviour {
 
 
 
+	// Creating a new interaction panel
+
+
+	// Declarations
+
+	Transform panel;
+	InputField interactionTitleInput;
+
+	InputField interactionTextInput;
+	Toggle textInputCheckBox;
+
+	InputField destinationRoomInput;
+	Toggle enterRoomCheckBox;
+
+	Toggle recieveItemCheckBox;
+	Dropdown recieveItemDropdown;
+	InputField recieveItemTitleInput;
+
 
 
 	public void CreateInteractionPanel()
 	{
-
-		DestroyInteractionPanel ();
-
+		
 		interactionPanelObject = Instantiate (interactionPanelObjectPrefab);
-		Dropdown interactionDropdown = interactionPanelObject.GetComponentInChildren<Dropdown>();
 
-		System.Array optionStringArray = Enum.GetValues (typeof(InteractionType));
-		List<string> optionStringList = new List<string>();
+		// Panel
+		panel = interactionPanelObject.transform.FindChild ("Panel");
 
+		// Interaction title
+		interactionTitleInput = panel.FindChild ("InteractionTitle").GetComponent<InputField> ();
 
-		// FIXME
+		// Dialogue
+		interactionTextInput = panel.FindChild("InteractionTextInput").GetComponent<InputField> ();
+		textInputCheckBox = panel.FindChild ("TextInputCheckBox").GetComponent<Toggle> ();
 
-		foreach (var item in optionStringArray) 
-		{
-
-			optionStringList.Add (item.ToString());
-			
-		}
-
-
-		interactionDropdown.AddOptions (optionStringList);
-
-
-		// submit button
-
-
-		interactionPanelObject.transform.FindChild ("Panel").FindChild("SubmitButton").GetComponent<Button> ().onClick.AddListener  (() => SubmitInteraction());
-
-
-		// enter room dropdown
-
-		Dropdown enterRoomDropdown = interactionPanelObject.transform.FindChild("EnterRoomDropdown").GetComponentInChildren<Dropdown>();
-
-
+		// Destination room
+		destinationRoomInput = panel.FindChild("DestinationRoomInput").GetComponent<InputField>();
+		enterRoomCheckBox = panel.FindChild ("EnterRoomCheckBox").GetComponent<Toggle> ();
 
 		// recieve item dropdown
+		recieveItemCheckBox = panel.FindChild ("RecieveItemCheckBox").GetComponent<Toggle>();
+		recieveItemDropdown = panel.FindChild("RecieveItemDropdown").GetComponentInChildren<Dropdown>();
+		recieveItemTitleInput = panel.FindChild("RecieveItemTitleInput").GetComponent<InputField>();
 
-		Dropdown recieveItemDropdown = interactionPanelObject.transform.FindChild("RecieveItemDropdown").GetComponentInChildren<Dropdown>();
-
+		// Submit button
+		panel.FindChild("SubmitButton").GetComponent<Button> ().onClick.AddListener  (() => SubmitInteraction());
 
 	}
 
 
 
 
-	public void OpenEditInteractionPanel(Interaction interaction)
+
+
+	// Opening interaction panel after created
+
+	public void OpenInteractionPanel(Interaction interaction = null)
 	{
-
+		
 		DestroyInteractionPanel ();
-
-		interactionPanelObject = Instantiate (interactionPanelObjectPrefab);
-
-		// interaction dropdown
-
-		Dropdown interactionDropdown = interactionPanelObject.GetComponentInChildren<Dropdown>();
-		interactionDropdown.value = (int) interaction.myInteractionType;
-
-		List<string> interactionList = new List<string> ();
-		interactionList.Add(interaction.myInteractionType.ToString());
-
-		interactionDropdown.AddOptions(interactionList);
-		interactionDropdown.interactable = false;
+		CreateInteractionPanel ();
 
 
-		// set texts
+		//interactionPanelObject.SetActive (true);
 
-
-		InputField[] textComp = interactionPanelObject.transform.FindChild("Interactions").GetComponentsInChildren<InputField> ();
-
-		for (int i = 0; i < interaction.textList.Count; i++) 
-		{
-			
-			textComp [i].text = interaction.textList [i];
-		}
-
-
-
-		// submit button
-
-		interactionPanelObject.transform.FindChild ("Panel").FindChild("SubmitButton").GetComponent<Button> ().onClick.AddListener (() => SubmitInteraction(interaction));
-
-
-		// enter room dropdown
-
-		Dropdown enterRoomDropdown = interactionPanelObject.transform.FindChild("EnterRoomDropdown").GetComponentInChildren<Dropdown>();
-
+		// set dialogue texts
+		// set destination room text
 
 
 		// recieve item dropdown
 
-		Dropdown recieveItemDropdown = interactionPanelObject.transform.FindChild("RecieveItemDropdown").GetComponentInChildren<Dropdown>();
+		recieveItemDropdown.ClearOptions ();
+		recieveItemDropdown.AddOptions (LoadInventoryItems());
+
+
+		// Populating values to subinteractions
+
+
+		if (interaction != null) 
+		{
+			
+			loadedInteraction = interaction;
+
+			// interaction title input field
+
+			interactionTitleInput.text = interaction.myVerb;
+
+
+			foreach (SubInteraction subInt in interaction.subInteractionList) 
+			{
+
+				switch (subInt.interactionType) 
+				{
+
+					case "showDialogue":
+
+						interactionTextInput.interactable = true; 
+						interactionTextInput.text = subInt.rawText;
+						textInputCheckBox.isOn = true;
+
+						break;
+
+
+					case "moveToRoom":
+
+						destinationRoomInput.interactable = true; 
+						destinationRoomInput.text = subInt.destinationRoomName;
+						enterRoomCheckBox.isOn = true;
+
+						break;
+
+
+					case "pickUpItem":
+
+						List<string> itemStringList = LoadInventoryItems ();
+
+						//Debug.Log (recieveItemDropdown.options.Count);
+
+						recieveItemCheckBox.isOn = true;
+						recieveItemDropdown.interactable = true; 
+						int index;
+
+						if (itemStringList.Contains (subInt.inventoryItem.fileName) == false) 
+						{
+							Debug.LogError ("Can't find item to recieve file name");
+
+						} else {
+
+							index = itemStringList.IndexOf (subInt.inventoryItem.fileName);
+							recieveItemDropdown.value = index;
+						}
+
+						recieveItemTitleInput.text = subInt.inventoryItem.titleName;
+
+						break;
+
+				}
+
+			}
+
+		} else {
+
+			loadedInteraction = null;
+		}
+
 
 
 
@@ -338,6 +393,24 @@ public class InspectorManager : MonoBehaviour {
 
 
 
+	public List<string> LoadInventoryItems()
+	{
+
+		Sprite[] itemSprites = Resources.LoadAll<Sprite> ("Sprites/Inventory/Small_items");
+		List<string> itemStringList = new List<string> ();
+
+		//List<Dropdown.OptionData> itemDataList = new List<Dropdown.OptionData> ();
+
+		foreach (Sprite spr in itemSprites) 
+		{
+			//Dropdown.OptionData data = new Dropdown.OptionData (spr.name, spr);		
+			itemStringList.Add (spr.name);
+		}
+
+		return itemStringList;
+	}
+
+
 
 
 	public void DestroyInteractionPanel()
@@ -346,72 +419,149 @@ public class InspectorManager : MonoBehaviour {
 		if (interactionPanelObject != null) 
 		{
 
-			Destroy (interactionPanelObject);
+			Destroy(interactionPanelObject);
 
 		}
 
 	}
 
 
-	public void SubmitInteraction(Interaction interaction = null)
+	/*
+	public void DeactivateInteractionPanel()
 	{
 
-		Dropdown dropdown = interactionPanelObject.GetComponentInChildren<Dropdown>();
-
-		InteractionType currentType = (InteractionType)dropdown.value;
-		Debug.Log ("currentType" + currentType);
-
-
-	
-		switch(currentType)
+		if (interactionPanelObject != null) 
 		{
-
-		case InteractionType.look_at:
-				
-						
-			List<string> interactionTextList = new List<string> ();
-			string inputText = interactionPanelObject.transform.FindChild ("Panel").FindChild ("InteractionText").GetComponent<InputField> ().text;
-
-
-			char delimiter = '|';
-			string[] result = inputText.Split (delimiter);
-
-			foreach (string str in result)
-			{
-				interactionTextList.Add (str);
-			}
-
-			Debug.Log (interactionTextList);
-
-			if (interaction == null) 
-			{
-				interaction = new Interaction (currentType, interactionTextList);	
-
-			} else {
-
-				interaction.textList = interactionTextList;
-			}
-
-			// Hello! How are you?| My name is Daniel. | What's yours?
-
-
-			break;
-
-
-
-			/*
-		case InteractionType.enter:
-
-
-			break;
-			*/
+			
+			interactionPanelObject.SetActive (false);
 
 		}
+
+	}
+	*/
+
+
+
+	public void SubmitInteraction()
+	{
+
+
+
+		// Check if there are subinteractions
+
+		Transform panel = interactionPanelObject.transform.FindChild ("Panel");
+
+
+		// create interaction 
+
+		Interaction interaction;
+
+		if (loadedInteraction != null) 
+		{
+			interaction = loadedInteraction;
+
+			// clearing subinteraction list
+
+			interaction.subInteractionList.Clear ();
+
+
+		
+		} else {
+
+			interaction = new Interaction ();
+
+		}
+
+
+
+
+
+		// interaction verb 
+
+		InputField interactionTitleInput = panel.FindChild ("InteractionTitle").GetComponent<InputField> ();
+
+		interaction.myVerb = interactionTitleInput.text;
+		//Debug.Log ("currentType" + interaction.myVerb);
+
+
+
+			
+		// create subInteraction list
+
+
+
+		// create show dialogue
+
+
+		InputField interactionTextInput = panel.FindChild ("InteractionTextInput").GetComponent<InputField> ();
+
+
+		if (interactionTextInput.interactable == true) 		
+		{
+
+			SubInteraction subInteraction = new SubInteraction ("showDialogue");
+			subInteraction.rawText = interactionTextInput.text;
+
+			interaction.subInteractionList.Add (subInteraction);
+
+			subInteraction.textList = Utilities.SeparateText (subInteraction.rawText);
+
+		}
+
+
+		// create enter room
+
+
+		InputField destinationRoomInput = panel.FindChild ("DestinationRoomInput").GetComponent<InputField> ();
+	
+
+		if (destinationRoomInput.interactable == true)		
+		{
+			
+			SubInteraction subInteraction = new SubInteraction ("moveToRoom");
+			subInteraction.destinationRoomName = destinationRoomInput.text;
+		
+
+			interaction.subInteractionList.Add (subInteraction);
+
+		}
+
+
+		// create recieve item
+
+
+		Dropdown recieveItemDropdown = panel.FindChild("RecieveItemDropdown").GetComponent<Dropdown>();
+		InputField recieveItemTitleInput = panel.FindChild ("RecieveItemTitleInput").GetComponent<InputField> ();
+			
+			
+		if ((recieveItemDropdown.interactable == true) && (recieveItemTitleInput.interactable == true)) 
+		{
+			Debug.Log ("creating subinteraction pick up item");
+
+
+			SubInteraction subInteraction = new SubInteraction ("pickUpItem");
+
+			subInteraction.inventoryItem = new InventoryItem (recieveItemDropdown.options [recieveItemDropdown.value].text, recieveItemTitleInput.text);
+
+
+			Debug.Log ("name" + subInteraction.inventoryItem.fileName);
+
+			interaction.subInteractionList.Add (subInteraction);
+
+
+		}
+
 
 
 		if (chosenFurniture.myInteractionList.Contains (interaction) == false) 
 		{
 			chosenFurniture.myInteractionList.Add (interaction);
+
+		} else {
+
+			int i = chosenFurniture.myInteractionList.IndexOf (interaction);
+			chosenFurniture.myInteractionList [i] = interaction;
+
 		}
 
 

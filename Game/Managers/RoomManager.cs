@@ -61,6 +61,8 @@ public class RoomManager : MonoBehaviour {
 			
 		}
 
+		GameManager.instance.inputState = InputState.Character; //FIXME
+
 	}
 
 
@@ -69,7 +71,8 @@ public class RoomManager : MonoBehaviour {
 	
 	// Update is called once per frame
 
-	void Update () {
+	void Update () 
+	{
 
 		
 	}

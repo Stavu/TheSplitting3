@@ -33,6 +33,7 @@ public class EditorTileManager : MonoBehaviour {
 	// Use this for initialization
 	public void Initialize () {
 
+
 		EventsHandler.cb_editorNewRoomCreated += CreateTileObject;
 		EventsHandler.cb_editorFurniturePlaced += ColorTiles;
 		EventsHandler.cb_editorFurnitureChanged += ColorTiles;
@@ -68,7 +69,7 @@ public class EditorTileManager : MonoBehaviour {
 
 		foreach (GameObject obj in tileGameObjectMap.Values) 
 		{
-				
+			
 			Destroy (obj);
 		}
 
@@ -87,6 +88,7 @@ public class EditorTileManager : MonoBehaviour {
 
 		tilesParent = new GameObject ("Tiles");
 
+		Debug.Log ("tiles");
 
 		foreach (Tile tile in myRoom.myGrid.gridArray) 
 		{
@@ -113,7 +115,7 @@ public class EditorTileManager : MonoBehaviour {
 	public void ColorTiles(Furniture tempFurn)
 	{
 
-		Debug.Log ("ColorTiles");
+		//Debug.Log ("ColorTiles");
 
 
 		foreach (GameObject obj in tileGameObjectMap.Values) 

@@ -36,6 +36,69 @@ public class Utilities {
 	}
 
 
+	public static List<string> SeparateText(string rawText)
+	{
+
+	
+		List<string> textList = new List<string> ();
+
+		char delimiter = '|';
+		string[] result = rawText.Split (delimiter);
+
+		foreach (string str in result)
+		{
+			textList.Add (str);
+		}
+
+		//Debug.Log (textList);
+
+
+		return textList;
+
+
+
+	}
+
+
+
+	public static GameObject CreateFurnitureGameObject (Furniture myFurniture, Transform parent)
+	{
+
+		//Debug.Log ("Assign Furniture Image");
+
+		myFurniture.myPos = new Vector3 (myFurniture.x + myFurniture.mySize.x/2, myFurniture.y, 0);
+
+		GameObject obj = new GameObject (myFurniture.myName);
+		obj.transform.SetParent (parent);
+
+
+		SpriteRenderer sr = obj.AddComponent<SpriteRenderer>();
+
+		sr.sprite = Resources.Load<Sprite> ("Sprites/Furniture/" + myFurniture.myName); 
+
+		obj.transform.position = new Vector3 (myFurniture.myPos.x + myFurniture.offsetX, myFurniture.myPos.y + 0.5f + myFurniture.offsetY, myFurniture.myPos.z);
+
+		//Debug.Log ("object position" + myFurniture.myName + obj.transform.position + sr.sprite.bounds);
+
+
+		// sorting order 
+
+		sr.sortingOrder = -myFurniture.y;
+
+		if (myFurniture.walkable == true) 
+		{
+			sr.sortingOrder = (int) -(myFurniture.y + myFurniture.mySize.y);
+
+		}
+
+		sr.sortingLayerName = Constants.furniture_character_layer;
+
+		return obj;
+
+
+	}
+
+
 
 
 }

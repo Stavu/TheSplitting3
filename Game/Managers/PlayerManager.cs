@@ -71,7 +71,7 @@ public class PlayerManager : MonoBehaviour {
 	public void CreatePlayer(Room myRoom)	
 	{
 			
-		Debug.Log ("created character");	
+		//Debug.Log ("created character");	
 
 		myPlayer = new Player("Daniel", new Vector2(1,1), new Vector3(3.5f,3.5f,0));
 
@@ -86,7 +86,7 @@ public class PlayerManager : MonoBehaviour {
 	public void CreatePlayerObject(Player myPlayer)
 	{
 
-		Debug.Log ("created character object");	
+		//Debug.Log ("created character object");	
 
 		GameObject obj = Instantiate (CharacterPrefab);
 
@@ -106,7 +106,7 @@ public class PlayerManager : MonoBehaviour {
 	public void MoveCharacter(Direction myDirection)
 	{
 
-		if (GameManager.actionBoxActive == true) 
+		if (GameManager.instance.inputState != InputState.Character) 
 		{
 			return;	
 		

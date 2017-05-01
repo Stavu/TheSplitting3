@@ -31,11 +31,28 @@ public class EditorSceneLoader : MonoBehaviour {
 
 		Instantiate (managers);	
 
+		// Initializing
+
 		EditorTileManager.instance.Initialize ();
 		BuildController.instance.Initialize ();
+		EditorFurnitureManager.instance.Initialize ();
+
+
+		// Starting Functions
+
+		if (EditorRoomManager.loadRoomFromMemory == true) 
+		{
+			EditorRoomManager.instance.SetRoomBackground (EditorRoomManager.instance.room.bgName);
+
+		} else {
+
+			EditorRoomManager.instance.SetRoomBackground ("abandoned_lobby_bg");
+		}
 	
-		EditorRoomManager.instance.SetRoomBackground ("abandoned_lobby_bg");
+
 		EditorUI.instance.CreateUI ();
+
+
 	}
 
 

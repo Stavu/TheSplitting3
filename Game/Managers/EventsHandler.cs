@@ -60,6 +60,17 @@ public static class EventsHandler
 	}
 
 
+	public static Action cb_key_i_pressed;
+
+	public static void Invoke_cb_key_i_pressed()
+	{
+		if(cb_key_i_pressed != null)
+		{
+			cb_key_i_pressed ();
+		}
+
+	}
+
 
 
 
@@ -150,6 +161,22 @@ public static class EventsHandler
 
 
 
+	// Inventory
+
+
+	public static Action<Inventory> cb_inventoryChanged;
+
+	public static void Invoke_cb_inventoryChanged(Inventory inventory)
+	{
+		if(cb_inventoryChanged != null)
+		{
+			cb_inventoryChanged (inventory);
+		}
+
+	}
+
+
+
 
 
 	/* ------- EDITOR -------- */
@@ -183,6 +210,19 @@ public static class EventsHandler
 
 	}
 	*/
+
+
+	public static Action<Furniture> cb_editorFurnitureModelChanged;
+
+	public static void Invoke_cb_editorFurnitureModelChanged(Furniture furniture)
+	{
+		if(cb_editorFurnitureModelChanged != null)
+		{
+			cb_editorFurnitureModelChanged (furniture);
+		}
+
+	}
+
 
 	public static Action<Furniture> cb_editorFurniturePlaced;
 

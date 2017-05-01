@@ -40,7 +40,7 @@ public class Room {
 	public Room(int myWidth, int myHeight)
 	{
 
-	//	Debug.Log ("room shallow");
+		//Debug.Log ("room shallow");
 
 		//this.myName = myName;
 
@@ -48,7 +48,8 @@ public class Room {
 		this.myHeight = myHeight;
 
 		//this.bgName = bgName;
-			
+
+
 		myGrid = new Grid (myWidth,myHeight);
 
 	}
@@ -83,7 +84,7 @@ public class Room {
 	public void CreateFurniture()
 	{
 
-		Debug.Log ("Room CreateFurniture");
+		//Debug.Log ("Room CreateFurniture");
 
 
 
