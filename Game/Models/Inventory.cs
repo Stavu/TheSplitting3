@@ -69,7 +69,7 @@ public class Inventory {
 		}
 
 		items.Add (item);
-		Debug.Log ("item name" + item.fileName);
+		//Debug.Log ("item name" + item.fileName);
 
 		EventsHandler.Invoke_cb_inventoryChanged (this);
 

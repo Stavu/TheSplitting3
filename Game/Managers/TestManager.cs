@@ -71,7 +71,7 @@ public class TestManager : MonoBehaviour {
 
 		model = JsonUtility.FromJson<TestModel> (myTextAsset.text);
 
-		Debug.Log (model.myList[2]);
+		//Debug.Log (model.myList[2]);
 
 
 	}
@@ -82,7 +82,7 @@ public class TestManager : MonoBehaviour {
 	
 		string myJson = JsonUtility.ToJson (RoomManager.instance.myRoom);
 
-		Debug.Log (myJson);
+		//Debug.Log (myJson);
 
 
 	}

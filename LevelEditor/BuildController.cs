@@ -35,7 +35,7 @@ public class BuildController : MonoBehaviour {
 		set 
 		{
 			_furnitureName = value;
-			Debug.Log (_furnitureName);
+			//Debug.Log (_furnitureName);
 		}
 	}
 

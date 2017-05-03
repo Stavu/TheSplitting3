@@ -28,9 +28,9 @@ public class ActionBoxManager : MonoBehaviour {
 	public GameObject ActionPrefab;
 
 	GameObject currentFurnitureFrame;
-	GameObject currentActionBox;
+	public GameObject currentActionBox;
 
-	Furniture currentFurniture;
+	public Furniture currentFurniture;
 	Tile currentTile;
 
 
@@ -199,6 +199,12 @@ public class ActionBoxManager : MonoBehaviour {
 
 	public void SetActionBox ()
 	{
+		/*
+		if (GameManager.instance.inputState != InputState.ActionBox) 
+		{
+			return;
+		}
+		*/	
 
 		// if there is no furniture selected, return
 
@@ -207,11 +213,17 @@ public class ActionBoxManager : MonoBehaviour {
 			return;
 		}
 
+
+		// If there is already an actionbox, activate interaction
+
 		if (currentActionBox != null) 		
 		{			
 			ActivateInteraction ();
 			return;
 		}
+
+
+		// if there's no action box, create one
 
 		currentActionBox = Instantiate (ActionBoxPrefab, PositionActionBox() ,Quaternion.identity);
 
@@ -426,6 +438,11 @@ public class ActionBoxManager : MonoBehaviour {
 		GameManager.instance.inputState = InputState.Character;
 
 	}
+
+
+
+
+	// Activate interaction
 
 
 

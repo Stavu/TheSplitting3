@@ -27,8 +27,9 @@ public class InteractionManager : MonoBehaviour {
 
 
 	public GameObject TextBoxPrefab;
-
 	GameObject currentTextBox;
+
+
 
 
 
@@ -171,10 +172,23 @@ public class InteractionManager : MonoBehaviour {
 	public void PickUpItem (InventoryItem inventoryItem)
 	{
 
-		Debug.Log ("PickUpItem");
+		//Debug.Log ("PickUpItem");
 
 		GameManager.playerData.inventory.AddItem (inventoryItem);
 			
+
+	}
+
+
+
+	// Use item (we still don't know what item it is)
+
+
+	public void UseItem (Furniture furn)
+	{
+		//Debug.Log
+
+		InventoryUI.instance.OpenInventory (InventoryState.UseItem);
 
 	}
 

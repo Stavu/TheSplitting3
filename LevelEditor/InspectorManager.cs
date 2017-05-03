@@ -10,6 +10,7 @@ using System;
 public class InspectorManager : MonoBehaviour {
 
 
+
 	// Singleton //
 
 	public static InspectorManager instance { get; protected set;}
@@ -56,8 +57,6 @@ public class InspectorManager : MonoBehaviour {
 			}
 		}
 	}
-
-
 
 
 
@@ -113,30 +112,24 @@ public class InspectorManager : MonoBehaviour {
 	
 		// create existing interactions
 
-		for (int i = 0; i < 3; i++) 		
-		{
+		for (int i = 0; i < 3; i++) {
 			
 			Button button = panel.FindChild ("AddInteraction" + i.ToString ()).GetComponent<Button> ();
 
 			if (chosenFurniture.myInteractionList.Count > i) {
 			
-				button.transform.FindChild ("Text").GetComponent<Text>().text = chosenFurniture.myInteractionList [i].myVerb;
+				button.transform.FindChild ("Text").GetComponent<Text> ().text = chosenFurniture.myInteractionList [i].myVerb;
 				Interaction interaction = chosenFurniture.myInteractionList [i];
-				button.onClick.AddListener (() => OpenInteractionPanel(interaction));	
+				button.onClick.AddListener (() => OpenInteractionPanel (interaction));	
 					
 
 			} else {
 
 			
-				button.onClick.AddListener (() => OpenInteractionPanel(null));
-
-
+				button.onClick.AddListener (() => OpenInteractionPanel (null));
 
 			}
-
-
 		}
-
 	}
 
 
@@ -246,6 +239,8 @@ public class InspectorManager : MonoBehaviour {
 	Dropdown recieveItemDropdown;
 	InputField recieveItemTitleInput;
 
+	Toggle usingItemCheckBox;
+
 
 
 	public void CreateInteractionPanel()
@@ -272,8 +267,16 @@ public class InspectorManager : MonoBehaviour {
 		recieveItemDropdown = panel.FindChild("RecieveItemDropdown").GetComponentInChildren<Dropdown>();
 		recieveItemTitleInput = panel.FindChild("RecieveItemTitleInput").GetComponent<InputField>();
 
+		//Using item
+		usingItemCheckBox = panel.FindChild("UsingItemCheckBox").GetComponent<Toggle>();
+
+
+
+
 		// Submit button
 		panel.FindChild("SubmitButton").GetComponent<Button> ().onClick.AddListener  (() => SubmitInteraction());
+
+
 
 	}
 
@@ -364,6 +367,14 @@ public class InspectorManager : MonoBehaviour {
 
 						break;
 
+
+					case "useItem":
+						
+						usingItemCheckBox.isOn = true;
+
+						break;
+
+
 				}
 
 			}
@@ -445,8 +456,7 @@ public class InspectorManager : MonoBehaviour {
 	public void SubmitInteraction()
 	{
 
-
-
+	
 		// Check if there are subinteractions
 
 		Transform panel = interactionPanelObject.transform.FindChild ("Panel");
@@ -471,9 +481,6 @@ public class InspectorManager : MonoBehaviour {
 			interaction = new Interaction ();
 
 		}
-
-
-
 
 
 		// interaction verb 
@@ -536,21 +543,36 @@ public class InspectorManager : MonoBehaviour {
 			
 		if ((recieveItemDropdown.interactable == true) && (recieveItemTitleInput.interactable == true)) 
 		{
-			Debug.Log ("creating subinteraction pick up item");
-
+			//Debug.Log ("creating subinteraction pick up item");
 
 			SubInteraction subInteraction = new SubInteraction ("pickUpItem");
-
 			subInteraction.inventoryItem = new InventoryItem (recieveItemDropdown.options [recieveItemDropdown.value].text, recieveItemTitleInput.text);
 
-
-			Debug.Log ("name" + subInteraction.inventoryItem.fileName);
+			//Debug.Log ("name" + subInteraction.inventoryItem.fileName);
 
 			interaction.subInteractionList.Add (subInteraction);
 
 
 		}
 
+
+		// Create use item
+
+	
+		//usingItemCheckBox = panel.FindChild("UsingItemCheckBox").GetComponent<Toggle>();
+
+
+		if (usingItemCheckBox.isOn == true) 
+		{
+		
+			SubInteraction subInteraction = new SubInteraction ("useItem");
+			interaction.subInteractionList.Add (subInteraction);
+
+		}
+
+
+
+		// If this is a new interaction, add to interaction list, if not, update interaction in list
 
 
 		if (chosenFurniture.myInteractionList.Contains (interaction) == false) 

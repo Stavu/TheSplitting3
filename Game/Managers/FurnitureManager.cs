@@ -25,6 +25,7 @@ public class FurnitureManager : MonoBehaviour {
 	public Dictionary<Furniture,GameObject> furnitureGameObjectMap;
 
 
+
 	//public GameObject FurniturePrefab;
 
 

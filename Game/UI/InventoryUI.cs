@@ -83,6 +83,7 @@ public class InventoryUI : MonoBehaviour {
 		EventsHandler.cb_key_i_pressed += OnInventoryKeyPressed;
 		EventsHandler.cb_keyPressedDown += BrowseInventory;
 		EventsHandler.cb_inventoryChanged += UpdateInventory;
+		EventsHandler.cb_spacebarPressed += SelectItemToUse;
 
 	}
 
@@ -94,7 +95,7 @@ public class InventoryUI : MonoBehaviour {
 		EventsHandler.cb_key_i_pressed -= OnInventoryKeyPressed;
 		EventsHandler.cb_keyPressedDown -= BrowseInventory;
 		EventsHandler.cb_inventoryChanged -= UpdateInventory;
-
+		EventsHandler.cb_spacebarPressed -= SelectItemToUse;
 	}
 
 
@@ -159,7 +160,7 @@ public class InventoryUI : MonoBehaviour {
 	public void UpdateInventory(Inventory inventory)
 	{
 
-		Debug.Log ("update inventory");
+		//Debug.Log ("update inventory");
 
 
 		// First, destroy all items
@@ -228,6 +229,8 @@ public class InventoryUI : MonoBehaviour {
 	{
 
 		GameManager.instance.inputState = InputState.Inventory;
+		GameManager.playerData.inventory.myState = state;
+
 
 		foreach (GameObject obj in itemGameObjectMap.Values) 
 		{
@@ -250,6 +253,8 @@ public class InventoryUI : MonoBehaviour {
 
 
 			case InventoryState.UseItem:
+
+				frameGreen.SetActive (true);
 			
 				break;
 
@@ -322,7 +327,14 @@ public class InventoryUI : MonoBehaviour {
 
 
 		chosenItem = GameManager.playerData.inventory.items [i];
-		UpdateZoomInWindow ();
+
+
+		// if we're in browsing state, update the zoom in window
+
+		if (GameManager.playerData.inventory.myState == InventoryState.Browse) 
+		{			
+			UpdateZoomInWindow ();
+		}
 
 	}
 
@@ -381,6 +393,39 @@ public class InventoryUI : MonoBehaviour {
 		GameManager.instance.inputState = InputState.Character;
 
 	}
+
+
+
+
+	public void SelectItemToUse()
+	{
+
+
+		if (GameManager.instance.inputState != InputState.Inventory) 
+		{
+			return;
+		}
+
+		if (GameManager.playerData.inventory.myState != InventoryState.UseItem) 
+		{	
+			Debug.Log ("state is not use item");
+			return;
+		}
+
+		Debug.Log ("Select Item To Use");
+
+		if (ActionBoxManager.instance.currentFurniture == null) 
+		{
+			return;
+		}
+
+
+		UseItemHelper.UseItemOnFurniture (chosenItem, ActionBoxManager.instance.currentFurniture);
+
+	
+	}
+
+
 
 
 }

@@ -53,7 +53,7 @@ public class EditorFurnitureManager : MonoBehaviour
 	public void FurnitureFactory(Room room)
 	{
 
-		Debug.Log ("FurnitureFactory");
+		//Debug.Log ("FurnitureFactory");
 
 		foreach (Furniture furn in room.myFurnitureList) 
 		{			
@@ -70,7 +70,7 @@ public class EditorFurnitureManager : MonoBehaviour
 	public void CreateFurnitureObject(Furniture furn)
 	{
 
-		Debug.Log ("CreateFurnitureObject");
+		//Debug.Log ("CreateFurnitureObject");
 
 		GameObject obj = Utilities.CreateFurnitureGameObject (furn, this.transform);
 

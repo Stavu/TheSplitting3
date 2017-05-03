@@ -10,6 +10,7 @@ public class SubInteraction {
 
 
 	public string interactionType;
+
 	public List<string> textList;
 	//public List<Condition> myConditionList;
 	public string rawText;
@@ -73,12 +74,21 @@ public class SubInteraction {
 
 			case "pickUpItem":
 
-				Debug.Log ("subinteraction" + "pickUp Item");
+				//Debug.Log ("subinteraction" + "pickUp Item");
 				InteractionManager.instance.PickUpItem (inventoryItem);
 
 
 				break;
 
+
+
+			case "useItem":
+
+			
+				InteractionManager.instance.UseItem (ActionBoxManager.instance.currentFurniture);
+
+
+				break;
 
 
 

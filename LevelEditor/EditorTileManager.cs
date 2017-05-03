@@ -88,7 +88,7 @@ public class EditorTileManager : MonoBehaviour {
 
 		tilesParent = new GameObject ("Tiles");
 
-		Debug.Log ("tiles");
+		//Debug.Log ("tiles");
 
 		foreach (Tile tile in myRoom.myGrid.gridArray) 
 		{

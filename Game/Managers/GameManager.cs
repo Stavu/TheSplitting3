@@ -17,15 +17,17 @@ public enum InputState
 
 
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour
+{
 
 
 
 	// Singleton //
 
-	public static GameManager instance { get; protected set;}
+	public static GameManager instance { get; protected set; }
 
-	void Awake () {		
+	void Awake ()
+	{		
 		if (instance == null) {
 			instance = this;
 		} else if (instance != this) {
@@ -58,12 +60,13 @@ public class GameManager : MonoBehaviour {
 
 	// Use this for initialization
 
-	public void Initialize () 
+	public void Initialize ()
 	{
-		
+
+		//EventsHandler.cb_spacebarPressed += SetInputState;
+
 		CreateRooms ();
-		if (roomToLoad == null) 
-		{
+		if (roomToLoad == null) {
 			roomToLoad = stringRoomMap ["abandoned_wing_outside_shadow"];
 
 		}
@@ -74,11 +77,10 @@ public class GameManager : MonoBehaviour {
 
 	// Update is called once per frame
 
-	void Update () 
+	void Update ()
 	{
 
-		if (Input.GetKeyDown (KeyCode.R)) 
-		{
+		if (Input.GetKeyDown (KeyCode.R)) {
 
 			CreateNewData ();
 
@@ -90,14 +92,13 @@ public class GameManager : MonoBehaviour {
 
 
 
-	public void CreateRooms()
+	public void CreateRooms ()
 	{
 		
 
 		Object[] myTextAssets = Resources.LoadAll ("Jsons/Rooms");
 
-		foreach (TextAsset txt in myTextAssets) 
-		{
+		foreach (TextAsset txt in myTextAssets) {
 			Room myRoom;
 			myRoom = JsonUtility.FromJson<Room> (txt.text);
 
@@ -111,30 +112,55 @@ public class GameManager : MonoBehaviour {
 	}
 
 
+	/*
 
+	 ----- INPUT STATE -----
 
-
-	/* ----- SAVING AND LOADING ----- */ 
-
-
-
-	public void CreatePlayerData()
+	public void SetInputState()
 	{
 
-		if (playerData != null) 
+
+
+		if ((ActionBoxManager.instance.currentFurniture != null) && (ActionBoxManager.instance.currentActionBox == null)) 
 		{
+			GameManager.instance.inputState = InputState.ActionBox;
+			ActionBoxManager.instance.SetActionBox ();
+			return;
+
+		}
+
+
+		if(ActionBoxManager.instance.currentActionBox != null)
+		{
+
+		}
+
+
+	}
+
+	*/
+
+
+
+	/* ----- SAVING AND LOADING ----- */
+
+
+
+	public void CreatePlayerData ()
+	{
+
+		if (playerData != null) {
 			//Debug.Log ("playerData is not null");
 			return;
 		}
 
 
-		if (PlayerPrefs.HasKey ("PlayerData")) 
-		{
+		if (PlayerPrefs.HasKey ("PlayerData")) {
 			
 			//Debug.Log ("Loading data from memory");
 			playerData = JsonUtility.FromJson<PlayerData> (PlayerPrefs.GetString ("PlayerData"));
 
-			Debug.Log(PlayerPrefs.GetString ("PlayerData"));
+			//Debug.Log(PlayerPrefs.GetString ("PlayerData"));
 
 		} else {
 			
@@ -145,7 +171,7 @@ public class GameManager : MonoBehaviour {
 
 
 
-	public void CreateNewData()
+	public void CreateNewData ()
 	{
 
 		Debug.Log ("Creating new data");
@@ -158,18 +184,17 @@ public class GameManager : MonoBehaviour {
 
 
 
-	public void SaveData()
+	public void SaveData ()
 	{
 		
 		Debug.Log ("Saving data");
 
-		if (playerData != null) 
-		{
+		if (playerData != null) {
 
 			string data = JsonUtility.ToJson (playerData);
 			PlayerPrefs.SetString ("PlayerData", data);
 
-			Debug.Log (data);
+			//Debug.Log (data);
 
 		}
 
