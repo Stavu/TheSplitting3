@@ -16,11 +16,11 @@ public class UseItemHelper {
 		{
 
 
-			/* -------- ORDER DETAILS -------- */
+			/* -------- COMPASS -------- */
 
 
 
-			case "order_details":
+			case "compass":
 
 
 				switch (furniture.myName) 
@@ -30,6 +30,10 @@ public class UseItemHelper {
 						
 
 						Debug.Log ("used item");
+						InteractionManager.instance.DisplayText (PlayerManager.instance.myPlayer, "This item is no good.");
+
+						InventoryItem picture = new InventoryItem ("missing_picture", "Missing Picture");
+						GameManager.playerData.inventory.AddItem (picture);
 
 						break;
 
@@ -44,9 +48,32 @@ public class UseItemHelper {
 			break;
 
 
-				/* -------- NEXT ITEM -------- */
+
+				/* -------- MISSING PICTURE -------- */
 
 
+			case "missing_picture":
+				
+
+				switch (furniture.myName) 
+				{
+
+					case "door_abandoned_main_shadow":
+
+						Debug.Log ("used item picture");
+						InteractionManager.instance.DisplayText (PlayerManager.instance.myPlayer, "Picutre on door.");
+
+					
+						break;
+
+
+					default:
+
+						break;
+
+				}
+
+				break;
 
 
 		}

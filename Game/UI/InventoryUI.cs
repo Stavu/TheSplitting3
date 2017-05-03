@@ -83,7 +83,6 @@ public class InventoryUI : MonoBehaviour {
 		EventsHandler.cb_key_i_pressed += OnInventoryKeyPressed;
 		EventsHandler.cb_keyPressedDown += BrowseInventory;
 		EventsHandler.cb_inventoryChanged += UpdateInventory;
-		EventsHandler.cb_spacebarPressed += SelectItemToUse;
 
 	}
 
@@ -95,7 +94,6 @@ public class InventoryUI : MonoBehaviour {
 		EventsHandler.cb_key_i_pressed -= OnInventoryKeyPressed;
 		EventsHandler.cb_keyPressedDown -= BrowseInventory;
 		EventsHandler.cb_inventoryChanged -= UpdateInventory;
-		EventsHandler.cb_spacebarPressed -= SelectItemToUse;
 	}
 
 
@@ -210,7 +208,15 @@ public class InventoryUI : MonoBehaviour {
 	public void OnInventoryKeyPressed()
 	{
 
-		if (inventoryOpen == false) {
+		if (ActionBoxManager.instance.currentActionBox != null) 
+		{
+			return;
+		}
+
+
+
+		if (inventoryOpen == false)
+		{
 		
 			OpenInventory (InventoryState.Browse);
 		
@@ -218,6 +224,7 @@ public class InventoryUI : MonoBehaviour {
 
 
 			CloseInventory ();
+			GameManager.instance.inputState = InputState.Character;
 
 
 		}
@@ -288,6 +295,8 @@ public class InventoryUI : MonoBehaviour {
 
 	public void BrowseInventory(Direction direction)
 	{
+
+		Debug.Log ("browse inventory " + GameManager.instance.inputState);
 
 		if (GameManager.instance.inputState != InputState.Inventory) 
 		{
@@ -361,7 +370,8 @@ public class InventoryUI : MonoBehaviour {
 
 	public void UpdateZoomInWindow()
 	{
-		if (itemBigICon == null) { 
+		if (itemBigICon == null) 
+		{ 
 			//Debug.Log ("item big icon = null");
 		}
 
@@ -390,7 +400,7 @@ public class InventoryUI : MonoBehaviour {
 
 		inventoryOpen = false;
 
-		GameManager.instance.inputState = InputState.Character;
+
 
 	}
 
@@ -421,6 +431,8 @@ public class InventoryUI : MonoBehaviour {
 
 
 		UseItemHelper.UseItemOnFurniture (chosenItem, ActionBoxManager.instance.currentFurniture);
+
+		CloseInventory ();
 
 	
 	}

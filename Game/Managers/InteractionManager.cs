@@ -27,7 +27,7 @@ public class InteractionManager : MonoBehaviour {
 
 
 	public GameObject TextBoxPrefab;
-	GameObject currentTextBox;
+	public GameObject currentTextBox;
 
 
 
@@ -51,7 +51,10 @@ public class InteractionManager : MonoBehaviour {
 
 
 	// Update is called once per frame
-	void Update () {
+
+	void Update () 
+	{
+		
 		
 	}
 
@@ -63,6 +66,7 @@ public class InteractionManager : MonoBehaviour {
 
 		OpenTextBox (speaker);
 		InsertText (text);
+		GameManager.instance.inputState = InputState.Dialogue;
 
 	}
 
@@ -93,7 +97,6 @@ public class InteractionManager : MonoBehaviour {
 	Vector2 PositionTextBox(Player speaker)
 	{
 		
-		//Vector2 textBoxPos = Camera.main.WorldToViewportPoint (speaker.myPos);
 	
 		int offsetX = 0;
 		int offsetY = 1;
@@ -101,28 +104,6 @@ public class InteractionManager : MonoBehaviour {
 
 		Vector2 newPos = new Vector2 (speaker.myPos.x + offsetX, speaker.myPos.y + offsetY);
 
-
-		/*
-		//this is the ui element
-
-		//RectTransform UI_Element = currentTextBox.transform.FindChild ("Image");
-
-
-		//first you need the RectTransform component of your canvas
-
-		RectTransform CanvasRect = currentTextBox.GetComponent<RectTransform>();
-
-
-		//then you calculate the position of the UI element
-		//0,0 for the canvas is at the center of the screen, whereas WorldToViewPortPoint treats the lower left corner as 0,0. Because of this, you need to subtract the height / width of the canvas * 0.5 to get the correct position.
-
-		Vector2 ViewportPosition = Camera.main.WorldToViewportPoint(speaker.myPos);
-		Vector2 WorldObject_ScreenPosition = new Vector2
-			(
-			((ViewportPosition.x * CanvasRect.sizeDelta.x) - (CanvasRect.sizeDelta.x*0.5f)) + xOffset,
-			((ViewportPosition.y * CanvasRect.sizeDelta.y) - (CanvasRect.sizeDelta.y*0.5f)) + yOffset
-			);
-		*/
 
 		//now you can set the position of the ui element
 
@@ -141,6 +122,8 @@ public class InteractionManager : MonoBehaviour {
 
 			GameManager.textBoxActive = false;
 			currentTextBox = null;
+
+			GameManager.instance.inputState = InputState.Character;
 
 		}
 
@@ -186,7 +169,6 @@ public class InteractionManager : MonoBehaviour {
 
 	public void UseItem (Furniture furn)
 	{
-		//Debug.Log
 
 		InventoryUI.instance.OpenInventory (InventoryState.UseItem);
 

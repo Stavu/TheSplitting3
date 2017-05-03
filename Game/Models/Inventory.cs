@@ -37,21 +37,7 @@ public class Inventory {
 
 		items = new List<InventoryItem> ();
 
-		/*
-		Sprite[] spriteList = Resources.LoadAll<Sprite> ("Sprites/Inventory/Small_items");
-
-		foreach (Sprite spr in spriteList) 
-		{
-
-			InventoryItem item = new InventoryItem (spr.name,(spr.name + "title"));
-		
-			items.Add (item);
-			
-		}
-		*/
-
-		//FIXME
-
+	
 	}
 
 
@@ -62,17 +48,22 @@ public class Inventory {
 	public void AddItem(InventoryItem item)
 	{
 
-		if (items.Contains (item)) 
+		// if there's already an item with the same name, return
+
+		foreach (InventoryItem inventoryItem in items) 
 		{
-			Debug.LogError ("There's already an item with the same name");
-			return;
+			if (inventoryItem.fileName == item.fileName) 
+			{
+				Debug.LogError ("There's already an item with the same name");
+				return;
+			}
+			
 		}
 
+
 		items.Add (item);
-		//Debug.Log ("item name" + item.fileName);
 
 		EventsHandler.Invoke_cb_inventoryChanged (this);
-
 		GameManager.instance.SaveData ();
 	}
 

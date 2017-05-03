@@ -15,9 +15,8 @@ public class SubInteraction {
 	//public List<Condition> myConditionList;
 	public string rawText;
 	public Direction direction;
+
 	public string destinationRoomName;
-	//public string itemToRecieveFileName;
-	//public string itemToRecieveTitleName;
 	public string ItemToUseName;
 	public bool ItemToUseRemoveBool;
 	public List<InventoryItem> inventoryItems;
@@ -76,6 +75,8 @@ public class SubInteraction {
 
 				//Debug.Log ("subinteraction" + "pickUp Item");
 				InteractionManager.instance.PickUpItem (inventoryItem);
+				ActionBoxManager.instance.CloseFurnitureFrame ();			
+				GameManager.instance.inputState = InputState.Character;
 
 
 				break;
@@ -84,9 +85,9 @@ public class SubInteraction {
 
 			case "useItem":
 
+				Debug.Log ("subinteraction " + "use Item");
 			
 				InteractionManager.instance.UseItem (ActionBoxManager.instance.currentFurniture);
-
 
 				break;
 

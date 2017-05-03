@@ -61,24 +61,24 @@ public class ActionBoxManager : MonoBehaviour {
 
 
 
-
-
-
 	Dictionary<Interaction,GameObject> myInteractionObjectDictionary;
 
 
 
 	// Use this for initialization
 
-	public void Initialize () {
+	public void Initialize () 
+	{
 
 		EventsHandler.cb_playerHitFurniture += SetFurnitureFrame;
 		EventsHandler.cb_playerLeaveFurniture += CloseFurnitureFrame;
 
-		EventsHandler.cb_spacebarPressed += SetActionBox;
+		EventsHandler.cb_spacebarPressed += OnSpacebarPressed;
 
-		EventsHandler.cb_escapePressed += CloseActionBox;
+		EventsHandler.cb_escapePressed += OnEscapePressed;
 		EventsHandler.cb_keyPressedDown += BrowseInteractions;
+
+		currentFurniture = null;
 		
 	}
 
@@ -89,9 +89,9 @@ public class ActionBoxManager : MonoBehaviour {
 		EventsHandler.cb_playerHitFurniture -= SetFurnitureFrame;
 		EventsHandler.cb_playerLeaveFurniture -= CloseFurnitureFrame;
 
-		EventsHandler.cb_spacebarPressed -= SetActionBox;
+		EventsHandler.cb_spacebarPressed -= OnSpacebarPressed;
 
-		EventsHandler.cb_escapePressed -= CloseActionBox;
+		EventsHandler.cb_escapePressed -= OnEscapePressed;
 		EventsHandler.cb_keyPressedDown -= BrowseInteractions;
 			
 	}
@@ -104,33 +104,6 @@ public class ActionBoxManager : MonoBehaviour {
 	{
 		
 	}
-
-
-	/*
-	public void SetFurnitureFrame(Furniture myFurniture, Tile furnitureTile)
-	{
-		
-		if (currentFurnitureFrame != null) 		
-		{			
-			return;
-		}
-
-		currentFurniture = myFurniture;
-		currentTile = furnitureTile;
-
-		currentFurnitureFrame = Instantiate (FurnitureFramePrefab, new Vector3 (myFurniture.x, myFurniture.y, 0),Quaternion.identity);
-			
-		currentFurnitureFrame.transform.FindChild ("FramePiece_DL").transform.localPosition = new Vector2 (0, 0);
-		currentFurnitureFrame.transform.FindChild ("FramePiece_DR").transform.localPosition = new Vector2 (myFurniture.mySize.x, 0);
-		currentFurnitureFrame.transform.FindChild ("FramePiece_UL").transform.localPosition = new Vector2 (0, myFurniture.mySize.y);
-		currentFurnitureFrame.transform.FindChild ("FramePiece_UR").transform.localPosition = new Vector2 (myFurniture.mySize.x, myFurniture.mySize.y);
-
-		currentFurnitureFrame.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.ui_layer;
-
-
-	}
-	*/
-
 
 
 
@@ -168,7 +141,6 @@ public class ActionBoxManager : MonoBehaviour {
 		Vector3 frameBounds = myFurnitureObject.GetComponent<SpriteRenderer> ().bounds.extents;
 
 
-
 		currentFurnitureFrame.transform.FindChild ("FramePiece_DL").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (-frameBounds.x, -frameBounds.y);
 		currentFurnitureFrame.transform.FindChild ("FramePiece_DR").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (frameBounds.x, -frameBounds.y);
 		currentFurnitureFrame.transform.FindChild ("FramePiece_UL").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (-frameBounds.x, frameBounds.y);
@@ -180,7 +152,7 @@ public class ActionBoxManager : MonoBehaviour {
 
 
 
-	public void CloseFurnitureFrame (Furniture myFurniture)
+	public void CloseFurnitureFrame (Furniture myFurniture = null)
 	{
 		
 		if (currentFurnitureFrame != null) {
@@ -196,34 +168,68 @@ public class ActionBoxManager : MonoBehaviour {
 
 
 
-
-	public void SetActionBox ()
+	public void OnSpacebarPressed ()
 	{
-		/*
-		if (GameManager.instance.inputState != InputState.ActionBox) 
+
+		// If there's text, close it
+
+		if (InteractionManager.instance.currentTextBox != null) 
 		{
+			InteractionManager.instance.CloseTextBox ();
+			GameManager.instance.inputState = InputState.Character;
 			return;
 		}
-		*/	
+
 
 		// if there is no furniture selected, return
 
-		if (currentFurniture == null) 
-		{
+		if (currentFurniture == null) {
+			
 			return;
+
+		} else {
+
+			Debug.Log ("currentFurniture " + currentFurniture.myName);
+
 		}
 
 
 		// If there is already an actionbox, activate interaction
 
-		if (currentActionBox != null) 		
+		if ((currentActionBox != null) && (GameManager.instance.inputState == InputState.ActionBox))		
 		{			
 			ActivateInteraction ();
 			return;
 		}
 
 
+		if ((GameManager.instance.inputState == InputState.Inventory) && (GameManager.playerData.inventory.myState == InventoryState.UseItem))
+		{
+
+			InventoryUI.instance.SelectItemToUse ();
+			return;
+		}
+
+
 		// if there's no action box, create one
+
+		if (GameManager.instance.inputState == InputState.Character) 
+		{
+			OpenActionBox ();
+		}
+				
+
+
+
+	}
+
+
+
+
+	// Create actionbox
+
+	public void OpenActionBox()
+	{
 
 		currentActionBox = Instantiate (ActionBoxPrefab, PositionActionBox() ,Quaternion.identity);
 
@@ -232,8 +238,9 @@ public class ActionBoxManager : MonoBehaviour {
 		GameManager.actionBoxActive = true;
 		GameManager.instance.inputState = InputState.ActionBox;
 
-
 	}
+
+
 
 
 
@@ -324,14 +331,6 @@ public class ActionBoxManager : MonoBehaviour {
 			obj.transform.localPosition = new Vector3 (0, 1 - i, 0);
 			obj.GetComponent<Text> ().text = currentFurniture.myInteractionList[i].myVerb;
 
-
-
-			// setting layer
-
-			//obj.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.ui_layer;
-			//obj.GetComponent<SpriteRenderer> ().sortingOrder = 1;
-
-
 			myInteractionObjectDictionary.Add (currentFurniture.myInteractionList[i], obj);
 
 
@@ -342,11 +341,8 @@ public class ActionBoxManager : MonoBehaviour {
 
 		}
 
-
-		//Debug.Log ("action count" + myInteractionObjectDictionary.Count);
-			
-
 	}
+
 
 
 	public void BrowseInteractions(Direction myDirection)
@@ -404,22 +400,36 @@ public class ActionBoxManager : MonoBehaviour {
 
 			break;
 
-
-
 		}
-
 
 	}
 
 
-	public void CloseActionBox ()
+
+
+	public void OnEscapePressed()
 	{
 
-
-		if (GameManager.instance.inputState != InputState.ActionBox) 
+		if (GameManager.instance.inputState == InputState.Inventory) 
 		{
+			InventoryUI.instance.CloseInventory();
 			return;
 		}
+
+
+		CloseActionBox ();
+
+
+		// setting the input state back to character when closing the action box
+
+		GameManager.instance.inputState = InputState.Character;
+
+	}
+
+
+
+	public void CloseActionBox ()
+	{
 
 
 		if (currentActionBox != null) 
@@ -431,11 +441,6 @@ public class ActionBoxManager : MonoBehaviour {
 			currentInteraction = null;
 
 		}
-
-
-		// setting the input state back to character when closing the action box
-
-		GameManager.instance.inputState = InputState.Character;
 
 	}
 
@@ -453,6 +458,9 @@ public class ActionBoxManager : MonoBehaviour {
 		{
 			return;
 		}
+
+	
+
 
 		foreach (SubInteraction subInt in currentInteraction.subInteractionList) 
 		{
