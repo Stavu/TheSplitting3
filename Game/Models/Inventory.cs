@@ -62,6 +62,7 @@ public class Inventory {
 
 
 		items.Add (item);
+		item.Initialize ();
 
 		EventsHandler.Invoke_cb_inventoryChanged (this);
 		GameManager.instance.SaveData ();

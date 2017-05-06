@@ -63,6 +63,17 @@ public class SubInteraction {
 
 
 
+
+			case "showInventoryText":
+				
+
+				InteractionManager.instance.DisplayInventoryText (textList);
+
+				break;
+
+
+
+
 			case "moveToRoom":
 
 				InteractionManager.instance.MoveToRoom (destinationRoomName, direction);
@@ -88,6 +99,14 @@ public class SubInteraction {
 				Debug.Log ("subinteraction " + "use Item");
 			
 				InteractionManager.instance.UseItem (ActionBoxManager.instance.currentFurniture);
+
+				break;
+
+
+
+			case "combine":
+
+				Debug.Log ("combine item");
 
 				break;
 

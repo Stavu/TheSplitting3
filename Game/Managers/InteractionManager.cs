@@ -59,7 +59,7 @@ public class InteractionManager : MonoBehaviour {
 	}
 
 
-	// text
+	// ------  TEXT ------ //
 
 	public void DisplayText(Player speaker, string text)
 	{
@@ -70,6 +70,9 @@ public class InteractionManager : MonoBehaviour {
 
 	}
 
+
+
+	// Opening the text box
 
 	public void OpenTextBox(Player speaker)
 	{
@@ -130,6 +133,19 @@ public class InteractionManager : MonoBehaviour {
 	}
 
 
+
+	// inventory text
+
+
+	public void DisplayInventoryText(List<string> stringList)
+	{
+
+		// open inventory text box
+
+		GameObject obj = Instantiate (Resources.Load<GameObject>("Prefabs/InventoryTextBox"));
+		obj.GetComponent<InventoryTextObject> ().AddTextList (stringList);
+
+	}
 
 
 

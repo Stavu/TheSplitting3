@@ -52,6 +52,7 @@ public class GameManager : MonoBehaviour
 
 
 	public static PlayerData playerData;
+	public static InventoryItemData inventoryItemData;
 
 	public InputState inputState = InputState.Character;
 
@@ -66,7 +67,9 @@ public class GameManager : MonoBehaviour
 		//EventsHandler.cb_spacebarPressed += SetInputState;
 
 		CreateRooms ();
-		if (roomToLoad == null) {
+
+		if (roomToLoad == null) 
+		{
 			roomToLoad = stringRoomMap ["abandoned_wing_outside_shadow"];
 
 		}
@@ -111,34 +114,20 @@ public class GameManager : MonoBehaviour
 
 	}
 
-
-	/*
-
-	 ----- INPUT STATE -----
-
-	public void SetInputState()
+	public void CreateInventoryItemData()
 	{
 
-
-
-		if ((ActionBoxManager.instance.currentFurniture != null) && (ActionBoxManager.instance.currentActionBox == null)) 
+		if (inventoryItemData != null) 
 		{
-			GameManager.instance.inputState = InputState.ActionBox;
-			ActionBoxManager.instance.SetActionBox ();
 			return;
-
 		}
 
-
-		if(ActionBoxManager.instance.currentActionBox != null)
-		{
-
-		}
+		inventoryItemData = new InventoryItemData ();
 
 
 	}
 
-	*/
+
 
 
 
@@ -149,18 +138,25 @@ public class GameManager : MonoBehaviour
 	public void CreatePlayerData ()
 	{
 
-		if (playerData != null) {
+		if (playerData != null) 
+		{
 			//Debug.Log ("playerData is not null");
 			return;
 		}
 
 
-		if (PlayerPrefs.HasKey ("PlayerData")) {
+		if (PlayerPrefs.HasKey ("PlayerData")) 
+		{
 			
 			//Debug.Log ("Loading data from memory");
 			playerData = JsonUtility.FromJson<PlayerData> (PlayerPrefs.GetString ("PlayerData"));
 
 			//Debug.Log(PlayerPrefs.GetString ("PlayerData"));
+			foreach (InventoryItem item in playerData.inventory.items) 
+			{
+				item.Initialize ();
+			}
+
 
 		} else {
 			
@@ -189,12 +185,13 @@ public class GameManager : MonoBehaviour
 		
 		Debug.Log ("Saving data");
 
-		if (playerData != null) {
+		if (playerData != null) 
+		{
 
 			string data = JsonUtility.ToJson (playerData);
 			PlayerPrefs.SetString ("PlayerData", data);
 
-			//Debug.Log (data);
+			Debug.Log ("data " + data);
 
 		}
 

@@ -35,7 +35,6 @@ public class ActionBoxManager : MonoBehaviour {
 
 
 
-
 	Interaction _currentInteraction;
 
 	public Interaction currentInteraction

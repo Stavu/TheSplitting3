@@ -29,9 +29,10 @@ public class SceneLoader : MonoBehaviour {
 
 	void CreateManagers()
 	{
-
+		
 		Instantiate (managers);
-			
+
+		GameManager.instance.CreateInventoryItemData ();
 
 		GameManager.instance.Initialize ();
 		RoomManager.instance.Initialize ();
@@ -45,7 +46,6 @@ public class SceneLoader : MonoBehaviour {
 		GameManager.instance.CreatePlayerData ();
 
 		RoomManager.instance.BuildRoom ();
-
 
 		FindObjectOfType<DebugHelper> ().Initialize ();
 

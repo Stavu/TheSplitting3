@@ -38,9 +38,72 @@ public class InventoryUI : MonoBehaviour {
 
 	GameObject zoomInWindow;
 
+
 	GameObject itemBigICon;
 	GameObject itemTitle;
 	GameObject itemInteractionsContainer;
+
+
+	// When changing current interaction, we find the old interaction object in the dictionary, and deactivating the frame
+
+
+
+	Interaction _currentInteraction;
+
+	public Interaction currentInteraction
+	{
+
+		get {return _currentInteraction;} 
+		set {
+
+			if (_currentInteraction != null)
+			{
+				
+				if (myInteractionObjectMap.ContainsKey (_currentInteraction)) 
+				{
+
+					myInteractionObjectMap [_currentInteraction].transform.GetChild (0).gameObject.SetActive (false);
+				
+				} else {
+					
+					//Debug.LogError ("The old interaction doesn't appear in the map.");
+				}
+					
+			}
+
+
+			// set the new interaction 
+
+			_currentInteraction = value;
+
+			Debug.Log ("currentInteraction" + _currentInteraction.myVerb);
+
+
+			// activating the new frame, for the new interaction
+
+			if (_currentInteraction != null) 
+			{
+				if (myInteractionObjectMap == null) 
+				{
+					Debug.LogError ("The map is null");
+					return;
+				}
+
+				if (myInteractionObjectMap.ContainsKey (_currentInteraction)) 
+				{				
+					myInteractionObjectMap [_currentInteraction].transform.GetChild (0).gameObject.SetActive (true);
+			
+				} else {
+
+					Debug.LogError ("The new interaction doesn't appear in the map.");
+				}
+			}
+
+		} 
+	}
+
+
+	Dictionary<Interaction,GameObject> myInteractionObjectMap;
 
 
 	// Frames
@@ -65,7 +128,6 @@ public class InventoryUI : MonoBehaviour {
 			_chosenItem = value;
 			MoveGreenFrame ();
 
-
 		}
 
 	}
@@ -83,6 +145,8 @@ public class InventoryUI : MonoBehaviour {
 		EventsHandler.cb_key_i_pressed += OnInventoryKeyPressed;
 		EventsHandler.cb_keyPressedDown += BrowseInventory;
 		EventsHandler.cb_inventoryChanged += UpdateInventory;
+		EventsHandler.cb_keyPressedDown += BrowseInteractions;
+
 
 	}
 
@@ -94,6 +158,8 @@ public class InventoryUI : MonoBehaviour {
 		EventsHandler.cb_key_i_pressed -= OnInventoryKeyPressed;
 		EventsHandler.cb_keyPressedDown -= BrowseInventory;
 		EventsHandler.cb_inventoryChanged -= UpdateInventory;
+		EventsHandler.cb_keyPressedDown -= BrowseInteractions;
+
 	}
 
 
@@ -104,7 +170,16 @@ public class InventoryUI : MonoBehaviour {
 
 	void Update () 
 	{
-		
+		if(Input.GetKeyDown(KeyCode.A))
+		{
+
+			Debug.Log ("currentInteraction " + currentInteraction.myVerb);
+			Debug.Log ("chosenItem " + chosenItem.fileName);
+			Debug.Log ("interactionList" + chosenItem.inventoryItemInteractionList.Count);
+			Debug.Log ("interactionObjectMap " + myInteractionObjectMap.Count);
+
+
+		}
 	}
 
 
@@ -113,7 +188,8 @@ public class InventoryUI : MonoBehaviour {
 
 		// If there's already an inventory, display error
 
-		if (inventoryObject != null) {
+		if (inventoryObject != null) 
+		{
 		
 			Debug.LogError ("There's already an inventory object");
 
@@ -205,6 +281,9 @@ public class InventoryUI : MonoBehaviour {
 	}
 
 
+
+	// When pressing i
+
 	public void OnInventoryKeyPressed()
 	{
 
@@ -232,6 +311,10 @@ public class InventoryUI : MonoBehaviour {
 	}
 
 
+
+	// Opening the inventory
+
+
 	public void OpenInventory(InventoryState state)
 	{
 
@@ -249,8 +332,7 @@ public class InventoryUI : MonoBehaviour {
 
 		switch (state) 
 		{
-
-
+			
 			case InventoryState.Browse:
 
 				frameGreen.SetActive (true);
@@ -265,8 +347,6 @@ public class InventoryUI : MonoBehaviour {
 			
 				break;
 
-
-
 		}
 
 
@@ -274,6 +354,7 @@ public class InventoryUI : MonoBehaviour {
 
 
 	}
+
 
 
 	void MoveGreenFrame()
@@ -293,6 +374,9 @@ public class InventoryUI : MonoBehaviour {
 	}
 
 
+
+	// Browsing inventory
+
 	public void BrowseInventory(Direction direction)
 	{
 
@@ -304,19 +388,22 @@ public class InventoryUI : MonoBehaviour {
 		}
 
 
+		// Catch the index og the old chosen item, before changing it
+
 		int i = GameManager.playerData.inventory.items.IndexOf (chosenItem);
-	
+		int new_i = i;
+
 
 		switch (direction)
 		{
 
 			case Direction.right:
 
-				i++;
+				new_i++;
 
-				if (i >= GameManager.playerData.inventory.items.Count) 
+				if (new_i >= GameManager.playerData.inventory.items.Count) 
 				{
-					i = 0;			
+					new_i = 0;			
 				}
 							
 				break;
@@ -324,18 +411,25 @@ public class InventoryUI : MonoBehaviour {
 
 			case Direction.left:
 
-				i--;
+				new_i--;
 
-				if (i < 0) 
+				if (new_i < 0) 
 				{
-					i = GameManager.playerData.inventory.items.Count - 1;
+					new_i = GameManager.playerData.inventory.items.Count - 1;
 				}
 
 				break;
 		}
 
 
-		chosenItem = GameManager.playerData.inventory.items [i];
+		// Set new chosen item
+
+		if (new_i == i) 
+		{
+			return;
+		}
+
+		chosenItem = GameManager.playerData.inventory.items [new_i];
 
 
 		// if we're in browsing state, update the zoom in window
@@ -349,12 +443,15 @@ public class InventoryUI : MonoBehaviour {
 
 
 
+	// ------- ZOOM IN WiNDOW ------- //
+
+
 	public void ActivateZoomInWindow()
 	{
 		
 		if (zoomInWindow == null) {
 			
-			zoomInWindow = Instantiate (Resources.Load<GameObject> ("Prefabs/InventoryZoomInObject"));
+			zoomInWindow = Instantiate (Resources.Load<GameObject> ("Prefabs/InventoryZoomInObject"));		
 
 			itemBigICon = zoomInWindow.transform.FindChild ("Background").FindChild ("ItemBigIcon").gameObject;
 			itemTitle = zoomInWindow.transform.FindChild ("Background").FindChild ("TextCanvas").FindChild ("ItemTitle").gameObject;
@@ -368,8 +465,11 @@ public class InventoryUI : MonoBehaviour {
 	}
 
 
+	// When browsing the inventory, update zoom in window 
+
 	public void UpdateZoomInWindow()
 	{
+		
 		if (itemBigICon == null) 
 		{ 
 			//Debug.Log ("item big icon = null");
@@ -378,7 +478,171 @@ public class InventoryUI : MonoBehaviour {
 		itemBigICon.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite> ("Sprites/Inventory/Big_items/" + chosenItem.fileName + "_big");			
 		itemTitle.GetComponent<Text>().text = chosenItem.titleName;
 
+
+		Debug.Log ("count " + chosenItem.inventoryItemInteractionList.Count);
+		SetInteractions ();
+
 	}
+
+
+
+	// Set the interactions in the zoom in window, according to the item's interactions
+
+	public void SetInteractions()
+	{
+
+
+		// Destroying past objects
+
+		if (myInteractionObjectMap != null) 
+		{		
+			Debug.LogError ("destroy past objects");
+
+			foreach (GameObject obj in myInteractionObjectMap.Values) 
+			{
+				Destroy (obj);	
+			}	
+		}
+
+		
+		if (chosenItem.inventoryItemInteractionList.Count == 0) 
+		{
+			Debug.LogError ("SetInteractions: There are no interactions");
+			return;
+		}
+
+
+		if (chosenItem == null) 
+		{
+			Debug.LogError ("SetInteractions: Chosen item is null");
+			return;
+		}
+
+
+		myInteractionObjectMap = new Dictionary<Interaction, GameObject> ();
+
+		GameObject itemInteractionPrefab = (Resources.Load<GameObject>("Prefabs/ItemInteraction"));
+
+
+		// Create new interaction objects, and put them in the temp dictionary
+
+		for (int i = 0; i < chosenItem.inventoryItemInteractionList.Count; i++) 
+		{
+
+			GameObject obj = Instantiate(itemInteractionPrefab, itemInteractionsContainer.transform);
+
+			obj.transform.localPosition = new Vector3 (0, 1 - i, 0);
+			obj.GetComponent<Text> ().text = chosenItem.inventoryItemInteractionList[i].myVerb;
+
+			myInteractionObjectMap.Add (chosenItem.inventoryItemInteractionList[i], obj);
+
+		}
+	
+
+		// Set the first interaction as the current interaction
+
+		currentInteraction = chosenItem.inventoryItemInteractionList[0];
+
+	}
+
+
+
+	public void SetCurrentInteraction(Interaction interaction)
+	{
+		if (currentInteraction != null) {
+
+			if (myInteractionObjectMap == null) {
+				Debug.LogError ("SetCurrentInteraction: the map is null");
+		
+			} else {
+
+
+
+
+			}
+		}
+
+	}
+
+
+
+
+
+	public void BrowseInteractions(Direction myDirection)
+	{
+
+		if((myDirection == Direction.left) || (myDirection == Direction.right))
+		{
+			//Debug.LogError ("BrowseInteractions: the direction is left or right.");
+			return;
+		}
+
+		if (GameManager.instance.inputState != InputState.Inventory) 
+		{
+			Debug.LogError ("BrowseInteractions: input state is not inventory.");
+
+			return;
+		}
+
+		if (zoomInWindow == null) 		
+		{	
+			Debug.LogError ("BrowseInteractions: zoom in window is null.");
+
+			return;
+		}
+
+		if (currentInteraction == null) 
+		{
+			Debug.LogError ("BrowseInteractions: current interaction is null.");
+			return;
+		}
+
+
+		int i =	chosenItem.inventoryItemInteractionList.IndexOf (currentInteraction);
+
+
+		switch (myDirection) 
+		{
+
+			case Direction.down:
+
+				if (i < chosenItem.inventoryItemInteractionList.Count - 1) 
+				{
+					currentInteraction = chosenItem.inventoryItemInteractionList [i + 1];
+				
+				} else if (i == chosenItem.inventoryItemInteractionList.Count - 1) 
+				{
+					currentInteraction = chosenItem.inventoryItemInteractionList [0];
+				}
+
+
+				break;
+
+
+
+			case Direction.up:
+
+				if (i > 0) 
+				{
+					currentInteraction = chosenItem.inventoryItemInteractionList [i - 1];
+				
+				} else if (i == 0) 
+				{
+					currentInteraction = chosenItem.inventoryItemInteractionList [chosenItem.inventoryItemInteractionList.Count - 1];
+				}
+
+				break;
+
+		}
+
+	}
+
+
+
+
+
+
+	// ----- CLOSE INVENTORY ----- //
 
 
 	public void CloseInventory()
@@ -405,6 +669,8 @@ public class InventoryUI : MonoBehaviour {
 	}
 
 
+
+	// Select item to use - activates when pressing spacebar, and selects the item we are on 
 
 
 	public void SelectItemToUse()
