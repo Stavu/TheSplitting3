@@ -53,8 +53,7 @@ public class InteractionManager : MonoBehaviour {
 
 	void Update () 
 	{
-		
-		
+				
 	}
 
 

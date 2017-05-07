@@ -97,32 +97,28 @@ public class InputManager : MonoBehaviour {
 		}
 
 
+
+
 	}
 
 
 	void CheckKeysDown()
 	{
-
-
-
 		
 		if (Input.GetKeyDown (KeyCode.UpArrow)) 
 		{			
 			
 			EventsHandler.Invoke_cb_keyPressedDown (Direction.up);
-
 		} 
 
-		else if (Input.GetKeyDown (KeyCode.DownArrow)) 
-		
+		else if (Input.GetKeyDown (KeyCode.DownArrow)) 		
 		{
 			
 			EventsHandler.Invoke_cb_keyPressedDown (Direction.down);
 		
 		} 
 
-		else if (Input.GetKeyDown (KeyCode.LeftArrow)) 
-			
+		else if (Input.GetKeyDown (KeyCode.LeftArrow)) 			
 		{			
 
 			EventsHandler.Invoke_cb_keyPressedDown (Direction.left);
@@ -130,13 +126,11 @@ public class InputManager : MonoBehaviour {
 		} 
 
 		else if (Input.GetKeyDown (KeyCode.RightArrow)) 
-
 		{
 
 			EventsHandler.Invoke_cb_keyPressedDown (Direction.right);
 
-		} 
-		 
+		} 		 
 
 
 		if (Input.GetKeyDown (KeyCode.I)) 

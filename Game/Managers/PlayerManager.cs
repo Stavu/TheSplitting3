@@ -33,12 +33,13 @@ public class PlayerManager : MonoBehaviour {
 
 	// Use this for initialization
 
-	public void Initialize () {
+	public void Initialize () 
+	{
 
 		EventsHandler.cb_roomCreated += CreatePlayer;
 		EventsHandler.cb_playerCreated += CreatePlayerObject;
 		EventsHandler.cb_keyPressed += MoveCharacter;
-		EventsHandler.cb_characterMove += UpdatePlayerObjectPosition;
+		//EventsHandler.cb_characterMove += UpdatePlayerObjectPosition;
 		EventsHandler.cb_characterMove += FindPlayerTile;
 
 		playerGameObjectMap = new Dictionary<Player, GameObject> ();
@@ -51,7 +52,7 @@ public class PlayerManager : MonoBehaviour {
 		EventsHandler.cb_roomCreated -= CreatePlayer;
 		EventsHandler.cb_playerCreated -= CreatePlayerObject;
 		EventsHandler.cb_keyPressed -= MoveCharacter;
-		EventsHandler.cb_characterMove -= UpdatePlayerObjectPosition;
+		//EventsHandler.cb_characterMove -= UpdatePlayerObjectPosition;
 		EventsHandler.cb_characterMove -= FindPlayerTile;
 
 	}
@@ -88,12 +89,12 @@ public class PlayerManager : MonoBehaviour {
 
 		//Debug.Log ("created character object");	
 
-		GameObject obj = Instantiate (CharacterPrefab);
+		GameObject obj = Instantiate (Resources.Load<GameObject>("Prefabs/Characters/" + myPlayer.myName));
 
 		obj.name = myPlayer.myName;
 		obj.transform.position = myPlayer.myPos;
 
-		obj.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.furniture_character_layer;
+		//obj.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.furniture_character_layer;
 
 	
 		playerGameObjectMap.Add (myPlayer,obj);
@@ -202,7 +203,8 @@ public class PlayerManager : MonoBehaviour {
 
 
 			myPlayer.ChangePosition (newPos);
-			UpdatePlayerSortingLayer (myPlayer);
+			UpdatePlayerObjectPosition (myPlayer, myDirection);
+
 
 		}
 
@@ -213,12 +215,12 @@ public class PlayerManager : MonoBehaviour {
 	// Updating the character object position
 
 
-	public void UpdatePlayerObjectPosition(Player myPlayer)
+	public void UpdatePlayerObjectPosition(Player myPlayer, Direction myDirection)
 	{
 
 		GameObject obj = playerGameObjectMap [myPlayer];
 
-		obj.transform.position = myPlayer.myPos;
+		obj.GetComponent<CharacterObject> ().MoveCharacter (myPlayer, myDirection);
 
 	}
 
