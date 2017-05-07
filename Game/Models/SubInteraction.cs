@@ -38,9 +38,6 @@ public class SubInteraction {
 
 
 
-
-
-
 	public void SubInteract ()
 	{
 
@@ -51,27 +48,26 @@ public class SubInteraction {
 
 				if (GameManager.actionBoxActive) 
 				{
-
-				//	Debug.Log ("show dialogue");
-
+					
 					InteractionManager.instance.DisplayText (PlayerManager.instance.myPlayer, textList [0]);
 
 				}
 
-
 				break;
-
-
 
 
 			case "showInventoryText":
 				
-
 				InteractionManager.instance.DisplayInventoryText (textList);
 
 				break;
 
 
+			case "changeInventoryItemBigPicture":
+
+				//InteractionManager.instance.ChangeInventoryItemBigPicture (fileName);
+
+				break;
 
 
 			case "moveToRoom":
@@ -84,10 +80,13 @@ public class SubInteraction {
 
 			case "pickUpItem":
 
-				//Debug.Log ("subinteraction" + "pickUp Item");
 				InteractionManager.instance.PickUpItem (inventoryItem);
 				ActionBoxManager.instance.CloseFurnitureFrame ();			
-				GameManager.instance.inputState = InputState.Character;
+
+				if (GameManager.instance.inputState == InputState.ActionBox) 
+				{
+					GameManager.instance.inputState = InputState.Character;
+				}
 
 
 				break;
@@ -96,22 +95,18 @@ public class SubInteraction {
 
 			case "useItem":
 
-				Debug.Log ("subinteraction " + "use Item");
-			
-				InteractionManager.instance.UseItem (ActionBoxManager.instance.currentFurniture);
+
+				InteractionManager.instance.OpenInventory_UseItem (ActionBoxManager.instance.currentFurniture);
 
 				break;
 
 
 
 			case "combine":
-
-				Debug.Log ("combine item");
+				
+				InteractionManager.instance.OpenInventory_CombineItem ();
 
 				break;
-
-
-
 
 
 		}

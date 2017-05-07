@@ -26,60 +26,34 @@ public class InventoryItem
 		inventoryItemInteractionList = new List<Interaction>();
 
 
+		// Look at interaction
+
 		Interaction interactionLookAt = new Interaction ();
-
 		interactionLookAt.myVerb = "Look At";
-		SubInteraction subInt = new SubInteraction ("showDialogue");
-		subInt.textList = new List<string> ();
+		SubInteraction subInt_displayInventoryText = new SubInteraction ("showInventoryText");
+		subInt_displayInventoryText.textList = new List<string> ();
 
-		if (fileName == null) 
-		{
-		
-			Debug.Log ("fileName is null");
-
-		}
-
-
-		if (GameManager.inventoryItemData == null) 
-		{
-
-			Debug.Log ("inventoryItemData is null");
-
-		}
-
-
-		if (GameManager.inventoryItemData.itemLookAtMap == null) 
-		{
-
-			Debug.Log ("itemLookAtMap is null");
-
-		}
-
-
-		if (subInt.textList == null) 
-		{
-
-			Debug.Log ("subInt.textList is null");
-
-		}
+		// take the correct textList from the itemLookAtMap, and put it in the textList of the subinteraction 
 
 		if (GameManager.inventoryItemData.itemLookAtMap.ContainsKey (fileName))
 		{
-			subInt.textList.Add (GameManager.inventoryItemData.itemLookAtMap [fileName]);
+			subInt_displayInventoryText.textList = GameManager.inventoryItemData.itemLookAtMap [fileName];
 		}
 
-		interactionLookAt.subInteractionList.Add (subInt);
+		interactionLookAt.subInteractionList.Add (subInt_displayInventoryText);
 
+
+		// Combine interaction
 	
 		Interaction interactionCombine = new Interaction ();
 		interactionCombine.myVerb = "Combine";
+		SubInteraction subInt_combine = new SubInteraction ("combine");
+		interactionCombine.subInteractionList.Add (subInt_combine);
+
+
 
 		Interaction interactionOpen = new Interaction ();
 		interactionOpen.myVerb = "Open";
-
-
-
-
 
 		inventoryItemInteractionList.Add (interactionLookAt);
 		inventoryItemInteractionList.Add (interactionCombine);

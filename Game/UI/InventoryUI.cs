@@ -64,10 +64,7 @@ public class InventoryUI : MonoBehaviour {
 
 					myInteractionObjectMap [_currentInteraction].transform.GetChild (0).gameObject.SetActive (false);
 				
-				} else {
-					
-					//Debug.LogError ("The old interaction doesn't appear in the map.");
-				}
+				} 
 					
 			}
 
@@ -75,8 +72,6 @@ public class InventoryUI : MonoBehaviour {
 			// set the new interaction 
 
 			_currentInteraction = value;
-
-			Debug.Log ("currentInteraction" + _currentInteraction.myVerb);
 
 
 			// activating the new frame, for the new interaction
@@ -133,6 +128,27 @@ public class InventoryUI : MonoBehaviour {
 	}
 
 
+	// Chosen CombineItem
+
+	InventoryItem _chosenCombineItem;
+
+	public InventoryItem chosenCombineItem 
+	{ 
+		get
+		{
+			return _chosenCombineItem;
+		}
+
+		set 
+		{
+			_chosenCombineItem = value;
+			MoveOrangeFrame ();
+
+		}
+
+	}
+
+
 
 	// Use this for initialization
 
@@ -146,7 +162,6 @@ public class InventoryUI : MonoBehaviour {
 		EventsHandler.cb_keyPressedDown += BrowseInventory;
 		EventsHandler.cb_inventoryChanged += UpdateInventory;
 		EventsHandler.cb_keyPressedDown += BrowseInteractions;
-
 
 	}
 
@@ -233,10 +248,7 @@ public class InventoryUI : MonoBehaviour {
 
 	public void UpdateInventory(Inventory inventory)
 	{
-
-		//Debug.Log ("update inventory");
-
-
+		
 		// First, destroy all items
 
 		foreach (GameObject obj in itemGameObjectMap.Values) 
@@ -257,10 +269,8 @@ public class InventoryUI : MonoBehaviour {
 			GameObject itemObject = new GameObject(item.titleName);
 			SpriteRenderer sr = itemObject.AddComponent<SpriteRenderer> ();
 
-
 			itemObject.transform.SetParent (itemsContainer.transform);
 			itemObject.transform.localPosition = new Vector3 (i * spacing,0,0);
-
 
 			Sprite sprite = Resources.Load<Sprite> ("Sprites/Inventory/Small_items/" + item.fileName);
 
@@ -270,7 +280,6 @@ public class InventoryUI : MonoBehaviour {
 				Debug.LogError ("Can't find sprite in resources");
 
 			}
-
 
 			sr.sprite = sprite;
 			itemGameObjectMap.Add (item, itemObject);
@@ -291,7 +300,6 @@ public class InventoryUI : MonoBehaviour {
 		{
 			return;
 		}
-
 
 
 		if (inventoryOpen == false)
@@ -327,8 +335,17 @@ public class InventoryUI : MonoBehaviour {
 			obj.GetComponent<SpriteRenderer> ().color = Color.white;
 		}
 
-		chosenItem = GameManager.playerData.inventory.items [0];
-		
+
+		if (state != InventoryState.Combine) 
+		{
+			chosenItem = GameManager.playerData.inventory.items [0];
+
+		} else {
+
+			chosenCombineItem = GameManager.playerData.inventory.items [GameManager.playerData.inventory.items.IndexOf (chosenItem)];
+		}
+
+
 
 		switch (state) 
 		{
@@ -336,6 +353,7 @@ public class InventoryUI : MonoBehaviour {
 			case InventoryState.Browse:
 
 				frameGreen.SetActive (true);
+				frameOrange.SetActive (false);
 				ActivateZoomInWindow ();
 
 				break;
@@ -344,7 +362,16 @@ public class InventoryUI : MonoBehaviour {
 			case InventoryState.UseItem:
 
 				frameGreen.SetActive (true);
-			
+				frameOrange.SetActive (false);
+
+				break;
+
+
+			case InventoryState.Combine:
+
+				frameGreen.SetActive (false);
+				frameOrange.SetActive (true);
+
 				break;
 
 		}
@@ -357,30 +384,11 @@ public class InventoryUI : MonoBehaviour {
 
 
 
-	void MoveGreenFrame()
-	{
-		
-		if (chosenItem == null) 
-		{
-			frameGreen.SetActive (false);
-			return;
-		
-		} else {
-			
-			frameGreen.SetActive (true);
-			frameGreen.transform.position = itemGameObjectMap [chosenItem].transform.position;
-		}
-			
-	}
-
-
 
 	// Browsing inventory
 
 	public void BrowseInventory(Direction direction)
 	{
-
-		Debug.Log ("browse inventory " + GameManager.instance.inputState);
 
 		if (GameManager.instance.inputState != InputState.Inventory) 
 		{
@@ -388,10 +396,21 @@ public class InventoryUI : MonoBehaviour {
 		}
 
 
-		// Catch the index og the old chosen item, before changing it
+		// Catch the index of the old chosen item, before changing it
 
-		int i = GameManager.playerData.inventory.items.IndexOf (chosenItem);
+		int i;
+
+		if (GameManager.playerData.inventory.myState == InventoryState.Combine) 
+		{			
+			i = GameManager.playerData.inventory.items.IndexOf (chosenCombineItem);
+
+		} else { 
+			
+			i = GameManager.playerData.inventory.items.IndexOf (chosenItem);
+		}
+
 		int new_i = i;
+
 
 
 		switch (direction)
@@ -429,19 +448,74 @@ public class InventoryUI : MonoBehaviour {
 			return;
 		}
 
-		chosenItem = GameManager.playerData.inventory.items [new_i];
+
+		switch (GameManager.playerData.inventory.myState) 
+		{
+
+			case InventoryState.Combine:
+
+				chosenCombineItem = GameManager.playerData.inventory.items [new_i];
+				break;
 
 
-		// if we're in browsing state, update the zoom in window
+			case InventoryState.Browse:
+				
+				chosenItem = GameManager.playerData.inventory.items [new_i];
 
-		if (GameManager.playerData.inventory.myState == InventoryState.Browse) 
-		{			
-			UpdateZoomInWindow ();
+				// if we're in browsing state, update the zoom in window
+
+				UpdateZoomInWindow ();
+				break;
+
+			
+			case InventoryState.UseItem:
+
+				chosenItem = GameManager.playerData.inventory.items [new_i];
+				break;
 		}
 
 	}
 
 
+
+	// FRAMES //
+
+
+	void MoveGreenFrame()
+	{
+
+		if (chosenItem == null) 
+		{
+			frameGreen.SetActive (false);
+			return;
+
+		} else {
+
+			frameGreen.SetActive (true);
+			frameGreen.transform.position = itemGameObjectMap [chosenItem].transform.position;
+		}
+
+	}
+
+
+	void MoveOrangeFrame()
+	{
+
+		Debug.Log("MoveOrangeFrame");
+
+
+		if (chosenCombineItem == null) 
+		{
+			frameOrange.SetActive (false);
+			return;
+
+		} else {
+
+			frameOrange.SetActive (true);
+			frameOrange.transform.position = itemGameObjectMap [chosenCombineItem].transform.position;
+		}
+
+	}
 
 	// ------- ZOOM IN WiNDOW ------- //
 
@@ -479,7 +553,7 @@ public class InventoryUI : MonoBehaviour {
 		itemTitle.GetComponent<Text>().text = chosenItem.titleName;
 
 
-		Debug.Log ("count " + chosenItem.inventoryItemInteractionList.Count);
+		//Debug.Log ("count " + chosenItem.inventoryItemInteractionList.Count);
 		SetInteractions ();
 
 	}
@@ -496,7 +570,7 @@ public class InventoryUI : MonoBehaviour {
 
 		if (myInteractionObjectMap != null) 
 		{		
-			Debug.LogError ("destroy past objects");
+			//Debug.LogError ("destroy past objects");
 
 			foreach (GameObject obj in myInteractionObjectMap.Values) 
 			{
@@ -551,7 +625,8 @@ public class InventoryUI : MonoBehaviour {
 	{
 		if (currentInteraction != null) {
 
-			if (myInteractionObjectMap == null) {
+			if (myInteractionObjectMap == null) 
+			{
 				Debug.LogError ("SetCurrentInteraction: the map is null");
 		
 			} else {
@@ -579,21 +654,19 @@ public class InventoryUI : MonoBehaviour {
 
 		if (GameManager.instance.inputState != InputState.Inventory) 
 		{
-			Debug.LogError ("BrowseInteractions: input state is not inventory.");
-
+			//Debug.LogError ("BrowseInteractions: input state is not inventory.");
 			return;
 		}
 
 		if (zoomInWindow == null) 		
 		{	
-			Debug.LogError ("BrowseInteractions: zoom in window is null.");
-
+			//Debug.LogError ("BrowseInteractions: zoom in window is null.");
 			return;
 		}
 
 		if (currentInteraction == null) 
 		{
-			Debug.LogError ("BrowseInteractions: current interaction is null.");
+			//Debug.LogError ("BrowseInteractions: current interaction is null.");
 			return;
 		}
 
@@ -614,7 +687,6 @@ public class InventoryUI : MonoBehaviour {
 				{
 					currentInteraction = chosenItem.inventoryItemInteractionList [0];
 				}
-
 
 				break;
 
@@ -639,6 +711,116 @@ public class InventoryUI : MonoBehaviour {
 
 
 
+	// Activate Interaction
+
+
+	public void ActivateInteraction()
+	{
+
+		if (currentInteraction == null) 
+		{
+			return;
+		}
+			
+		foreach (SubInteraction subInt in currentInteraction.subInteractionList) 
+		{
+			subInt.SubInteract ();
+		}
+
+	}
+
+
+
+	// ----- COMBINING ITEM ----- //
+
+
+	public void CombineItems()
+	{
+		
+
+		// If there's no chosen item or chosen combine item, we're in big trouble
+
+		if ((chosenItem == null) || (chosenCombineItem == null))
+		{
+			Debug.LogError ("Someting has gone horribly wrong!");
+			return;		
+		}
+
+
+		// Declerations
+
+		string itemName = chosenItem.fileName;
+		string targetName = chosenCombineItem.fileName;
+
+		List<ItemData_CombineInteractions> itemsToCombineList;
+		List<SubInteraction> subInteractionList = null;
+
+
+		// Check the first item for combining information
+
+		if(GameManager.inventoryItemData.itemCombineMap.ContainsKey(itemName))
+		{
+			itemsToCombineList = GameManager.inventoryItemData.itemCombineMap [itemName];
+
+			for (int i = 0; i < itemsToCombineList.Count; i++) 
+			{
+				if (targetName == itemsToCombineList [i].targetName) 
+				{
+					subInteractionList = itemsToCombineList [i].subInteractionList;
+					break;
+				}			
+
+			}
+		}
+
+
+		// Check the second item for combining information
+
+		if ((subInteractionList == null) && (GameManager.inventoryItemData.itemCombineMap.ContainsKey(targetName)))	
+		{			
+			itemsToCombineList = GameManager.inventoryItemData.itemCombineMap [targetName];
+
+			for (int i = 0; i < itemsToCombineList.Count; i++) 
+			{
+				if (itemName == itemsToCombineList [i].targetName) 
+				{
+					subInteractionList = itemsToCombineList [i].subInteractionList;
+					break;
+				}			
+
+			}	
+		}
+
+
+		// Activating the subinteractions
+
+		if (subInteractionList != null) 
+		{
+			foreach (SubInteraction subInt in subInteractionList) 
+			{
+				subInt.SubInteract ();
+			}
+
+		} else {
+
+			List<string> defaultCombineTextList = new List<string> ();
+			defaultCombineTextList.Add ("It won't work.");		
+				
+			InteractionManager.instance.DisplayInventoryText (defaultCombineTextList);
+
+		}
+
+
+		// Setting the state back to browse
+
+
+		GameManager.playerData.inventory.myState = InventoryState.Browse;
+		frameGreen.SetActive (true);
+		frameOrange.SetActive (false);
+
+	}
+
+
 
 
 
@@ -649,7 +831,7 @@ public class InventoryUI : MonoBehaviour {
 	{
 
 		chosenItem = null;
-
+		chosenCombineItem = null;
 
 		foreach (GameObject obj in itemGameObjectMap.Values) 
 		{
@@ -684,11 +866,8 @@ public class InventoryUI : MonoBehaviour {
 
 		if (GameManager.playerData.inventory.myState != InventoryState.UseItem) 
 		{	
-			Debug.Log ("state is not use item");
 			return;
 		}
-
-		Debug.Log ("Select Item To Use");
 
 		if (ActionBoxManager.instance.currentFurniture == null) 
 		{

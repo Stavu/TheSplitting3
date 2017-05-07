@@ -33,7 +33,6 @@ public class InteractionManager : MonoBehaviour {
 
 
 
-
 	// Use this for initialization
 
 	public void Initialize () {
@@ -60,6 +59,7 @@ public class InteractionManager : MonoBehaviour {
 
 
 	// ------  TEXT ------ //
+
 
 	public void DisplayText(Player speaker, string text)
 	{
@@ -104,7 +104,6 @@ public class InteractionManager : MonoBehaviour {
 		int offsetX = 0;
 		int offsetY = 1;
 
-
 		Vector2 newPos = new Vector2 (speaker.myPos.x + offsetX, speaker.myPos.y + offsetY);
 
 
@@ -139,10 +138,21 @@ public class InteractionManager : MonoBehaviour {
 
 	public void DisplayInventoryText(List<string> stringList)
 	{
+		
+		// checking if one already exists
+
+		InventoryTextObject tempObj = GameObject.FindObjectOfType<InventoryTextObject> ();
+	
+		if (tempObj != null) 
+		{
+			return;
+		}
+
 
 		// open inventory text box
 
 		GameObject obj = Instantiate (Resources.Load<GameObject>("Prefabs/InventoryTextBox"));
+
 		obj.GetComponent<InventoryTextObject> ().AddTextList (stringList);
 
 	}
@@ -183,7 +193,7 @@ public class InteractionManager : MonoBehaviour {
 	// Use item (we still don't know what item it is)
 
 
-	public void UseItem (Furniture furn)
+	public void OpenInventory_UseItem (Furniture furn)
 	{
 
 		InventoryUI.instance.OpenInventory (InventoryState.UseItem);
@@ -191,7 +201,15 @@ public class InteractionManager : MonoBehaviour {
 	}
 
 
+	// Combine item (we have a current item, but need to chose an item to combine it with
 
+
+	public void OpenInventory_CombineItem ()
+	{
+
+		InventoryUI.instance.OpenInventory (InventoryState.Combine);
+
+	}
 
 
 }

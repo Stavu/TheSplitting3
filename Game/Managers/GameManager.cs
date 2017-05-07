@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
 
 
 	public static PlayerData playerData;
-	public static InventoryItemData inventoryItemData;
+	public static GameData inventoryItemData;
 
 	public InputState inputState = InputState.Character;
 
@@ -122,7 +122,7 @@ public class GameManager : MonoBehaviour
 			return;
 		}
 
-		inventoryItemData = new InventoryItemData ();
+		inventoryItemData = new GameData ();
 
 
 	}

@@ -22,7 +22,6 @@ public class ActionBoxManager : MonoBehaviour {
 	// Singleton //
 
 
-
 	public GameObject FurnitureFramePrefab;
 	public GameObject ActionBoxPrefab;
 	public GameObject ActionPrefab;
@@ -182,13 +181,14 @@ public class ActionBoxManager : MonoBehaviour {
 
 		// if there is no furniture selected, return
 
-		if (currentFurniture == null) {
+		if ((currentFurniture == null) && (GameManager.instance.inputState != InputState.Inventory))
+		{
 			
 			return;
 
 		} else {
 
-			Debug.Log ("currentFurniture " + currentFurniture.myName);
+			//Debug.Log ("currentFurniture " + currentFurniture.myName);
 
 		}
 
@@ -202,11 +202,37 @@ public class ActionBoxManager : MonoBehaviour {
 		}
 
 
-		if ((GameManager.instance.inputState == InputState.Inventory) && (GameManager.playerData.inventory.myState == InventoryState.UseItem))
+		if (GameManager.instance.inputState == InputState.Inventory)
 		{
+			
+			switch (GameManager.playerData.inventory.myState) 
+			{
+				
+				case InventoryState.UseItem:
 
-			InventoryUI.instance.SelectItemToUse ();
-			return;
+					InventoryUI.instance.SelectItemToUse ();
+				
+					break;				
+
+
+				case InventoryState.Browse:
+					
+					InventoryUI.instance.ActivateInteraction ();
+
+					break;	
+
+
+				case InventoryState.Combine:
+
+					InventoryUI.instance.CombineItems ();
+
+					break;
+
+
+			}	
+
+
+			return;		
 		}
 
 
@@ -457,8 +483,7 @@ public class ActionBoxManager : MonoBehaviour {
 		{
 			return;
 		}
-
-	
+			
 
 
 		foreach (SubInteraction subInt in currentInteraction.subInteractionList) 

@@ -9,7 +9,7 @@ public class UseItemHelper {
 	public static void UseItemOnFurniture (InventoryItem item, Furniture furniture)
 	{
 
-		Debug.Log ("Use item Helper " + item.fileName + " " + furniture.myName);
+		//Debug.Log ("Use item Helper " + item.fileName + " " + furniture.myName);
 
 
 		switch (item.fileName) 
@@ -29,7 +29,7 @@ public class UseItemHelper {
 					case "door_abandoned_main_shadow":
 						
 
-						Debug.Log ("used item");
+						//Debug.Log ("used item");
 						InteractionManager.instance.DisplayText (PlayerManager.instance.myPlayer, "This item is no good.");
 
 						InventoryItem picture = new InventoryItem ("missing_picture", "Missing Picture");
@@ -60,7 +60,7 @@ public class UseItemHelper {
 
 					case "door_abandoned_main_shadow":
 
-						Debug.Log ("used item picture");
+						//Debug.Log ("used item picture");
 						InteractionManager.instance.DisplayText (PlayerManager.instance.myPlayer, "Picutre on door.");
 
 					
