@@ -50,8 +50,11 @@ public class ActionBoxManager : MonoBehaviour {
 				_currentInteraction = value;
 
 				if (_currentInteraction != null) 
-				{					
+				{		
+					// Interaction frame
 					myInteractionObjectDictionary [_currentInteraction].transform.GetChild (0).gameObject.SetActive (true);
+					myInteractionObjectDictionary [_currentInteraction].transform.GetChild (0).GetComponent<Image> ().color = myInteractionObjectDictionary [_currentInteraction].GetComponent<Text> ().color;
+
 				}
 
 			} 
@@ -258,7 +261,7 @@ public class ActionBoxManager : MonoBehaviour {
 
 		currentActionBox = Instantiate (ActionBoxPrefab, PositionActionBox() ,Quaternion.identity);
 
-		setActionButtons ();
+		setInteractionButtons ();
 
 		GameManager.actionBoxActive = true;
 		GameManager.instance.inputState = InputState.ActionBox;
@@ -271,9 +274,7 @@ public class ActionBoxManager : MonoBehaviour {
 
 	Vector3 PositionActionBox()
 	{
-
-
-		
+				
 		Player activeCharacter = PlayerManager.instance.myPlayer;
 
 		Tile characterTile = RoomManager.instance.myRoom.myGrid.GetTileAt (activeCharacter.myPos);
@@ -336,7 +337,7 @@ public class ActionBoxManager : MonoBehaviour {
 
 
 
-	public void setActionButtons()
+	public void setInteractionButtons()
 	{
 
 
@@ -357,6 +358,14 @@ public class ActionBoxManager : MonoBehaviour {
 			obj.GetComponent<Text> ().text = currentFurniture.myInteractionList[i].myVerb;
 
 			myInteractionObjectDictionary.Add (currentFurniture.myInteractionList[i], obj);
+
+
+			// if the interaction is use item, and there are no items in the inventory, it will be in 0.5 alpha
+
+			if ((currentFurniture.myInteractionList[i].myVerb == "Use Item") && (GameManager.playerData.inventory.items.Count == 0)) 
+			{
+				obj.GetComponent<Text> ().color = new Color (1f, 1f, 1f, 0.5f); 
+			}
 
 
 			if (currentInteraction == null) 

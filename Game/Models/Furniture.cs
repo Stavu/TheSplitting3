@@ -63,28 +63,3 @@ public class Furniture {
 
 
 
-
-/*
-
-
-// NEW CLASS FURNITURE DATA //
-
-public class FurnitureData 
-{
-
-
-	public List<String> look_at;
-
-
-	public FurnitureData(List<String> look_at)
-	{
-
-		this.look_at = look_at;
-
-	}
-
-}
-
-
-*/
-

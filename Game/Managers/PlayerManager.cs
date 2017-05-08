@@ -41,6 +41,7 @@ public class PlayerManager : MonoBehaviour {
 		EventsHandler.cb_keyPressed += MoveCharacter;
 		//EventsHandler.cb_characterMove += UpdatePlayerObjectPosition;
 		EventsHandler.cb_characterMove += FindPlayerTile;
+		EventsHandler.cb_noKeyPressed += StopPlayer;
 
 		playerGameObjectMap = new Dictionary<Player, GameObject> ();
 
@@ -54,7 +55,7 @@ public class PlayerManager : MonoBehaviour {
 		EventsHandler.cb_keyPressed -= MoveCharacter;
 		//EventsHandler.cb_characterMove -= UpdatePlayerObjectPosition;
 		EventsHandler.cb_characterMove -= FindPlayerTile;
-
+		EventsHandler.cb_noKeyPressed -= StopPlayer;
 	}
 
 	
@@ -164,16 +165,12 @@ public class PlayerManager : MonoBehaviour {
 		}
 
 
-
-
 		Tile tile = RoomManager.instance.myRoom.myGrid.GetTileAt(new Vector3 (newPos.x + offsetX, newPos.y + + offsetY, newPos.z));
 
-
 		if (tile == null) 
-		{
-
+		{			
+			StopPlayer (InputManager.instance.lastDirection);
 			return;
-
 		}
 
 
@@ -188,11 +185,28 @@ public class PlayerManager : MonoBehaviour {
 				{		
 
 					EventsHandler.Invoke_cb_playerHitFurniture (tile.myFurniture, tile);
+					StopPlayer (InputManager.instance.lastDirection);
 
+					return;
+				}
+			}
+
+
+			// If the next tile is interactable
+
+			if (tile.myTileInteraction != null) 
+			{
+
+				EventsHandler.Invoke_cb_playerHitTileInteraction (tile);
+
+				if (tile.myTileInteraction.walkable == false) 
+				{					
+					StopPlayer (InputManager.instance.lastDirection);
 					return;
 				}
 
 			}
+
 
 			// if there's no furinture at this tile
 
@@ -200,7 +214,6 @@ public class PlayerManager : MonoBehaviour {
 							
 
 			// Walk to new pos
-
 
 			myPlayer.ChangePosition (newPos);
 			UpdatePlayerObjectPosition (myPlayer, myDirection);
@@ -210,6 +223,17 @@ public class PlayerManager : MonoBehaviour {
 
 	}
 
+
+	// When character has stopped 
+
+	public void StopPlayer(Direction lastDirection)
+	{
+		
+		GameObject obj = playerGameObjectMap [myPlayer];
+
+		obj.GetComponent<CharacterObject> ().StopCharacter (lastDirection);
+
+	}
 
 
 	// Updating the character object position

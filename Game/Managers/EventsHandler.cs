@@ -36,6 +36,18 @@ public static class EventsHandler
 	}
 
 
+	public static Action<Direction> cb_noKeyPressed;
+
+	public static void Invoke_cb_noKeyPressed(Direction direction)
+	{
+		if(cb_noKeyPressed != null)
+		{
+			cb_noKeyPressed (direction);
+		}
+
+	}
+
+
 	public static Action cb_spacebarPressed;
 
 	public static void Invoke_cb_spacebarPressed()
@@ -145,6 +157,23 @@ public static class EventsHandler
 
 
 
+	// Tile
+
+
+	public static Action<Tile> cb_playerHitTileInteraction;
+
+	public static void Invoke_cb_playerHitTileInteraction(Tile tile)
+	{
+		if(cb_playerHitTileInteraction != null)
+		{
+			cb_playerHitTileInteraction (tile);
+		}
+
+	}
+
+
+
+
 	// Player 
 
 
@@ -175,7 +204,16 @@ public static class EventsHandler
 
 	}
 
+	public static Action<InventoryItem> cb_itemAddedToInventory;
 
+	public static void Invoke_cb_itemAddedToInventory(InventoryItem inventoryItem)
+	{
+		if(cb_itemAddedToInventory != null)
+		{
+			cb_itemAddedToInventory (inventoryItem);
+		}
+
+	}
 
 
 
@@ -212,6 +250,12 @@ public static class EventsHandler
 	*/
 
 
+
+	// Action for tile manager - coloring tiles
+
+	public static Action cb_tileLayoutChanged;
+
+
 	public static Action<Furniture> cb_editorFurnitureModelChanged;
 
 	public static void Invoke_cb_editorFurnitureModelChanged(Furniture furniture)
@@ -219,6 +263,24 @@ public static class EventsHandler
 		if(cb_editorFurnitureModelChanged != null)
 		{
 			cb_editorFurnitureModelChanged (furniture);
+
+		}
+
+	}
+
+
+	public static Action<TileInteraction> cb_editorTileInteractioneModelChanged;
+
+	public static void Invoke_cb_editorTileInteractioneModelChanged(TileInteraction tileInteraction)
+	{
+		if(cb_editorTileInteractioneModelChanged != null)
+		{
+			cb_editorTileInteractioneModelChanged (tileInteraction);
+		}
+
+		if (cb_tileLayoutChanged != null) 
+		{
+			cb_tileLayoutChanged ();
 		}
 
 	}
@@ -233,6 +295,11 @@ public static class EventsHandler
 			cb_editorFurniturePlaced (furniture);
 		}
 
+		if (cb_tileLayoutChanged != null) 
+		{
+			cb_tileLayoutChanged ();
+		}
+
 	}
 
 
@@ -243,6 +310,11 @@ public static class EventsHandler
 		if(cb_editorFurnitureChanged != null)
 		{
 			cb_editorFurnitureChanged (furniture);
+		}
+
+		if (cb_tileLayoutChanged != null) 
+		{
+			cb_tileLayoutChanged ();
 		}
 
 	}

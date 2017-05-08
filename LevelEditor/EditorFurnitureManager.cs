@@ -24,7 +24,6 @@ public class EditorFurnitureManager : MonoBehaviour
 
 
 
-
 	// Use this for initialization
 
 	public void Initialize () 
@@ -62,7 +61,6 @@ public class EditorFurnitureManager : MonoBehaviour
 
 		}
 
-
 	}
 
 
@@ -87,12 +85,8 @@ public class EditorFurnitureManager : MonoBehaviour
 
 
 		EditorRoomManager.instance.furnitureGameObjectMap.Add (furn, obj);
-
 		EventsHandler.Invoke_cb_editorFurniturePlaced (furn);
 
-
 	}
-
-
 
 }

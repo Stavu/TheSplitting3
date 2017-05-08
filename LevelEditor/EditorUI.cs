@@ -34,6 +34,7 @@ public class EditorUI : MonoBehaviour {
 	Dropdown dropDownMenu;
 	public GameObject furnitureSelectPrefab;
 	public GameObject furnitureButtonPrefab;
+
 	GameObject furnitureSelect;
 
 
@@ -82,13 +83,18 @@ public class EditorUI : MonoBehaviour {
 
 		// new furniture button
 
-		Button furnButton = bgSelectPrefab.transform.FindChild ("NewFurnitureButton").GetComponent<Button>();
-
+		Button furnButton = bgSelectPrefab.transform.FindChild ("FurnitureButton").GetComponent<Button>();
 		furnButton.onClick.AddListener (CreateFurnitureSelect);
 
 
-		// room name button
+		// tile interaction button
 
+		Button tileIntButton = bgSelectPrefab.transform.FindChild ("TileInteractionButton").GetComponent<Button>();
+		tileIntButton.onClick.AddListener (SetTileInteractionMode);
+
+
+
+		// room name button
 
 		InputField roomNameInput = bgSelectPrefab.transform.FindChild ("RoomNameInput").GetComponent<InputField> ();
 
@@ -158,9 +164,21 @@ public class EditorUI : MonoBehaviour {
 		Destroy (furnitureSelect);
 
 
-		// return to building mode
+		// set to build Furniture mode
 
 		BuildController.instance.mode = BuildController.Mode.buildFurniture;
+
+
+	}
+
+
+
+	public void SetTileInteractionMode()
+	{
+
+		// set to build tileInteraction mode
+
+		BuildController.instance.mode = BuildController.Mode.buildTileInteraction;
 
 
 	}

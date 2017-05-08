@@ -162,6 +162,7 @@ public class InventoryUI : MonoBehaviour {
 		EventsHandler.cb_keyPressedDown += BrowseInventory;
 		EventsHandler.cb_inventoryChanged += UpdateInventory;
 		EventsHandler.cb_keyPressedDown += BrowseInteractions;
+		EventsHandler.cb_itemAddedToInventory += ItemBlink;
 
 	}
 
@@ -174,7 +175,7 @@ public class InventoryUI : MonoBehaviour {
 		EventsHandler.cb_keyPressedDown -= BrowseInventory;
 		EventsHandler.cb_inventoryChanged -= UpdateInventory;
 		EventsHandler.cb_keyPressedDown -= BrowseInteractions;
-
+		EventsHandler.cb_itemAddedToInventory -= ItemBlink;
 	}
 
 
@@ -276,9 +277,7 @@ public class InventoryUI : MonoBehaviour {
 
 			if (sprite == null) 
 			{
-
 				Debug.LogError ("Can't find sprite in resources");
-
 			}
 
 			sr.sprite = sprite;
@@ -286,7 +285,14 @@ public class InventoryUI : MonoBehaviour {
 
 		}
 
+	}
 
+
+	// When adding item, make a small animation - item bilnking
+
+	public void ItemBlink(InventoryItem item)
+	{
+		itemGameObjectMap [item].AddComponent<Blink> ();
 	}
 
 
@@ -325,6 +331,38 @@ public class InventoryUI : MonoBehaviour {
 
 	public void OpenInventory(InventoryState state)
 	{
+		Debug.Log ("OpenInventory");
+
+		// If there are no items in the inventory, display text message, then return
+
+		if(GameManager.playerData.inventory.items.Count == 0)
+		{
+			Debug.Log ("count 0");
+
+			switch (state) 
+			{
+				
+				case InventoryState.Browse:
+
+					InteractionManager.instance.DisplayText (PlayerManager.instance.myPlayer, "I have no items right now.");
+
+					break;
+
+
+				case InventoryState.UseItem:
+
+					Debug.Log ("Use item no items text");
+
+					InteractionManager.instance.DisplayText (PlayerManager.instance.myPlayer, "I have no items right now.");
+
+					break;
+
+			}
+
+			return;
+		}
+
+
 
 		GameManager.instance.inputState = InputState.Inventory;
 		GameManager.playerData.inventory.myState = state;
@@ -501,9 +539,6 @@ public class InventoryUI : MonoBehaviour {
 	void MoveOrangeFrame()
 	{
 
-		Debug.Log("MoveOrangeFrame");
-
-
 		if (chosenCombineItem == null) 
 		{
 			frameOrange.SetActive (false);
@@ -621,26 +656,8 @@ public class InventoryUI : MonoBehaviour {
 
 
 
-	public void SetCurrentInteraction(Interaction interaction)
-	{
-		if (currentInteraction != null) {
 
-			if (myInteractionObjectMap == null) 
-			{
-				Debug.LogError ("SetCurrentInteraction: the map is null");
-		
-			} else {
-
-
-
-
-			}
-		}
-
-	}
-
-
-
+	// Browse interactions
 
 
 	public void BrowseInteractions(Direction myDirection)

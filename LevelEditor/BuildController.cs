@@ -47,6 +47,7 @@ public class BuildController : MonoBehaviour {
 
 		buildFurniture,
 		buildCharacter,
+		buildTileInteraction,
 		inspect
 
 	}
@@ -60,36 +61,34 @@ public class BuildController : MonoBehaviour {
 	// Use this for initialization
 	public void Initialize () 
 	{
-		EventsHandler.cb_editorTilesSelected += BuildFurniture;
+		EventsHandler.cb_editorTilesSelected += OnTilesSelected;
 
 	}
 
 
 	public void OnDestroy()
 	{
-		EventsHandler.cb_editorTilesSelected -= BuildFurniture;
+		EventsHandler.cb_editorTilesSelected -= OnTilesSelected;
 
 	}
 
 
 	
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+	{
 		
 	}
 
 
-	public void BuildFurniture(List<Tile> tileList)
+
+	// ---- TILES SELECTED ---- //
+
+
+
+
+	public void OnTilesSelected(List<Tile> tileList)
 	{
-
-		//Debug.Log ("BuildFurniture");
-
-
-		if (mode == Mode.inspect) 
-		{
-			InspectFurniture (tileList);
-			return;
-		}
 
 		if (tileList.Count == 0) {
 			return;
@@ -100,8 +99,29 @@ public class BuildController : MonoBehaviour {
 		}
 
 
-		EditorRoomManager.instance.PlaceFurniture (tileList [0], furnitureName);
+		switch (mode) 
+		{
+		
+			case Mode.inspect:
 
+				InspectTiles (tileList);
+				return;
+
+			
+			case Mode.buildFurniture:
+
+				EditorRoomManager.instance.PlaceFurniture (tileList [0], furnitureName);
+
+				break;
+
+
+			case Mode.buildTileInteraction:
+
+				EditorRoomManager.instance.PlaceTileInteraction (tileList [0]);
+
+				break;
+		
+		}
 
 
 		// return to inspect mode
@@ -112,29 +132,23 @@ public class BuildController : MonoBehaviour {
 
 
 
-	public void InspectFurniture(List<Tile> tileList)
+
+
+	public void InspectTiles(List<Tile> tileList)
 	{
 		
-		if (mode != Mode.inspect) 
-		{
-			return;
-		}
-
-
 		Furniture currentFurniture = null;
+		TileInteraction currentTileInteraction = null;
 
-		if (tileList.Count > 0) 
-		{
-
-			currentFurniture = tileList [0].myFurniture;
-			
-		} 
-
+		currentFurniture = tileList [0].myFurniture;
+		currentTileInteraction = tileList [0].myTileInteraction;
 
 		InspectorManager.instance.chosenFurniture = currentFurniture;
-
+		InspectorManager.instance.chosenTileInteraction = currentTileInteraction;
 
 	}
+
+
 
 
 }

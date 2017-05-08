@@ -13,6 +13,7 @@ public class Tile {
 	public int y {get; protected set;}
 
 	public Furniture myFurniture; 
+	public TileInteraction myTileInteraction;
 
 	public bool walkable;
 
@@ -30,10 +31,10 @@ public class Tile {
 	}
 
 
-	public void PlaceFurniture(Furniture myObject)
+	public void PlaceFurniture(Furniture furniture)
 	{
 		
-		if (myObject == null) 
+		if (furniture == null) 
 		{
 			Debug.LogError("Tile: PlaceRoomObject myObject is null");
 		
@@ -43,7 +44,7 @@ public class Tile {
 
 		if(myFurniture != null)
 		{
-			if (myFurniture != myObject) 
+			if (myFurniture != furniture) 
 			{
 				Debug.LogError("Tile: PlaceRoomObject myRoomObject exists");
 
@@ -55,11 +56,44 @@ public class Tile {
 
 		// if everything's okay, set myFurniture
 
-		myFurniture = myObject;
+		myFurniture = furniture;
 
+	}
+
+
+
+	public void PlaceTileInteraction(TileInteraction tileInteraction)
+	{
+
+
+		if (tileInteraction == null) 
+		{
+			Debug.LogError("Tile: PlaceRoomObject tileInteraction is null");
+
+			return;
+		}
+
+
+		if(myTileInteraction != null)
+		{
+			if (myTileInteraction != tileInteraction) 
+			{
+				Debug.LogError("Tile: PlaceRoomObject tileInteraction exists");
+
+				return;
+			}
+
+		}
+
+
+		// if everything's okay, set myFurniture
+
+		myTileInteraction = tileInteraction;
 
 
 	}
+
+
 
 
 }

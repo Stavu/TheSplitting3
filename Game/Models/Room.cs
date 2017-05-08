@@ -18,6 +18,8 @@ public class Room {
 	public string bgName;
 
 	public List <Furniture> myFurnitureList;
+	public List<TileInteraction> myTileInteractionList;
+
 	public Dictionary<Furniture,Vector2> furniturePositionMap;
 
 
@@ -72,32 +74,49 @@ public class Room {
 		this.bgName = clone.bgName;
 
 		this.myFurnitureList = clone.myFurnitureList;
+		this.myTileInteractionList = clone.myTileInteractionList;
 
 		myGrid = new Grid (myWidth,myHeight);
 
 	
-		CreateFurniture ();
+		CreateRoomInteractables ();
 
 	}
 
 
-	public void CreateFurniture()
+	public void CreateRoomInteractables()
 	{
 
 		//Debug.Log ("Room CreateFurniture");
 
 
+		// Furniture
 
 		foreach (Furniture furn in myFurnitureList) 
 		{
 
+			List<Tile> FurnitureTiles = GetMyTiles(furn.mySize, furn.x, furn.y);
 
-			List<Tile> FurnitureTiles = GetFurnitureTiles(furn);
-
-			foreach (Tile tile in FurnitureTiles) {
-
+			foreach (Tile tile in FurnitureTiles) 
+			{
 				tile.PlaceFurniture(furn);
 
+			}		
+
+		}
+
+
+
+		// Tile interactions
+
+		foreach (TileInteraction tileInteraction in myTileInteractionList) 
+		{
+
+			List<Tile> tileInteractionTiles = GetMyTiles(tileInteraction.mySize, tileInteraction.x, tileInteraction.y);
+
+			foreach (Tile tile in tileInteractionTiles) 
+			{
+				tile.PlaceTileInteraction(tileInteraction);
 
 			}		
 
@@ -107,20 +126,20 @@ public class Room {
 
 
 
+	// Get all the tiles associated with this interactable object
 
-	public List<Tile> GetFurnitureTiles (Furniture furn)
+	public List<Tile> GetMyTiles (Vector2 mySize, int x ,int y)
 	{
 
-		List<Tile> myFurnitureTilesList = new List<Tile>();
+		List<Tile> myTilesList = new List<Tile>();
 
 
-		for (int i = 0; i < furn.mySize.x; i++) {
+		for (int i = 0; i < mySize.x; i++) {
 
-			for (int j = 0; j < furn.mySize.y; j++) {
+			for (int j = 0; j < mySize.y; j++) {
 
 
-				Tile tempTile = myGrid.GetTileAt (furn.x + i, furn.y + j);
-
+				Tile tempTile = myGrid.GetTileAt (x + i, y + j);
 
 				if (tempTile == null) 
 				{
@@ -128,16 +147,12 @@ public class Room {
 					continue;
 				}
 
-
-
-				myFurnitureTilesList.Add (tempTile);
-
+				myTilesList.Add (tempTile);
 
 			}
 		}
 
-
-		return myFurnitureTilesList;
+		return myTilesList;
 
 	}
 

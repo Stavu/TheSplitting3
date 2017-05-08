@@ -38,6 +38,7 @@ public class EditorRoomManager : MonoBehaviour {
 
 		Room tempRoom = new Room (myWidth,myHeight);
 		tempRoom.myFurnitureList = new List<Furniture> ();
+		tempRoom.myTileInteractionList = new List<TileInteraction> ();
 
 		furnitureGameObjectMap = new Dictionary<Furniture, GameObject> ();
 
@@ -106,7 +107,7 @@ public class EditorRoomManager : MonoBehaviour {
 	}
 
 
-	// Placing Furniture
+	// Placing Furniture in the editor 
 
 	public void PlaceFurniture(Tile tile, string furnitureName)
 	{
@@ -131,10 +132,10 @@ public class EditorRoomManager : MonoBehaviour {
 
 
 
-		// create frutniture
-
-
+		// create furniture
+	
 		Furniture furn = new Furniture (furnitureName, tile.x, tile.y);
+
 
 		// set default size
 
@@ -149,7 +150,6 @@ public class EditorRoomManager : MonoBehaviour {
 
 
 		EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn);
-
 
 
 
@@ -317,6 +317,88 @@ public class EditorRoomManager : MonoBehaviour {
 
 	}
 
+
+
+
+	// Tile Interaciton //
+
+
+
+	public void PlaceTileInteraction(Tile tile)
+	{
+
+
+
+		// If there's already a tileInteraction on this tile, destroy it before creating a new tileInteraction
+
+
+		if (tile.myTileInteraction != null)
+		{
+			room.myTileInteractionList.Remove (tile.myTileInteraction);
+					
+		}
+
+
+
+		// create tileInteraction
+
+		TileInteraction tileInteraction = new TileInteraction (tile.x, tile.y);
+
+
+		// set default size
+
+		tileInteraction.mySize = Vector2.one;
+
+
+
+		// Adding to room tileInteraction List
+
+		room.myTileInteractionList.Add (tileInteraction);
+
+		tile.myTileInteraction = tileInteraction;
+
+
+		EventsHandler.Invoke_cb_editorTileInteractioneModelChanged (tileInteraction);
+
+
+
+
+		/*
+	
+		// create furniture object 
+
+		GameObject obj = new GameObject (furnitureName);
+
+		obj.AddComponent<SpriteRenderer> ().sprite = furnitureSprite;
+
+
+		// set object position 
+
+		obj.transform.position = new Vector3 (furn.x + furn.mySize.x/2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
+
+
+
+		// set object layer
+
+		obj.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.furniture_character_layer;
+		obj.transform.SetParent (this.transform);
+
+		furnitureGameObjectMap.Add (furn, obj);
+
+		tile.myFurniture = furn;
+
+		EventsHandler.Invoke_cb_editorFurniturePlaced (furn);
+		*/
+
+	}
+
+
+
+
+
+
+
+	// ---- LOAD ROOM ---- //
 
 	public Room LoadRoom(string roomString)
 	{

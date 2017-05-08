@@ -96,14 +96,13 @@ public class InteractionManager : MonoBehaviour {
 
 
 
-	Vector2 PositionTextBox(Player speaker)
-	{
-		
+	Vector3 PositionTextBox(Player speaker)
+	{		
 	
 		int offsetX = 0;
-		int offsetY = 1;
+		int offsetY = 5;
 
-		Vector2 newPos = new Vector2 (speaker.myPos.x + offsetX, speaker.myPos.y + offsetY);
+		Vector3 newPos = new Vector3 (speaker.myPos.x + offsetX, speaker.myPos.y + offsetY,0);
 
 
 		//now you can set the position of the ui element

@@ -57,10 +57,14 @@ public class FurnitureManager : MonoBehaviour {
 
 	// Update is called once per frame
 
-	void Update () {
+	void Update () 
+	{
 		
 	}
 
+
+
+	// Color furniture tiles inside game
 
 	public void ColorTiles(Furniture myFurniture)
 	{
@@ -68,7 +72,7 @@ public class FurnitureManager : MonoBehaviour {
 		//Debug.Log ("ColorTiles");
 
 
-		List<Tile> FurnitureTiles = RoomManager.instance.myRoom.GetFurnitureTiles(myFurniture);
+		List<Tile> FurnitureTiles = RoomManager.instance.myRoom.GetMyTiles(myFurniture.mySize, myFurniture.x, myFurniture.y);
 
 
 		// light the tiles

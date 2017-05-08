@@ -6,12 +6,16 @@ public class CharacterObject : MonoBehaviour {
 
 
 	SpriteRenderer mySpriteRenderer;
+	Animator myAnimator;
 
+	AnimatorStateInfo ASI;
 
 	// Use this for initialization
 	void Start () 
 	{
 		mySpriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer> ();
+		myAnimator = gameObject.GetComponent<Animator> ();
+
 	}
 
 	
@@ -39,19 +43,13 @@ public class CharacterObject : MonoBehaviour {
 
 
 
-		// Animations
-
-		Animator myAnimator = gameObject.GetComponent<Animator> ();
-
 
 		switch (myDirection) 
 		{
 		
 			case Direction.left:
 
-				Debug.Log ("animation left");
-
-				myAnimator.PlayInFixedTime ("Walk_left");
+				PlayAnimation ("Walk_left");
 
 				break;
 
@@ -59,17 +57,23 @@ public class CharacterObject : MonoBehaviour {
 
 			case Direction.right:
 
+				PlayAnimation ("Walk_right");
+
 				break;
 
 
 
 			case Direction.down:
 
+				PlayAnimation ("Walk_front");	
+
 				break;
 
 
 
 			case Direction.up:
+			
+				PlayAnimation ("Walk_back");	
 
 				break;
 						
@@ -79,6 +83,73 @@ public class CharacterObject : MonoBehaviour {
 
 	}
 
+
+
+
+	public void StopCharacter(Direction lastDirection)
+	{
+
+		//Debug.Log ("StopCharacter");
+
+		if (GameManager.instance.inputState != InputState.Character) 
+		{
+			return;
+		}
+
+		switch (lastDirection) 
+		{
+
+			case Direction.left:			
+
+				PlayAnimation ("Idle_left");			
+
+				break;
+
+
+			case Direction.right:
+				
+				PlayAnimation ("Idle_right");			
+
+				break;
+
+
+			case Direction.down:
+
+				PlayAnimation ("Idle_front");			
+
+				break;
+
+
+			case Direction.up:
+
+				PlayAnimation ("Idle_back");
+
+				break;
+
+
+		}
+
+	}
+
+
+
+
+	void PlayAnimation(string animationName)
+	{
+
+		ASI = myAnimator.GetCurrentAnimatorStateInfo (0);
+
+		if (ASI.IsName (animationName) == false) 
+		{
+
+			myAnimator.PlayInFixedTime (animationName);
+		}
+
+
+
+
+
+	}
 
 
 }

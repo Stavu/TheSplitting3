@@ -35,8 +35,7 @@ public class EditorTileManager : MonoBehaviour {
 
 
 		EventsHandler.cb_editorNewRoomCreated += CreateTileObject;
-		EventsHandler.cb_editorFurniturePlaced += ColorTiles;
-		EventsHandler.cb_editorFurnitureChanged += ColorTiles;
+		EventsHandler.cb_tileLayoutChanged += ColorTiles;
 
 		tileGameObjectMap = new Dictionary<Tile, GameObject>();
 
@@ -47,9 +46,7 @@ public class EditorTileManager : MonoBehaviour {
 	{
 
 		EventsHandler.cb_editorNewRoomCreated -= CreateTileObject;
-		EventsHandler.cb_editorFurniturePlaced -= ColorTiles;
-		EventsHandler.cb_editorFurnitureChanged -= ColorTiles;
-
+		EventsHandler.cb_tileLayoutChanged -= ColorTiles;
 	}
 
 
@@ -112,11 +109,15 @@ public class EditorTileManager : MonoBehaviour {
 
 
 
-	public void ColorTiles(Furniture tempFurn)
+
+
+	public void ColorTiles()
 	{
 
 		//Debug.Log ("ColorTiles");
 
+
+		// First - Clean tile layout
 
 		foreach (GameObject obj in tileGameObjectMap.Values) 
 		{
@@ -124,6 +125,9 @@ public class EditorTileManager : MonoBehaviour {
 			obj.GetComponent<SpriteRenderer> ().color = new Color (1f, 1f, 1f, 0.1f);
 			
 		}
+
+
+		// Color furniture tiles
 
 		foreach (Furniture furn in EditorRoomManager.instance.room.myFurnitureList) 
 		{
@@ -138,5 +142,31 @@ public class EditorTileManager : MonoBehaviour {
 				}
 			}
 		}
+
+
+		// Color interaction tiles 
+
+		foreach (TileInteraction tileInt in EditorRoomManager.instance.room.myTileInteractionList) 
+		{
+
+			for (int x = 0; x < tileInt.mySize.x; x++) 
+			{
+				for (int y = 0; y < tileInt.mySize.y; y++) 
+				{
+					Tile tile = EditorRoomManager.instance.room.myGrid.GetTileAt (tileInt.x + x, tileInt.y + y);
+					tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = new Color (0.6f, 0.9f, 0.1f, 0.4f);
+
+				}
+			}
+		}
+
+
 	}
+
+
+
+
+
+
+
 }
