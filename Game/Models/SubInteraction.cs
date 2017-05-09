@@ -46,12 +46,15 @@ public class SubInteraction {
 
 			case "showDialogue":
 
-				if (GameManager.actionBoxActive) 
-				{
+
+				Debug.Log ("SubInteract: Show dialogue");
+
+				//if (GameManager.actionBoxActive) 
+				//{
 					
 					InteractionManager.instance.DisplayText (PlayerManager.instance.myPlayer, textList [0]);
 
-				}
+				//}
 
 				break;
 

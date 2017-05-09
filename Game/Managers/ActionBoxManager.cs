@@ -30,7 +30,6 @@ public class ActionBoxManager : MonoBehaviour {
 	public GameObject currentActionBox;
 
 	public Furniture currentFurniture;
-	Tile currentTile;
 
 
 
@@ -72,11 +71,8 @@ public class ActionBoxManager : MonoBehaviour {
 	{
 
 		EventsHandler.cb_playerHitFurniture += SetFurnitureFrame;
-		EventsHandler.cb_playerLeaveFurniture += CloseFurnitureFrame;
+		EventsHandler.cb_playerLeaveFurniture += CloseFurnitureFrame;	
 
-		EventsHandler.cb_spacebarPressed += OnSpacebarPressed;
-
-		EventsHandler.cb_escapePressed += OnEscapePressed;
 		EventsHandler.cb_keyPressedDown += BrowseInteractions;
 
 		currentFurniture = null;
@@ -90,9 +86,6 @@ public class ActionBoxManager : MonoBehaviour {
 		EventsHandler.cb_playerHitFurniture -= SetFurnitureFrame;
 		EventsHandler.cb_playerLeaveFurniture -= CloseFurnitureFrame;
 
-		EventsHandler.cb_spacebarPressed -= OnSpacebarPressed;
-
-		EventsHandler.cb_escapePressed -= OnEscapePressed;
 		EventsHandler.cb_keyPressedDown -= BrowseInteractions;
 			
 	}
@@ -153,104 +146,17 @@ public class ActionBoxManager : MonoBehaviour {
 
 
 
-	public void CloseFurnitureFrame (Furniture myFurniture = null)
+	public void CloseFurnitureFrame ()
 	{
 		
 		if (currentFurnitureFrame != null) {
 			
 			Destroy (currentFurnitureFrame.gameObject);
 			currentFurniture = null;
-			currentTile = null;
 
 		}
 
 	}
-
-
-
-
-	public void OnSpacebarPressed ()
-	{
-
-		// If there's text, close it
-
-		if (InteractionManager.instance.currentTextBox != null) 
-		{
-			InteractionManager.instance.CloseTextBox ();
-			GameManager.instance.inputState = InputState.Character;
-			return;
-		}
-
-
-		// if there is no furniture selected, return
-
-		if ((currentFurniture == null) && (GameManager.instance.inputState != InputState.Inventory))
-		{
-			
-			return;
-
-		} else {
-
-			//Debug.Log ("currentFurniture " + currentFurniture.myName);
-
-		}
-
-
-		// If there is already an actionbox, activate interaction
-
-		if ((currentActionBox != null) && (GameManager.instance.inputState == InputState.ActionBox))		
-		{			
-			ActivateInteraction ();
-			return;
-		}
-
-
-		if (GameManager.instance.inputState == InputState.Inventory)
-		{
-			
-			switch (GameManager.playerData.inventory.myState) 
-			{
-				
-				case InventoryState.UseItem:
-
-					InventoryUI.instance.SelectItemToUse ();
-				
-					break;				
-
-
-				case InventoryState.Browse:
-					
-					InventoryUI.instance.ActivateInteraction ();
-
-					break;	
-
-
-				case InventoryState.Combine:
-
-					InventoryUI.instance.CombineItems ();
-
-					break;
-
-
-			}	
-
-
-			return;		
-		}
-
-
-		// if there's no action box, create one
-
-		if (GameManager.instance.inputState == InputState.Character) 
-		{
-			OpenActionBox ();
-		}
-				
-
-
-
-	}
-
 
 
 
@@ -267,9 +173,6 @@ public class ActionBoxManager : MonoBehaviour {
 		GameManager.instance.inputState = InputState.ActionBox;
 
 	}
-
-
-
 
 
 	Vector3 PositionActionBox()
@@ -438,27 +341,6 @@ public class ActionBoxManager : MonoBehaviour {
 
 	}
 
-
-
-
-	public void OnEscapePressed()
-	{
-
-		if (GameManager.instance.inputState == InputState.Inventory) 
-		{
-			InventoryUI.instance.CloseInventory();
-			return;
-		}
-
-
-		CloseActionBox ();
-
-
-		// setting the input state back to character when closing the action box
-
-		GameManager.instance.inputState = InputState.Character;
-
-	}
 
 
 

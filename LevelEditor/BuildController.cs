@@ -87,14 +87,15 @@ public class BuildController : MonoBehaviour {
 
 
 
-	public void OnTilesSelected(List<Tile> tileList)
+	public void OnTilesSelected(Tile tile)
 	{
-
+		/*
 		if (tileList.Count == 0) {
 			return;
 		}
+		*/
 
-		if (tileList [0] == null) {
+		if (tile == null) {
 			return;
 		}
 
@@ -104,20 +105,20 @@ public class BuildController : MonoBehaviour {
 		
 			case Mode.inspect:
 
-				InspectTiles (tileList);
+				InspectTiles (tile);
 				return;
 
 			
 			case Mode.buildFurniture:
 
-				EditorRoomManager.instance.PlaceFurniture (tileList [0], furnitureName);
+				EditorRoomManager.editorFurnitureHandler.PlaceFurniture (tile, furnitureName);
 
 				break;
 
 
 			case Mode.buildTileInteraction:
 
-				EditorRoomManager.instance.PlaceTileInteraction (tileList [0]);
+				EditorRoomManager.editorTileInteractionHandler.PlaceTileInteraction (tile);
 
 				break;
 		
@@ -134,17 +135,36 @@ public class BuildController : MonoBehaviour {
 
 
 
-	public void InspectTiles(List<Tile> tileList)
+	public void InspectTiles(Tile tile)
 	{
-		
+
+		Debug.Log ("Inspect tiles");
+
+
 		Furniture currentFurniture = null;
 		TileInteraction currentTileInteraction = null;
 
-		currentFurniture = tileList [0].myFurniture;
-		currentTileInteraction = tileList [0].myTileInteraction;
 
-		InspectorManager.instance.chosenFurniture = currentFurniture;
+		currentFurniture = tile.myFurniture;
+		currentTileInteraction = tile.myTileInteraction;
+
+
 		InspectorManager.instance.chosenTileInteraction = currentTileInteraction;
+		InspectorManager.instance.chosenFurniture = currentFurniture;
+
+
+
+		if (currentFurniture == null) 
+		{
+			Debug.Log ("furniture = null");
+
+		}
+
+		if (currentTileInteraction == null) 
+		{
+
+			Debug.Log ("tileInteraction = null");
+		}
 
 	}
 

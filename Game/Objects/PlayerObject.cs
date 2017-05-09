@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterObject : MonoBehaviour {
+public class PlayerObject : MonoBehaviour {
 
 
 	SpriteRenderer mySpriteRenderer;
@@ -91,10 +91,14 @@ public class CharacterObject : MonoBehaviour {
 
 		//Debug.Log ("StopCharacter");
 
-		if (GameManager.instance.inputState != InputState.Character) 
+
+		if (GameManager.instance.inputState != InputState.Character)
 		{
 			return;
 		}
+
+			
+
 
 		switch (lastDirection) 
 		{
@@ -144,10 +148,7 @@ public class CharacterObject : MonoBehaviour {
 
 			myAnimator.PlayInFixedTime (animationName);
 		}
-
-
-
-
+			
 
 	}
 

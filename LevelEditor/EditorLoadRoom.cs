@@ -35,12 +35,18 @@ public class EditorLoadRoom : MonoBehaviour {
 		
 	}
 
+
+	// Create buttone
+
 	public void CreateButtons()
 	{
+		
 
 		for (int i = 0; i < contentObject.transform.childCount; i++) 
 		{
-			Destroy (contentObject.transform.GetChild(i));
+			//Debug.Log ("CreateButtons: Destory old buttons.");
+
+			Destroy (contentObject.transform.GetChild(i).gameObject);
 		}
 
 
@@ -60,6 +66,8 @@ public class EditorLoadRoom : MonoBehaviour {
 		}
 	}
 
+
+	// Load room
 
 	public void LoadRoom(string roomString)
 	{

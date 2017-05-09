@@ -31,6 +31,7 @@ public class MouseController : MonoBehaviour {
 	Vector3 currentFramePosition;
 	Vector3 dragStartPosition;
 
+
 	bool isDragging = false;
 
 	Plane plane = new Plane(new Vector3(0,1,0), new Vector3(1,0,0), new Vector3(-1,0,0));
@@ -54,7 +55,8 @@ public class MouseController : MonoBehaviour {
 	{
 
 		currentFramePosition = GetCurrentMousePosition();
-		UpdateDragging ();
+		CheckClickOnTile ();
+		//UpdateDragging ();
 		
 	}
 
@@ -96,6 +98,53 @@ public class MouseController : MonoBehaviour {
 		}
 
 	}
+
+
+
+	// CLICK ON TILE //
+
+	void CheckClickOnTile()
+	{
+
+		if ((EventSystem.current.IsPointerOverGameObject()) && (isDragging == false))
+		{
+			return;
+		}
+
+
+		if (Input.GetMouseButtonDown (0)) 
+		{			
+
+			int posX = Mathf.FloorToInt (currentFramePosition.x);
+			int posY = Mathf.FloorToInt (currentFramePosition.y);
+
+
+			// Destroying old markers
+
+			DestroyMarkers ();
+
+
+			// Creation of the marker
+
+			Tile tile = EditorRoomManager.instance.room.myGrid.GetTileAt (posX, posY);
+
+			if (tile != null) 
+			{
+
+				GameObject obj = SimplePool.Spawn (tileMarker, new Vector3 (posX, posY, -1), Quaternion.identity);
+				obj.transform.SetParent (this.transform, true);
+
+				tileMarkerGameObjects.Add (obj);
+			}
+
+			EventsHandler.Invoke_cb_editorTilesSelected (tile);
+
+		}
+
+	}
+
+
+
 
 
 	void UpdateDragging()
@@ -215,8 +264,13 @@ public class MouseController : MonoBehaviour {
 			}
 
 
-			EventsHandler.Invoke_cb_editorTilesSelected (tileList);
+			//EventsHandler.Invoke_cb_editorTilesSelected (tileList);
 
 		}
 	}
+
+
+
+
+
 }

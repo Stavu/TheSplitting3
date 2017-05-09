@@ -115,13 +115,37 @@ public static class EventsHandler
 
 
 
-	public static Action<Furniture> cb_playerLeaveFurniture; 
+	public static Action cb_playerLeaveFurniture; 
 
-	public static void Invoke_cb_playerLeaveFurniture(Furniture furniture)
+	public static void Invoke_cb_playerLeaveFurniture()
 	{
 		if(cb_playerLeaveFurniture != null)
 		{
-			cb_playerLeaveFurniture (furniture);
+			cb_playerLeaveFurniture ();
+		}
+
+	}
+
+
+	public static Action<Tile> cb_playerHitTileInteraction;
+
+	public static void Invoke_cb_playerHitTileInteraction(Tile tile)
+	{
+		if(cb_playerHitTileInteraction != null)
+		{
+			cb_playerHitTileInteraction (tile);
+		}
+
+	}
+
+
+	public static Action cb_playerLeaveTileInteraction;
+
+	public static void Invoke_cb_playerLeaveTileInteraction()
+	{
+		if(cb_playerLeaveTileInteraction != null)
+		{
+			cb_playerLeaveTileInteraction ();
 		}
 
 	}
@@ -155,21 +179,6 @@ public static class EventsHandler
 
 	}
 
-
-
-	// Tile
-
-
-	public static Action<Tile> cb_playerHitTileInteraction;
-
-	public static void Invoke_cb_playerHitTileInteraction(Tile tile)
-	{
-		if(cb_playerHitTileInteraction != null)
-		{
-			cb_playerHitTileInteraction (tile);
-		}
-
-	}
 
 
 
@@ -253,7 +262,18 @@ public static class EventsHandler
 
 	// Action for tile manager - coloring tiles
 
+
 	public static Action cb_tileLayoutChanged;
+
+	public static void Invoke_cb_tileLayoutChanged()
+	{		
+
+		if (cb_tileLayoutChanged != null) 
+		{
+			cb_tileLayoutChanged ();
+		}
+
+	}
 
 
 	public static Action<Furniture> cb_editorFurnitureModelChanged;
@@ -266,7 +286,32 @@ public static class EventsHandler
 
 		}
 
+		if (cb_tileLayoutChanged != null) 
+		{
+			cb_tileLayoutChanged ();
+		}
+
 	}
+
+
+	public static Action<Character> cb_editorCharacterModelChanged;
+
+
+	public static void Invoke_cb_editorCharacterModelChanged(Character character)
+	{
+		if(cb_editorCharacterModelChanged != null)
+		{
+			cb_editorCharacterModelChanged (character);
+
+		}
+
+		if (cb_tileLayoutChanged != null) 
+		{
+			cb_tileLayoutChanged ();
+		}
+
+	}
+
 
 
 	public static Action<TileInteraction> cb_editorTileInteractioneModelChanged;
@@ -303,6 +348,8 @@ public static class EventsHandler
 	}
 
 
+	/*
+
 	public static Action<Furniture> cb_editorFurnitureChanged;
 
 	public static void Invoke_cb_editorFurnitureChanged(Furniture furniture)
@@ -318,24 +365,21 @@ public static class EventsHandler
 		}
 
 	}
-
+	*/
 
 
 	// Mouse Controller 
 
-	public static Action<List<Tile>> cb_editorTilesSelected;
+	public static Action<Tile> cb_editorTilesSelected;
 
-	public static void Invoke_cb_editorTilesSelected(List<Tile> tileList)
+	public static void Invoke_cb_editorTilesSelected(Tile tile)
 	{
 		if(cb_editorTilesSelected != null)
 		{
-			cb_editorTilesSelected (tileList);
+			cb_editorTilesSelected (tile);
 		}
 
 	}
-
-
-
 
 
 

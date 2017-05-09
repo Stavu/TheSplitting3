@@ -5,13 +5,14 @@ using System;
 
 
 [Serializable]
-public class TileInteraction {
+public class TileInteraction : Interactable {
 
 
-	public Vector2 mySize;
-	public int x;
-	public int y;
-	public bool walkable = false;
+	//public Vector2 mySize;
+	//public int x;
+	//public int y;
+
+	//public bool walkable = false;
 
 
 	public SubInteraction mySubInt;

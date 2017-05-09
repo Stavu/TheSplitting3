@@ -5,14 +5,14 @@ using System;
 
 
 [Serializable]
-public class Furniture {
+public class Furniture : Interactable {
 
 	public string myName;
-	public Vector2 mySize;
-	public int x;
-	public int y;
+	//public Vector2 mySize;
+	//public int x;
+	//public int y;
 	public Vector3 myPos {get; set;}
-	public bool walkable = false;
+	//public bool walkable = false;
 
 	public float offsetX = 0;
 	public float offsetY = 0;

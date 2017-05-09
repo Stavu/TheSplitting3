@@ -13,6 +13,7 @@ public class Tile {
 	public int y {get; protected set;}
 
 	public Furniture myFurniture; 
+	public Character myCharacter;
 	public TileInteraction myTileInteraction;
 
 	public bool walkable;

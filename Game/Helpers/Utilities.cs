@@ -100,5 +100,33 @@ public class Utilities {
 
 
 
+	public static GameObject CreateCharacterGameObject (Character myCharacter, Transform parent)
+	{
+
+		//Debug.Log ("Assign Furniture Image");
+
+		myCharacter.myPos = new Vector3 (myCharacter.x + myCharacter.mySize.x/2, myCharacter.y, 0);
+
+		GameObject obj = GameObject.Instantiate(Resources.Load<GameObject> ("Sprites/Characters/" + myCharacter.myName)); 			
+		obj.transform.SetParent (parent);
+
+
+		obj.transform.position = new Vector3 (myCharacter.myPos.x + myCharacter.offsetX, myCharacter.myPos.y + 0.5f + myCharacter.offsetY, myCharacter.myPos.z);
+
+		//Debug.Log ("object position" + myFurniture.myName + obj.transform.position + sr.sprite.bounds);
+
+
+		// sorting order 
+
+		obj.GetComponentInParent<SpriteRenderer>().sortingOrder  = -myCharacter.y;
+		obj.GetComponentInParent<SpriteRenderer>().sortingLayerName = Constants.furniture_character_layer;
+
+		return obj;
+
+
+	}
+
+
+
 
 }

@@ -35,7 +35,7 @@ public class EditorSceneLoader : MonoBehaviour {
 
 		EditorTileManager.instance.Initialize ();
 		BuildController.instance.Initialize ();
-		EditorFurnitureManager.instance.Initialize ();
+		EditorRoomManager.instance.Initialize ();
 
 
 		// Starting Functions
@@ -52,6 +52,7 @@ public class EditorSceneLoader : MonoBehaviour {
 
 		EditorUI.instance.CreateUI ();
 
+		BuildController.instance.mode = BuildController.Mode.inspect;
 
 	}
 

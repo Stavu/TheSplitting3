@@ -18,7 +18,8 @@ public class Room {
 	public string bgName;
 
 	public List <Furniture> myFurnitureList;
-	public List<TileInteraction> myTileInteractionList;
+	public List <Character> myCharacterList;
+	public List <TileInteraction> myTileInteractionList;
 
 	public Dictionary<Furniture,Vector2> furniturePositionMap;
 
@@ -94,7 +95,7 @@ public class Room {
 
 		foreach (Furniture furn in myFurnitureList) 
 		{
-
+			
 			List<Tile> FurnitureTiles = GetMyTiles(furn.mySize, furn.x, furn.y);
 
 			foreach (Tile tile in FurnitureTiles) 
@@ -111,7 +112,7 @@ public class Room {
 
 		foreach (TileInteraction tileInteraction in myTileInteractionList) 
 		{
-
+			
 			List<Tile> tileInteractionTiles = GetMyTiles(tileInteraction.mySize, tileInteraction.x, tileInteraction.y);
 
 			foreach (Tile tile in tileInteractionTiles) 

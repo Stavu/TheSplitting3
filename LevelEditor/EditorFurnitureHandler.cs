@@ -3,25 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class EditorFurnitureManager : MonoBehaviour 
+public class EditorFurnitureHandler : MonoBehaviour 
 {
-
-	// Singleton //
-
-	public static EditorFurnitureManager instance { get; protected set;}
-
-	void Awake () {		
-		if (instance == null) {
-			instance = this;
-		} else if (instance != this) {
-			Destroy (gameObject);
-		}
-	}
-
-	// Singleton //
-
-
-
+	
 
 
 	// Use this for initialization
@@ -46,6 +30,55 @@ public class EditorFurnitureManager : MonoBehaviour
 	void Update () 
 	{
 		
+	}
+
+
+
+	// Placing Furniture in the editor 
+
+	public void PlaceFurniture(Tile tile, string furnitureName)
+	{
+
+
+		if(furnitureName == null)
+		{
+			return;
+		}
+
+
+		// If there's already a furniture on this tile, destroy it before creating a new furniture
+
+
+		if (tile.myFurniture != null)
+		{
+			EditorRoomManager.instance.room.myFurnitureList.Remove (tile.myFurniture);
+
+			Destroy(EditorRoomManager.instance.furnitureGameObjectMap [tile.myFurniture]);
+			EditorRoomManager.instance.furnitureGameObjectMap.Remove (tile.myFurniture);
+		}
+
+
+
+		// create furniture
+
+		Furniture furn = new Furniture (furnitureName, tile.x, tile.y);
+
+
+		// set default size
+
+		Sprite furnitureSprite = Resources.Load <Sprite> ("Sprites/Furniture/" + furnitureName);
+
+		furn.mySize = new Vector2 (Mathf.Ceil(furnitureSprite.bounds.size.x), 1f);
+
+
+		EditorRoomManager.instance.room.myFurnitureList.Add (furn);
+
+		tile.myFurniture = furn;
+
+
+		EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn);
+
+
 	}
 
 
@@ -84,8 +117,7 @@ public class EditorFurnitureManager : MonoBehaviour
 		}
 
 
-		EditorRoomManager.instance.furnitureGameObjectMap.Add (furn, obj);
-		EventsHandler.Invoke_cb_editorFurniturePlaced (furn);
+		EditorRoomManager.instance.furnitureGameObjectMap.Add (furn, obj);	
 
 	}
 

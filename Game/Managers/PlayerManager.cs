@@ -108,6 +108,7 @@ public class PlayerManager : MonoBehaviour {
 	public void MoveCharacter(Direction myDirection)
 	{
 
+
 		if (GameManager.instance.inputState != InputState.Character) 
 		{
 			return;	
@@ -165,7 +166,7 @@ public class PlayerManager : MonoBehaviour {
 		}
 
 
-		Tile tile = RoomManager.instance.myRoom.myGrid.GetTileAt(new Vector3 (newPos.x + offsetX, newPos.y + + offsetY, newPos.z));
+		Tile tile = RoomManager.instance.myRoom.myGrid.GetTileAt(new Vector3 (newPos.x + offsetX, newPos.y + offsetY, newPos.z));
 
 		if (tile == null) 
 		{			
@@ -174,44 +175,58 @@ public class PlayerManager : MonoBehaviour {
 		}
 
 
+
 		if (tile != null)
 		{
-
-			// if there a furinture at this tile
+			// FURNITURE - if there a furinture at this tile
 
 			if (tile.myFurniture != null) 
 			{
 				if (tile.myFurniture.walkable == false) 
 				{		
-
 					EventsHandler.Invoke_cb_playerHitFurniture (tile.myFurniture, tile);
 					StopPlayer (InputManager.instance.lastDirection);
 
 					return;
 				}
-			}
+
+			}				
 
 
-			// If the next tile is interactable
+			// if there's no furniture at this tile
+
+			if (ActionBoxManager.instance.currentFurniture != null) 
+			{
+				EventsHandler.Invoke_cb_playerLeaveFurniture ();
+			}	
+
+
+
+			// TILE INTERACTION - If the next tile is interactable
 
 			if (tile.myTileInteraction != null) 
 			{
-
+				if (tile.myTileInteraction.walkable == false) 
+				{
+					StopPlayer (InputManager.instance.lastDirection);
+				}
+			
 				EventsHandler.Invoke_cb_playerHitTileInteraction (tile);
 
 				if (tile.myTileInteraction.walkable == false) 
-				{					
-					StopPlayer (InputManager.instance.lastDirection);
+				{							
 					return;
 				}
 
 			}
 
 
-			// if there's no furinture at this tile
+			if (GameActionManager.instance.currentTileInteraction != null) 
+			{
+				EventsHandler.Invoke_cb_playerLeaveTileInteraction ();
 
-			EventsHandler.Invoke_cb_playerLeaveFurniture (tile.myFurniture);
-							
+			}
+										
 
 			// Walk to new pos
 
@@ -231,7 +246,7 @@ public class PlayerManager : MonoBehaviour {
 		
 		GameObject obj = playerGameObjectMap [myPlayer];
 
-		obj.GetComponent<CharacterObject> ().StopCharacter (lastDirection);
+		obj.GetComponent<PlayerObject> ().StopCharacter (lastDirection);
 
 	}
 
@@ -243,8 +258,7 @@ public class PlayerManager : MonoBehaviour {
 	{
 
 		GameObject obj = playerGameObjectMap [myPlayer];
-
-		obj.GetComponent<CharacterObject> ().MoveCharacter (myPlayer, myDirection);
+		obj.GetComponent<PlayerObject> ().MoveCharacter (myPlayer, myDirection);
 
 	}
 

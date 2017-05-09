@@ -25,11 +25,47 @@ public class EditorRoomManager : MonoBehaviour {
 	// Singleton //
 
 
+
+	// Handlers
+
+	public static EditorFurnitureHandler editorFurnitureHandler;
+	public static EditorCharacterHandler editorCharacterHandler;
+	public static EditorTileInteractionHandler editorTileInteractionHandler;
+
+
 	public Room room; 
 	public Dictionary<Furniture,GameObject> furnitureGameObjectMap;
+	public Dictionary<Character,GameObject> characterGameObjectMap;
+
 
 	public static string roomToLoad;
 	public static bool loadRoomFromMemory = false;
+
+
+
+	public void Initialize ()
+	{
+
+		if (editorFurnitureHandler == null) 
+		{
+			editorFurnitureHandler = gameObject.AddComponent<EditorFurnitureHandler> ();
+			editorFurnitureHandler.Initialize ();
+		}
+
+		if (editorCharacterHandler == null) 
+		{
+			editorCharacterHandler = gameObject.AddComponent<EditorCharacterHandler> ();
+			editorCharacterHandler.Initialize ();
+		}
+
+		if (editorTileInteractionHandler == null) 
+		{
+			editorTileInteractionHandler = gameObject.AddComponent<EditorTileInteractionHandler> ();
+			editorTileInteractionHandler.Initialize ();
+
+		}
+
+	}
 
 
 
@@ -38,10 +74,11 @@ public class EditorRoomManager : MonoBehaviour {
 
 		Room tempRoom = new Room (myWidth,myHeight);
 		tempRoom.myFurnitureList = new List<Furniture> ();
+		tempRoom.myCharacterList = new List<Character> ();
 		tempRoom.myTileInteractionList = new List<TileInteraction> ();
 
 		furnitureGameObjectMap = new Dictionary<Furniture, GameObject> ();
-
+		characterGameObjectMap = new Dictionary<Character, GameObject> ();
 
 		return tempRoom;
 
@@ -107,191 +144,8 @@ public class EditorRoomManager : MonoBehaviour {
 	}
 
 
-	// Placing Furniture in the editor 
 
-	public void PlaceFurniture(Tile tile, string furnitureName)
-	{
-
-
-		if(furnitureName == null)
-		{
-			return;
-		}
-
-			
-		// If there's already a furniture on this tile, destroy it before creating a new furniture
-
-
-		if (tile.myFurniture != null)
-		{
-			room.myFurnitureList.Remove (tile.myFurniture);
-
-			Destroy(furnitureGameObjectMap [tile.myFurniture]);
-			furnitureGameObjectMap.Remove (tile.myFurniture);
-		}
-
-
-
-		// create furniture
-	
-		Furniture furn = new Furniture (furnitureName, tile.x, tile.y);
-
-
-		// set default size
-
-		Sprite furnitureSprite = Resources.Load <Sprite> ("Sprites/Furniture/" + furnitureName);
-
-		furn.mySize = new Vector2 (Mathf.Ceil(furnitureSprite.bounds.size.x), 1f);
-
-
-		room.myFurnitureList.Add (furn);
-
-		tile.myFurniture = furn;
-
-
-		EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn);
-
-
-
-
-		/*
-	
-		// create furniture object 
-
-		GameObject obj = new GameObject (furnitureName);
-
-		obj.AddComponent<SpriteRenderer> ().sprite = furnitureSprite;
-
-
-		// set object position 
-
-		obj.transform.position = new Vector3 (furn.x + furn.mySize.x/2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
-
-
-
-		// set object layer
-
-		obj.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.furniture_character_layer;
-		obj.transform.SetParent (this.transform);
-
-		furnitureGameObjectMap.Add (furn, obj);
-
-		tile.myFurniture = furn;
-
-		EventsHandler.Invoke_cb_editorFurniturePlaced (furn);
-		*/
-
-	}
-
-
-
-	/* CHANGING FURNITURE */
-
-
-	public void ChangeFurnitureWidth(int width, Furniture furn)
-	{
-
-		furn.mySize = new Vector2 (width, furn.mySize.y);
-		furnitureGameObjectMap[furn].transform.position = new Vector3 (furn.x + furn.mySize.x/2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
-
-		EventsHandler.Invoke_cb_editorFurnitureChanged (furn);
-
-
-	}
-
-
-
-	public void ChangeFurnitureHeight(int height, Furniture furn)
-	{
-
-		furn.mySize = new Vector2 (furn.mySize.x, height);
-		furnitureGameObjectMap[furn].transform.position = new Vector3 (furn.x + furn.mySize.x/2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
-
-
-		EventsHandler.Invoke_cb_editorFurnitureChanged (furn);
-
-
-	}
-
-
-
-	public void ChangeFurnitureTileX(int x, Furniture furn)
-	{
-		
-	
-		Tile tile = room.myGrid.GetTileAt (furn.x, furn.y);
-		Tile tileNew = room.myGrid.GetTileAt (x, furn.y);
-
-		if (tileNew == null) 
-		{			
-			return;
-		}
-
-		tile.myFurniture = null;
-		furn.x = x;
-
-		tileNew.myFurniture = furn;
-
-
-
-		furnitureGameObjectMap[furn].transform.position = new Vector3 (furn.x + furn.mySize.x/2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
-
-		EventsHandler.Invoke_cb_editorFurnitureChanged (furn);
-
-
-	}
-
-
-
-	public void ChangeFurnitureTileY(int y, Furniture furn)
-	{
-
-		Tile tile = room.myGrid.GetTileAt (furn.x, furn.y);
-		Tile tileNew = room.myGrid.GetTileAt (furn.x, y);
-
-
-		if (tileNew == null) 
-		{			
-			return;
-		}
-
-
-		tile.myFurniture = null;
-		furn.y = y;
-
-		tileNew.myFurniture = furn;
-
-		furnitureGameObjectMap[furn].transform.position = new Vector3 (furn.x + furn.mySize.x/2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
-
-		EventsHandler.Invoke_cb_editorFurnitureChanged (furn);
-
-
-	}
-
-
-
-	public void ChangeFurnitureOffsetX(float offsetX, Furniture furn)
-	{
-
-		furn.offsetX = offsetX;
-
-		furnitureGameObjectMap[furn].transform.position = new Vector3 (furn.x + furn.mySize.x/2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
-
-		EventsHandler.Invoke_cb_editorFurnitureChanged (furn);
-	}
-
-
-
-	public void ChangeFurnitureOffsetY(float offsetY, Furniture furn)
-	{
-
-		furn.offsetY = offsetY;
-
-		furnitureGameObjectMap[furn].transform.position = new Vector3 (furn.x + furn.mySize.x/2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
-
-		EventsHandler.Invoke_cb_editorFurnitureChanged (furn);
-
-	}
+	// SERIALIZE ROOM //
 
 
 	public string SerializeRoom ()
@@ -302,7 +156,7 @@ public class EditorRoomManager : MonoBehaviour {
 		//Debug.Log(Application.persistentDataPath); 
 
 		string path = ("Assets/Resources/Jsons/Rooms/" + room.myName + ".json");
-	
+
 		using (FileStream fs = new FileStream(path, FileMode.Create))
 		{
 			using (StreamWriter writer = new StreamWriter(fs))
@@ -320,129 +174,67 @@ public class EditorRoomManager : MonoBehaviour {
 
 
 
-	// ----- Tile Interaciton ----- //
+	// CHANGING INTERACTABLE //
 
 
-
-	public void PlaceTileInteraction(Tile tile)
+	public void ChangeInteractableWidth(int width, Interactable interactable)
 	{
 
-		// If there's already a tileInteraction on this tile, destroy it before creating a new tileInteraction
+		interactable.mySize = new Vector2 (width, interactable.mySize.y);
 
-
-		if (tile.myTileInteraction != null)
+		if (interactable is Furniture) 
 		{
-			room.myTileInteractionList.Remove (tile.myTileInteraction);
-					
+			Furniture furn = (Furniture)interactable;
+			furnitureGameObjectMap [furn].transform.position = new Vector3 (furn.x + furn.mySize.x / 2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
+
 		}
 
-		// create tileInteraction
+		if (interactable is Character) 
+		{
 
-		TileInteraction tileInteraction = new TileInteraction (tile.x, tile.y);
+			Character character = (Character)interactable;
+			characterGameObjectMap[character].transform.position = new Vector3 (character.x + character.mySize.x / 2 + character.offsetX, character.y + 0.5f + character.offsetY, 0);
 
+		}
 
-		// set default size
+		EventsHandler.Invoke_cb_tileLayoutChanged ();
 
-		tileInteraction.mySize = Vector2.one;
-
-
-
-		// Adding to room tileInteraction List
-
-		room.myTileInteractionList.Add (tileInteraction);
-
-		tile.myTileInteraction = tileInteraction;
-
-
-		EventsHandler.Invoke_cb_editorTileInteractioneModelChanged (tileInteraction);
+	}
 
 
 
+	public void ChangeInteractableHeight(int height, Interactable interactable)
+	{
 
-		/*
+		interactable.mySize = new Vector2 (interactable.mySize.x, height);
+
+		if (interactable is Furniture) 
+		{
+			Furniture furn = (Furniture)interactable;
+			furnitureGameObjectMap[furn].transform.position = new Vector3 (furn.x + furn.mySize.x/2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
+
+		}
+
+		if (interactable is Character) 
+		{
+
+			Character character = (Character)interactable;
+			characterGameObjectMap[character].transform.position = new Vector3 (character.x + character.mySize.x/2 + character.offsetX, character.y + 0.5f + character.offsetY, 0);
+
+		}
+
+		EventsHandler.Invoke_cb_tileLayoutChanged ();
+
+	}
+
+
+
+	public void ChangeInteractableTileX(int x, Interactable interactable)
+	{
+		
 	
-		// create furniture object 
-
-		GameObject obj = new GameObject (furnitureName);
-
-		obj.AddComponent<SpriteRenderer> ().sprite = furnitureSprite;
-
-
-		// set object position 
-
-		obj.transform.position = new Vector3 (furn.x + furn.mySize.x/2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
-
-
-
-		// set object layer
-
-		obj.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.furniture_character_layer;
-		obj.transform.SetParent (this.transform);
-
-		furnitureGameObjectMap.Add (furn, obj);
-
-		tile.myFurniture = furn;
-
-		EventsHandler.Invoke_cb_editorFurniturePlaced (furn);
-		*/
-
-	}
-
-
-
-	public void ChangeTileInteractionWidth(int width, TileInteraction tileInt)
-	{
-
-		tileInt.mySize = new Vector2 (width, tileInt.mySize.y);
-
-		EventsHandler.Invoke_cb_editorTileInteractioneModelChanged (tileInt);
-
-
-	}
-
-
-
-	public void ChangeTileInteractionHeight(int height, TileInteraction tileInt)
-	{
-
-		tileInt.mySize = new Vector2 (tileInt.mySize.x, height);
-
-		EventsHandler.Invoke_cb_editorTileInteractioneModelChanged (tileInt);
-
-
-	}
-
-
-
-	public void ChangeTileInteractionTileX(int x, TileInteraction tileInt)
-	{
-
-
-		Tile tile = room.myGrid.GetTileAt (tileInt.x, tileInt.y);
-		Tile tileNew = room.myGrid.GetTileAt (x, tileInt.y);
-
-		if (tileNew == null) 
-		{			
-			return;
-		}
-
-		tile.myTileInteraction = null;
-		tileInt.x = x;
-
-		tileNew.myTileInteraction = tileInt;
-
-		EventsHandler.Invoke_cb_editorTileInteractioneModelChanged (tileInt);
-	}
-
-
-
-
-	public void ChangeTileInteractionTileY(int y, TileInteraction tileInt)
-	{
-
-		Tile tile = room.myGrid.GetTileAt (tileInt.x, tileInt.y);
-		Tile tileNew = room.myGrid.GetTileAt (tileInt.x, y);
-
+		Tile tile = room.myGrid.GetTileAt (interactable.x, interactable.y);
+		Tile tileNew = room.myGrid.GetTileAt (x, interactable.y);
 
 		if (tileNew == null) 
 		{			
@@ -450,14 +242,159 @@ public class EditorRoomManager : MonoBehaviour {
 		}
 
 
-		tile.myTileInteraction = null;
-		tileInt.y = y;
 
-		tileNew.myTileInteraction = tileInt;
 
-		EventsHandler.Invoke_cb_editorTileInteractioneModelChanged (tileInt);
+		if (interactable is Furniture) 
+		{
+			
+			Furniture furn = (Furniture)interactable;
+
+			tile.myFurniture = null;
+			furn.x = x;
+
+			tileNew.myFurniture = furn;
+
+			// Game object
+			furnitureGameObjectMap [furn].transform.position = new Vector3 (furn.x + furn.mySize.x / 2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
+
+		
+		} else if (interactable is Character) 
+		{	
+
+			Character character = (Character)interactable;
+
+			tile.myCharacter = null;
+			character.x = x;
+
+			tileNew.myCharacter = character;
+
+			// Game object
+			characterGameObjectMap [character].transform.position = new Vector3 (character.x + character.mySize.x / 2 + character.offsetX, character.y + 0.5f + character.offsetY, 0);
+
+
+		} else if (interactable is TileInteraction)		
+		{			
+
+			tile.myTileInteraction = null;
+			interactable.x = x;
+
+			tileNew.myTileInteraction = (TileInteraction)interactable;
+
+		}
+
+		EventsHandler.Invoke_cb_tileLayoutChanged ();
+
 
 	}
+
+
+
+	public void ChangeInteractableTileY(int y, Interactable interactable)
+	{
+
+		Tile tile = room.myGrid.GetTileAt (interactable.x, interactable.y);
+		Tile tileNew = room.myGrid.GetTileAt (interactable.x, y);
+
+
+		if (tileNew == null) 
+		{			
+			return;
+		}
+
+		if (interactable is Furniture) 
+		{
+
+			Furniture furn = (Furniture)interactable;
+
+			tile.myFurniture = null;
+			furn.y = y;
+
+			tileNew.myFurniture = furn;
+
+			furnitureGameObjectMap [furn].transform.position = new Vector3 (furn.x + furn.mySize.x / 2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
+	
+		} else if (interactable is Character) 
+		{	
+
+			Character character = (Character)interactable;
+
+			tile.myCharacter = null;
+			character.y = y;
+
+			tileNew.myCharacter = character;
+
+			// Game object
+			characterGameObjectMap [character].transform.position = new Vector3 (character.x + character.mySize.x / 2 + character.offsetX, character.y + 0.5f + character.offsetY, 0);
+
+
+		}
+		else if (interactable is TileInteraction) 
+		{
+			
+			tile.myTileInteraction = null;
+			interactable.y = y;
+
+			tileNew.myTileInteraction = (TileInteraction)interactable;
+
+		}
+
+		EventsHandler.Invoke_cb_tileLayoutChanged ();
+
+
+	}
+
+
+
+	// OFFSETS //
+
+	public void ChangeInteractableOffsetX(float offsetX, Interactable interactable)
+	{
+		
+		if (interactable is Furniture) 
+		{
+			Furniture furn = (Furniture)interactable;
+			furn.offsetX = offsetX;
+
+			furnitureGameObjectMap [furn].transform.position = new Vector3 (furn.x + furn.mySize.x / 2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
+
+		} else if (interactable is Character) 
+		{
+			Character character = (Character)interactable;
+			character.offsetX = offsetX;
+
+			characterGameObjectMap [character].transform.position = new Vector3 (character.x + character.mySize.x / 2 + character.offsetX, character.y + 0.5f + character.offsetY, 0);
+
+		} 
+
+		//EventsHandler.Invoke_cb_tileLayoutChanged ();
+	}
+
+
+
+	public void ChangeInteractableOffsetY(float offsetY, Interactable interactable)
+	{
+
+
+		if (interactable is Furniture) 
+		{
+			Furniture furn = (Furniture)interactable;
+			furn.offsetY = offsetY;
+		
+			furnitureGameObjectMap[furn].transform.position = new Vector3 (furn.x + furn.mySize.x/2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
+
+		} else if (interactable is Character) 
+		{
+			Character character = (Character)interactable;
+			character.offsetY = offsetY;
+
+			characterGameObjectMap[character].transform.position = new Vector3 (character.x + character.mySize.x/2 + character.offsetX, character.y + 0.5f + character.offsetY, 0);
+
+		} 
+
+		//EventsHandler.Invoke_cb_tileLayoutChanged ();
+
+	}
+
 
 
 
@@ -482,11 +419,27 @@ public class EditorRoomManager : MonoBehaviour {
 
 		}
 
+
+		foreach (Character character in tempRoom.myCharacterList) 
+		{
+			Tile tile = tempRoom.myGrid.GetTileAt (character.x, character.y);
+			tile.myCharacter = character;
+
+		}
+
+
+		foreach (TileInteraction tileInt in tempRoom.myTileInteractionList) 
+		{
+			Tile tile = tempRoom.myGrid.GetTileAt (tileInt.x, tileInt.y);
+			tile.myTileInteraction = tileInt;
+
+		}
+
+
+
 		return tempRoom;
 
 	}
-
-
 
 
 

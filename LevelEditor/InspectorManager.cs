@@ -26,17 +26,20 @@ public class InspectorManager : MonoBehaviour {
 	// Singleton //
 
 
-
 	public GameObject inspectorObjectPrefab;
 	public GameObject interactionPanelObjectPrefab;
 	public GameObject tileInspectorObjectPrefab;
 
 	GameObject inspectorObject;
-	GameObject interactionPanelObject;
-	GameObject tileInspectorObject;
+	//GameObject interactionPanelObject;
+	//GameObject tileInspectorObject;
 
 
-	Interaction loadedInteraction;
+	public static InteractionInspector interactionInspector;
+	public static TileInspector tileInspector;
+
+
+	//public Interaction loadedInteraction;
 
 	Furniture _chosenFurniture;
 	public Furniture chosenFurniture
@@ -78,11 +81,11 @@ public class InspectorManager : MonoBehaviour {
 
 			if (_chosenTileInteraction == null) 
 			{
-				DestroyTileInspector ();
+				tileInspector.DestroyTileInspector ();
 
 			} else {
 
-				CreateTileInspector (_chosenTileInteraction);
+				tileInspector.CreateTileInspector (_chosenTileInteraction);
 			}
 		}
 	}
@@ -91,19 +94,37 @@ public class InspectorManager : MonoBehaviour {
 
 
 	// Use this for initialization
+
 	void Start () 
-	{		
+	{	
+		
+		if (interactionInspector == null) 
+		{
+			interactionInspector = gameObject.AddComponent<InteractionInspector> ();
+		}
+
+		if (tileInspector == null) 
+		{
+			tileInspector = gameObject.AddComponent<TileInspector> ();
+		}
 
 	}
-	
+
+
 	// Update is called once per frame
+
 	void Update () 
 	{
 		
 	}
 
 
-	void CreateInspector(Furniture currentFurniture)
+
+
+	// INSPECTOR //
+
+
+	public void CreateInspector(Furniture currentFurniture)
 	{
 
 		DestroyInspector ();
@@ -149,13 +170,13 @@ public class InspectorManager : MonoBehaviour {
 			
 				button.transform.FindChild ("Text").GetComponent<Text> ().text = chosenFurniture.myInteractionList [i].myVerb;
 				Interaction interaction = chosenFurniture.myInteractionList [i];
-				button.onClick.AddListener (() => OpenInteractionPanel (interaction));	
+				button.onClick.AddListener (() => interactionInspector.OpenInteractionPanel (interaction));	
 					
 
 			} else {
 
 			
-				button.onClick.AddListener (() => OpenInteractionPanel (null));
+				button.onClick.AddListener (() => interactionInspector.OpenInteractionPanel (null));
 
 			}
 		}
@@ -164,7 +185,7 @@ public class InspectorManager : MonoBehaviour {
 
 
 
-	void DestroyInspector()
+	public void DestroyInspector()
 	{
 
 		if (inspectorObject != null) 
@@ -173,7 +194,7 @@ public class InspectorManager : MonoBehaviour {
 			Destroy (inspectorObject);
 		}
 
-		DestroyInteractionPanel ();
+		interactionInspector.DestroyInteractionPanel ();
 
 	}
 
@@ -187,7 +208,7 @@ public class InspectorManager : MonoBehaviour {
 	{
 
 		int newX = int.Parse (x);
-		EditorRoomManager.instance.ChangeFurnitureWidth (newX, chosenFurniture);
+		EditorRoomManager.instance.ChangeInteractableWidth (newX, chosenFurniture);
 
 	}
 
@@ -196,7 +217,7 @@ public class InspectorManager : MonoBehaviour {
 	public void changeHeight(string y)
 	{
 		int newY = int.Parse (y);
-		EditorRoomManager.instance.ChangeFurnitureHeight (newY, chosenFurniture);
+		EditorRoomManager.instance.ChangeInteractableHeight (newY, chosenFurniture);
 
 	}
 
@@ -212,7 +233,7 @@ public class InspectorManager : MonoBehaviour {
 	{
 
 		int newX = int.Parse (x);
-		EditorRoomManager.instance.ChangeFurnitureTileX (newX, chosenFurniture);
+		EditorRoomManager.instance.ChangeInteractableTileX (newX, chosenFurniture);
 	
 	}
 
@@ -221,7 +242,7 @@ public class InspectorManager : MonoBehaviour {
 	public void changeY(string y)
 	{
 		int newY = int.Parse (y);
-		EditorRoomManager.instance.ChangeFurnitureTileY (newY, chosenFurniture);
+		EditorRoomManager.instance.ChangeInteractableTileY (newY, chosenFurniture);
 
 	}
 
@@ -235,7 +256,7 @@ public class InspectorManager : MonoBehaviour {
 	{
 
 		float newX = float.Parse (x);
-		EditorRoomManager.instance.ChangeFurnitureOffsetX (newX, chosenFurniture);
+		EditorRoomManager.instance.ChangeInteractableOffsetX (newX, chosenFurniture);
 
 	}
 
@@ -244,7 +265,7 @@ public class InspectorManager : MonoBehaviour {
 	public void changeOffsetY(string y)
 	{
 		float newY = float.Parse (y);
-		EditorRoomManager.instance.ChangeFurnitureOffsetY (newY, chosenFurniture);
+		EditorRoomManager.instance.ChangeInteractableOffsetY (newY, chosenFurniture);
 
 	}
 
@@ -252,6 +273,8 @@ public class InspectorManager : MonoBehaviour {
 
 	// Creating a new interaction panel
 
+
+	/*
 
 	// Declarations
 
@@ -412,23 +435,6 @@ public class InspectorManager : MonoBehaviour {
 
 			loadedInteraction = null;
 		}
-
-
-
-
-		/*
-		if (enterRoomDropdown.value != null) 
-		{
-			enterRoomDropdown.value = (int) interaction.myInteractionType;
-		}
-
-
-		List<string> roomList = new List<string> ();
-		roomList.Add(interaction.myInteractionType.ToString());
-
-		enterRoomDropdown.AddOptions(interactionList);
-		*/
-
 	}
 
 
@@ -466,19 +472,6 @@ public class InspectorManager : MonoBehaviour {
 	}
 
 
-	/*
-	public void DeactivateInteractionPanel()
-	{
-
-		if (interactionPanelObject != null) 
-		{
-			
-			interactionPanelObject.SetActive (false);
-
-		}
-
-	}
-	*/
 
 
 
@@ -623,9 +616,9 @@ public class InspectorManager : MonoBehaviour {
 
 
 	}
+	*/
 
-
-
+	/*
 	// ----- TILE INSPECTOR ----- // 
 
 
@@ -668,6 +661,9 @@ public class InspectorManager : MonoBehaviour {
 		{			
 			if (currentTileInteraction.mySubInt.rawText != null) 
 			{
+
+				Debug.Log ("CreateTileInspector: insert raw text" + currentTileInteraction.mySubInt.rawText);
+
 				textInputCheckBox.isOn = true;
 				interactionTextInput.interactable = true;
 
@@ -742,6 +738,9 @@ public class InspectorManager : MonoBehaviour {
 	}
 
 
+
+
+
 	public void SubmitTileInteraction()
 	{
 
@@ -803,7 +802,7 @@ public class InspectorManager : MonoBehaviour {
 	{
 
 		int newX = int.Parse (x);
-		EditorRoomManager.instance.ChangeTileInteractionWidth (newX, chosenTileInteraction);
+		EditorRoomManager.instance.ChangeInteractableWidth (newX, chosenTileInteraction);
 
 	}
 
@@ -812,7 +811,7 @@ public class InspectorManager : MonoBehaviour {
 	public void ChangeTileInteractionHeight(string y)
 	{
 		int newY = int.Parse (y);
-		EditorRoomManager.instance.ChangeTileInteractionHeight (newY, chosenTileInteraction);
+		EditorRoomManager.instance.ChangeInteractableHeight (newY, chosenTileInteraction);
 
 	}
 
@@ -826,7 +825,7 @@ public class InspectorManager : MonoBehaviour {
 	{
 
 		int newX = int.Parse (x);
-		EditorRoomManager.instance.ChangeTileInteractionTileX (newX, chosenTileInteraction);
+		EditorRoomManager.instance.ChangeInteractableTileX (newX, chosenTileInteraction);
 
 	}
 
@@ -835,7 +834,7 @@ public class InspectorManager : MonoBehaviour {
 	public void ChangeTileInteractionY(string y)
 	{
 		int newY = int.Parse (y);
-		EditorRoomManager.instance.ChangeTileInteractionTileY (newY, chosenTileInteraction);
+		EditorRoomManager.instance.ChangeInteractableTileY (newY, chosenTileInteraction);
 
 	}
 
@@ -856,6 +855,11 @@ public class InspectorManager : MonoBehaviour {
 			Destroy (tileInspectorObject);
 		}
 	}
+
+
+
+	*/
+
 
 
 
