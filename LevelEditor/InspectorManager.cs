@@ -645,14 +645,14 @@ public class InspectorManager : MonoBehaviour {
 		panel.FindChild ("SizeX").FindChild("Placeholder").GetComponent<Text> ().text = currentTileInteraction.mySize.x.ToString();
 		panel.FindChild ("SizeY").FindChild("Placeholder").GetComponent<Text> ().text = currentTileInteraction.mySize.y.ToString();
 
-		panel.FindChild ("SizeX").GetComponent<InputField> ().onEndEdit.AddListener (changeWidth);
-		panel.FindChild ("SizeY").GetComponent<InputField> ().onEndEdit.AddListener (changeHeight);
+		panel.FindChild ("SizeX").GetComponent<InputField> ().onEndEdit.AddListener (ChangeTileInteractionWidth);
+		panel.FindChild ("SizeY").GetComponent<InputField> ().onEndEdit.AddListener (ChangeTileInteractionHeight);
 
 		panel.FindChild ("PosX").FindChild("Placeholder").GetComponent<Text> ().text = currentTileInteraction.x.ToString();
 		panel.FindChild ("PosY").FindChild("Placeholder").GetComponent<Text> ().text = currentTileInteraction.y.ToString();
 
-		panel.FindChild ("PosX").GetComponent<InputField> ().onEndEdit.AddListener (changeX);
-		panel.FindChild ("PosY").GetComponent<InputField> ().onEndEdit.AddListener (changeY);
+		panel.FindChild ("PosX").GetComponent<InputField> ().onEndEdit.AddListener (ChangeTileInteractionX);
+		panel.FindChild ("PosY").GetComponent<InputField> ().onEndEdit.AddListener (ChangeTileInteractionY);
 
 
 		// INTERACTIONS //
@@ -661,10 +661,13 @@ public class InspectorManager : MonoBehaviour {
 
 		interactionTextInput = panel.FindChild("InteractionTextInput").GetComponent<InputField> ();
 		textInputCheckBox = panel.FindChild ("TextInputCheckBox").GetComponent<Toggle> ();
+		textInputCheckBox.onValueChanged.AddListener (CheckTileInspectorToggles);
+
 
 		if (currentTileInteraction.mySubInt != null) 
 		{			
-			if (currentTileInteraction.mySubInt.rawText != null) {
+			if (currentTileInteraction.mySubInt.rawText != null) 
+			{
 				textInputCheckBox.isOn = true;
 				interactionTextInput.interactable = true;
 
@@ -681,6 +684,8 @@ public class InspectorManager : MonoBehaviour {
 
 		destinationRoomInput = panel.FindChild("DestinationRoomInput").GetComponent<InputField>();
 		enterRoomCheckBox = panel.FindChild ("EnterRoomCheckBox").GetComponent<Toggle> ();
+		enterRoomCheckBox.onValueChanged.AddListener (CheckTileInspectorToggles);
+
 
 		if (currentTileInteraction.mySubInt != null) 
 		{			
@@ -694,6 +699,12 @@ public class InspectorManager : MonoBehaviour {
 			}
 		}
 
+
+		// Inspector toggles 
+
+		CheckTileInspectorToggles (true);
+
+
 		// Submit button
 
 		panel.FindChild("SubmitButton").GetComponent<Button> ().onClick.AddListener  (() => SubmitTileInteraction());
@@ -701,7 +712,34 @@ public class InspectorManager : MonoBehaviour {
 	}
 
 
+	public void CheckTileInspectorToggles(bool boolean)
+	{
 
+		if (textInputCheckBox.isOn == true) 
+		{
+			enterRoomCheckBox.isOn = false;
+			enterRoomCheckBox.interactable = false;
+			destinationRoomInput.interactable = false;
+
+		} else {
+
+			enterRoomCheckBox.interactable = true;
+		}
+
+
+		if (enterRoomCheckBox.isOn == true) 
+		{
+
+			textInputCheckBox.isOn = false;
+			textInputCheckBox.interactable = false;
+			interactionTextInput.interactable = false;
+
+
+		} else {
+
+			textInputCheckBox.interactable = true;
+		}
+	}
 
 
 	public void SubmitTileInteraction()
@@ -756,6 +794,59 @@ public class InspectorManager : MonoBehaviour {
 	}
 
 
+
+
+	// change size
+
+
+	public void ChangeTileInteractionWidth(string x)
+	{
+
+		int newX = int.Parse (x);
+		EditorRoomManager.instance.ChangeTileInteractionWidth (newX, chosenTileInteraction);
+
+	}
+
+
+
+	public void ChangeTileInteractionHeight(string y)
+	{
+		int newY = int.Parse (y);
+		EditorRoomManager.instance.ChangeTileInteractionHeight (newY, chosenTileInteraction);
+
+	}
+
+
+
+
+	// change position
+
+
+	public void ChangeTileInteractionX(string x)
+	{
+
+		int newX = int.Parse (x);
+		EditorRoomManager.instance.ChangeTileInteractionTileX (newX, chosenTileInteraction);
+
+	}
+
+
+
+	public void ChangeTileInteractionY(string y)
+	{
+		int newY = int.Parse (y);
+		EditorRoomManager.instance.ChangeTileInteractionTileY (newY, chosenTileInteraction);
+
+	}
+
+
+
+
+
+
+
+
+	// ----- DESTROY ----- //
 
 
 	void DestroyTileInspector()

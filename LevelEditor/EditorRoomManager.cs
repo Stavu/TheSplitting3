@@ -320,14 +320,12 @@ public class EditorRoomManager : MonoBehaviour {
 
 
 
-	// Tile Interaciton //
+	// ----- Tile Interaciton ----- //
 
 
 
 	public void PlaceTileInteraction(Tile tile)
 	{
-
-
 
 		// If there's already a tileInteraction on this tile, destroy it before creating a new tileInteraction
 
@@ -337,8 +335,6 @@ public class EditorRoomManager : MonoBehaviour {
 			room.myTileInteractionList.Remove (tile.myTileInteraction);
 					
 		}
-
-
 
 		// create tileInteraction
 
@@ -389,6 +385,77 @@ public class EditorRoomManager : MonoBehaviour {
 
 		EventsHandler.Invoke_cb_editorFurniturePlaced (furn);
 		*/
+
+	}
+
+
+
+	public void ChangeTileInteractionWidth(int width, TileInteraction tileInt)
+	{
+
+		tileInt.mySize = new Vector2 (width, tileInt.mySize.y);
+
+		EventsHandler.Invoke_cb_editorTileInteractioneModelChanged (tileInt);
+
+
+	}
+
+
+
+	public void ChangeTileInteractionHeight(int height, TileInteraction tileInt)
+	{
+
+		tileInt.mySize = new Vector2 (tileInt.mySize.x, height);
+
+		EventsHandler.Invoke_cb_editorTileInteractioneModelChanged (tileInt);
+
+
+	}
+
+
+
+	public void ChangeTileInteractionTileX(int x, TileInteraction tileInt)
+	{
+
+
+		Tile tile = room.myGrid.GetTileAt (tileInt.x, tileInt.y);
+		Tile tileNew = room.myGrid.GetTileAt (x, tileInt.y);
+
+		if (tileNew == null) 
+		{			
+			return;
+		}
+
+		tile.myTileInteraction = null;
+		tileInt.x = x;
+
+		tileNew.myTileInteraction = tileInt;
+
+		EventsHandler.Invoke_cb_editorTileInteractioneModelChanged (tileInt);
+	}
+
+
+
+
+	public void ChangeTileInteractionTileY(int y, TileInteraction tileInt)
+	{
+
+		Tile tile = room.myGrid.GetTileAt (tileInt.x, tileInt.y);
+		Tile tileNew = room.myGrid.GetTileAt (tileInt.x, y);
+
+
+		if (tileNew == null) 
+		{			
+			return;
+		}
+
+
+		tile.myTileInteraction = null;
+		tileInt.y = y;
+
+		tileNew.myTileInteraction = tileInt;
+
+		EventsHandler.Invoke_cb_editorTileInteractioneModelChanged (tileInt);
 
 	}
 
