@@ -94,13 +94,13 @@ public class EditorCharacterHandler : MonoBehaviour {
 
 
 
-	public void CreateCharacterObject(Character character)
+	public void CreateCharacterObject(Character myCharacter)
 	{			
 
-		GameObject obj = Utilities.CreateCharacterGameObject (character, this.transform);
+		GameObject obj = Utilities.CreateCharacterGameObject (myCharacter, this.transform);
 
 
-		if (character == null) 
+		if (myCharacter == null) 
 		{
 			Debug.Log ("character = null");
 		}
@@ -111,7 +111,7 @@ public class EditorCharacterHandler : MonoBehaviour {
 		}
 
 
-		EditorRoomManager.instance.characterGameObjectMap.Add (character, obj);	
+		EditorRoomManager.instance.characterGameObjectMap.Add (myCharacter, obj);	
 
 	}
 }

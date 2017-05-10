@@ -6,7 +6,7 @@ public class UseItemHelper {
 
 
 
-	public static void UseItemOnFurniture (InventoryItem item, Furniture furniture)
+	public static void UseItemOnPhysicalInteractable (InventoryItem item, PhysicalInteractable physicalInt)
 	{
 
 		//Debug.Log ("Use item Helper " + item.fileName + " " + furniture.myName);
@@ -23,7 +23,7 @@ public class UseItemHelper {
 			case "compass":
 
 
-				switch (furniture.myName) 
+				switch (physicalInt.myName) 
 				{
 
 					case "door_abandoned_main_shadow":
@@ -55,7 +55,7 @@ public class UseItemHelper {
 			case "missing_picture":
 				
 
-				switch (furniture.myName) 
+				switch (physicalInt.myName) 
 				{
 
 					case "door_abandoned_main_shadow":

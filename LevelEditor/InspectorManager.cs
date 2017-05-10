@@ -39,7 +39,11 @@ public class InspectorManager : MonoBehaviour {
 	public static TileInspector tileInspector;
 
 
-	//public Interaction loadedInteraction;
+	// public Interaction loadedInteraction;
+
+
+
+	// Chosen furniture
 
 	Furniture _chosenFurniture;
 	public Furniture chosenFurniture
@@ -53,16 +57,46 @@ public class InspectorManager : MonoBehaviour {
 		{
 			_chosenFurniture = value;
 
-			if (_chosenFurniture == null) 
+			if ((_chosenFurniture == null) && (chosenCharacter == null))
 			{
 				DestroyInspector ();
 
-			} else {
-
+			} else if (_chosenFurniture != null)
+			{
 				CreateInspector (_chosenFurniture);
 			}
 		}
 	}
+
+
+
+	// Chosen character
+
+	Character _chosenCharacter;
+	public Character chosenCharacter
+	{
+		get 
+		{
+			return _chosenCharacter;
+		}
+
+		set 
+		{
+			_chosenCharacter = value;
+
+			if ((_chosenCharacter == null) && (chosenFurniture == null))
+			{
+				DestroyInspector ();
+
+			} else if (_chosenCharacter != null)
+			{
+				CreateInspector (_chosenCharacter);
+			}
+		}
+	}
+
+
+
 
 
 	// chosen tile interaction property
@@ -79,12 +113,14 @@ public class InspectorManager : MonoBehaviour {
 		{
 			_chosenTileInteraction = value;
 
-			if (_chosenTileInteraction == null) 
+			if (_chosenTileInteraction == null)  
 			{
+				//Debug.Log ("destroy tile inspector");
 				tileInspector.DestroyTileInspector ();
 
 			} else {
 
+				//Debug.Log ("create tile inspector");
 				tileInspector.CreateTileInspector (_chosenTileInteraction);
 			}
 		}
@@ -124,8 +160,12 @@ public class InspectorManager : MonoBehaviour {
 	// INSPECTOR //
 
 
-	public void CreateInspector(Furniture currentFurniture)
+	public void CreateInspector(PhysicalInteractable currentPhysicalInteractable)
 	{
+
+
+		Debug.Log ("createInspector");
+
 
 		DestroyInspector ();
 
@@ -134,25 +174,26 @@ public class InspectorManager : MonoBehaviour {
 
 		Transform panel = inspectorObject.transform.FindChild ("Panel");
 
+		Debug.Log ("name " + currentPhysicalInteractable.myName);
 
-		panel.FindChild ("Name").GetComponent<Text> ().text = currentFurniture.myName;
+		panel.FindChild ("Name").GetComponent<Text> ().text = currentPhysicalInteractable.myName;
 
-		panel.FindChild ("SizeX").FindChild("Placeholder").GetComponent<Text> ().text = currentFurniture.mySize.x.ToString();
-		panel.FindChild ("SizeY").FindChild("Placeholder").GetComponent<Text> ().text = currentFurniture.mySize.y.ToString();
+		panel.FindChild ("SizeX").FindChild("Placeholder").GetComponent<Text> ().text = currentPhysicalInteractable.mySize.x.ToString();
+		panel.FindChild ("SizeY").FindChild("Placeholder").GetComponent<Text> ().text = currentPhysicalInteractable.mySize.y.ToString();
 
 		panel.FindChild ("SizeX").GetComponent<InputField> ().onEndEdit.AddListener (changeWidth);
 		panel.FindChild ("SizeY").GetComponent<InputField> ().onEndEdit.AddListener (changeHeight);
 
 
-		panel.FindChild ("PosX").FindChild("Placeholder").GetComponent<Text> ().text = currentFurniture.x.ToString();
-		panel.FindChild ("PosY").FindChild("Placeholder").GetComponent<Text> ().text = currentFurniture.y.ToString();
+		panel.FindChild ("PosX").FindChild("Placeholder").GetComponent<Text> ().text = currentPhysicalInteractable.x.ToString();
+		panel.FindChild ("PosY").FindChild("Placeholder").GetComponent<Text> ().text = currentPhysicalInteractable.y.ToString();
 
 		panel.FindChild ("PosX").GetComponent<InputField> ().onEndEdit.AddListener (changeX);
 		panel.FindChild ("PosY").GetComponent<InputField> ().onEndEdit.AddListener (changeY);
 
 
-		panel.FindChild ("OffsetX").FindChild("Placeholder").GetComponent<Text> ().text = currentFurniture.offsetX.ToString();
-		panel.FindChild ("OffsetY").FindChild("Placeholder").GetComponent<Text> ().text = currentFurniture.offsetY.ToString();
+		panel.FindChild ("OffsetX").FindChild("Placeholder").GetComponent<Text> ().text = currentPhysicalInteractable.offsetX.ToString();
+		panel.FindChild ("OffsetY").FindChild("Placeholder").GetComponent<Text> ().text = currentPhysicalInteractable.offsetY.ToString();
 
 
 		panel.FindChild ("OffsetX").GetComponent<InputField> ().onEndEdit.AddListener (changeOffsetX);
@@ -166,10 +207,11 @@ public class InspectorManager : MonoBehaviour {
 			
 			Button button = panel.FindChild ("AddInteraction" + i.ToString ()).GetComponent<Button> ();
 
-			if (chosenFurniture.myInteractionList.Count > i) {
+			if (currentPhysicalInteractable.myInteractionList.Count > i) 
+			{
 			
-				button.transform.FindChild ("Text").GetComponent<Text> ().text = chosenFurniture.myInteractionList [i].myVerb;
-				Interaction interaction = chosenFurniture.myInteractionList [i];
+				button.transform.FindChild ("Text").GetComponent<Text> ().text = currentPhysicalInteractable.myInteractionList [i].myVerb;
+				Interaction interaction = currentPhysicalInteractable.myInteractionList [i];
 				button.onClick.AddListener (() => interactionInspector.OpenInteractionPanel (interaction));	
 					
 
@@ -188,6 +230,7 @@ public class InspectorManager : MonoBehaviour {
 	public void DestroyInspector()
 	{
 
+		Debug.Log ("destroy inspector");
 		if (inspectorObject != null) 
 		{
 
@@ -208,7 +251,16 @@ public class InspectorManager : MonoBehaviour {
 	{
 
 		int newX = int.Parse (x);
-		EditorRoomManager.instance.ChangeInteractableWidth (newX, chosenFurniture);
+
+		if (chosenFurniture != null) 
+		{			
+			EditorRoomManager.instance.ChangeInteractableWidth (newX, chosenFurniture);
+
+		} else if (chosenCharacter != null) 
+		{			
+			EditorRoomManager.instance.ChangeInteractableWidth (newX, chosenCharacter);
+		}
+
 
 	}
 
@@ -217,12 +269,17 @@ public class InspectorManager : MonoBehaviour {
 	public void changeHeight(string y)
 	{
 		int newY = int.Parse (y);
-		EditorRoomManager.instance.ChangeInteractableHeight (newY, chosenFurniture);
+
+		if (chosenFurniture != null) 
+		{			
+			EditorRoomManager.instance.ChangeInteractableHeight (newY, chosenFurniture);
+
+		} else if (chosenCharacter != null) 
+		{			
+			EditorRoomManager.instance.ChangeInteractableHeight (newY, chosenCharacter);
+		}
 
 	}
-
-
-
 
 
 
@@ -233,17 +290,34 @@ public class InspectorManager : MonoBehaviour {
 	{
 
 		int newX = int.Parse (x);
-		EditorRoomManager.instance.ChangeInteractableTileX (newX, chosenFurniture);
-	
+
+		if (chosenFurniture != null) 
+		{			
+			EditorRoomManager.instance.ChangeInteractableTileX (newX, chosenFurniture);
+		
+		} else if (chosenCharacter != null) 
+		{			
+			EditorRoomManager.instance.ChangeInteractableTileX (newX, chosenCharacter);
+		}
+			
 	}
+
 
 
 
 	public void changeY(string y)
 	{
 		int newY = int.Parse (y);
-		EditorRoomManager.instance.ChangeInteractableTileY (newY, chosenFurniture);
 
+
+		if (chosenFurniture != null) 
+		{			
+			EditorRoomManager.instance.ChangeInteractableTileY (newY, chosenFurniture);
+
+		} else if (chosenCharacter != null) 
+		{			
+			EditorRoomManager.instance.ChangeInteractableTileY (newY, chosenCharacter);
+		}
 	}
 
 
@@ -256,17 +330,33 @@ public class InspectorManager : MonoBehaviour {
 	{
 
 		float newX = float.Parse (x);
-		EditorRoomManager.instance.ChangeInteractableOffsetX (newX, chosenFurniture);
 
+		if (chosenFurniture != null) 
+		{
+			EditorRoomManager.instance.ChangeInteractableOffsetX (newX, chosenFurniture);
+		
+		} else if (chosenCharacter != null) 
+		{			
+			EditorRoomManager.instance.ChangeInteractableOffsetX (newX, chosenCharacter);
+		}
 	}
+
+
 
 
 
 	public void changeOffsetY(string y)
 	{
 		float newY = float.Parse (y);
-		EditorRoomManager.instance.ChangeInteractableOffsetY (newY, chosenFurniture);
 
+		if (chosenFurniture != null) 
+		{
+			EditorRoomManager.instance.ChangeInteractableOffsetY (newY, chosenFurniture);
+
+		} else if (chosenCharacter != null) 
+		{			
+			EditorRoomManager.instance.ChangeInteractableOffsetY (newY, chosenCharacter);
+		}	
 	}
 
 

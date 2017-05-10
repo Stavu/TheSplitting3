@@ -231,7 +231,14 @@ public class EditorRoomManager : MonoBehaviour {
 
 	public void ChangeInteractableTileX(int x, Interactable interactable)
 	{
-		
+
+		if (interactable == null) 
+		{
+
+			Debug.Log ("interactable is null");
+		}
+
+
 	
 		Tile tile = room.myGrid.GetTileAt (interactable.x, interactable.y);
 		Tile tileNew = room.myGrid.GetTileAt (x, interactable.y);

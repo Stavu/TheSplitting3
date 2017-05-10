@@ -191,7 +191,7 @@ public class InteractionManager : MonoBehaviour {
 	// Use item (we still don't know what item it is)
 
 
-	public void OpenInventory_UseItem (Furniture furn)
+	public void OpenInventory_UseItem (PhysicalInteractable physicalInt)
 	{
 
 		InventoryUI.instance.OpenInventory (InventoryState.UseItem);

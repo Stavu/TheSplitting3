@@ -29,7 +29,10 @@ public class TileManager : MonoBehaviour {
 
 	// Use this for initialization
 	public void Initialize () 
-	{
+	{	
+		EventsHandler.cb_furnitureChanged += ColorTiles;
+		EventsHandler.cb_characterChanged += ColorTiles;
+		EventsHandler.cb_tileInteractionChanged += ColorTiles;
 
 		EventsHandler.cb_roomCreated += CreateTileObject;
 
@@ -40,7 +43,10 @@ public class TileManager : MonoBehaviour {
 
 	public void OnDestroy()
 	{
-		
+		EventsHandler.cb_furnitureChanged -= ColorTiles;
+		EventsHandler.cb_characterChanged -= ColorTiles;
+		EventsHandler.cb_tileInteractionChanged -= ColorTiles;
+
 		EventsHandler.cb_roomCreated -= CreateTileObject;
 	
 	}
@@ -80,5 +86,34 @@ public class TileManager : MonoBehaviour {
 		}
 
 	}
+
+
+
+	// Color furniture tiles inside game
+
+	public void ColorTiles(Interactable interactable)
+	{
+
+		//Debug.Log ("ColorTiles");
+
+
+		List<Tile> InteractableTiles = RoomManager.instance.myRoom.GetMyTiles(interactable.mySize, interactable.x, interactable.y);
+
+
+		// light the tiles
+
+
+		foreach (Tile tile in InteractableTiles) {
+
+			TileManager.instance.tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = new Color (0.1f, 0.3f, 0.2f, 0.4f);
+
+		}		
+
+
+	}
+
+
+
+
 
 }

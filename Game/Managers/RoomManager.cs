@@ -54,12 +54,31 @@ public class RoomManager : MonoBehaviour {
 		CreateRoom ();
 
 
-		foreach (Furniture myRoomObject in myRoom.myFurnitureList) 
+		foreach (Furniture furn in myRoom.myFurnitureList) 
 		{
 
-			EventsHandler.Invoke_cb_furnitureChanged (myRoomObject);
+			EventsHandler.Invoke_cb_furnitureChanged (furn);
 			
 		}
+
+
+		foreach (Character character in myRoom.myCharacterList) 
+		{
+
+			EventsHandler.Invoke_cb_characterChanged (character);
+
+		}
+
+
+		foreach (TileInteraction tileInt in myRoom.myTileInteractionList) 
+		{
+
+			EventsHandler.Invoke_cb_tileInteractionChanged (tileInt);
+
+		}
+
+
+
 
 		GameManager.instance.inputState = InputState.Character; //FIXME
 

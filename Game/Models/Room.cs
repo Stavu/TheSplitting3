@@ -75,6 +75,7 @@ public class Room {
 		this.bgName = clone.bgName;
 
 		this.myFurnitureList = clone.myFurnitureList;
+		this.myCharacterList = clone.myCharacterList;
 		this.myTileInteractionList = clone.myTileInteractionList;
 
 		myGrid = new Grid (myWidth,myHeight);
@@ -101,6 +102,22 @@ public class Room {
 			foreach (Tile tile in FurnitureTiles) 
 			{
 				tile.PlaceFurniture(furn);
+
+			}		
+
+		}
+
+
+		// Character
+
+		foreach (Character character in myCharacterList) 
+		{
+
+			List<Tile> CharacterTiles = GetMyTiles(character.mySize, character.x, character.y);
+
+			foreach (Tile tile in CharacterTiles) 
+			{
+				tile.PlaceCharacter(character);
 
 			}		
 

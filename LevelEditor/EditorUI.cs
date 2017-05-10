@@ -32,13 +32,15 @@ public class EditorUI : MonoBehaviour {
 
 	public GameObject bgSelectPrefab; 
 	Dropdown dropDownMenu;
-	public GameObject furnitureSelectPrefab;
-	public GameObject furnitureButtonPrefab;
+	public GameObject interactableSelectPrefab;
+	public GameObject interactableButtonPrefab;
 
-	GameObject furnitureSelect;
+	GameObject interactableSelect;
+
 
 
 	// Use this for initialization
+
 	public void CreateUI () {
 
 
@@ -87,6 +89,12 @@ public class EditorUI : MonoBehaviour {
 		furnButton.onClick.AddListener (CreateFurnitureSelect);
 
 
+		// new character button
+
+		Button characterButton = bgSelectPrefab.transform.FindChild ("CharacterButton").GetComponent<Button>();
+		characterButton.onClick.AddListener (CreateCharacterSelect);
+
+
 		// tile interaction button
 
 		Button tileIntButton = bgSelectPrefab.transform.FindChild ("TileInteractionButton").GetComponent<Button>();
@@ -124,29 +132,29 @@ public class EditorUI : MonoBehaviour {
 
 
 
-	// Adding Furniture
+	// CREATING FURNITURE //
 
 
 
 	public void CreateFurnitureSelect()
 	{
 
-		furnitureSelect = Instantiate (furnitureSelectPrefab);
+		interactableSelect = Instantiate (interactableSelectPrefab);
 
-		GameObject content = furnitureSelect.GetComponentInChildren<GridLayoutGroup> ().gameObject;
+		GameObject content = interactableSelect.GetComponentInChildren<GridLayoutGroup> ().gameObject;
 				
 		Sprite[] furnitureSpriteList = Resources.LoadAll<Sprite> ("Sprites/Furniture/");
 
 		foreach (Sprite sprite in furnitureSpriteList) 
 		{
 
-			GameObject button = Instantiate (furnitureButtonPrefab);
+			GameObject button = Instantiate (interactableButtonPrefab);
 			button.transform.SetParent (content.transform);
 
 			button.GetComponent<Image> ().sprite = sprite;
 			button.GetComponentInChildren<Text> ().text = sprite.name;
 
-			button.GetComponent<Button> ().onClick.AddListener (() => FurnitureImageSelected(sprite.name));
+			button.GetComponent<Button> ().onClick.AddListener (() => SetFurnitureBuildMode(sprite.name));
 
 
 		}
@@ -156,12 +164,12 @@ public class EditorUI : MonoBehaviour {
 
 
 
-	public void FurnitureImageSelected(string furnitureName)
+	public void SetFurnitureBuildMode(string furnitureName)
 	{
 
 		BuildController.instance.furnitureName = furnitureName;
 
-		Destroy (furnitureSelect);
+		Destroy (interactableSelect);
 
 
 		// set to build Furniture mode
@@ -173,12 +181,52 @@ public class EditorUI : MonoBehaviour {
 
 
 
-	public void SetTileInteractionMode()
+
+
+	// CREATING CHARACTER //
+
+
+	public void CreateCharacterSelect()
 	{
 
-		// set to build tileInteraction mode
+		interactableSelect = Instantiate (interactableSelectPrefab);
 
-		BuildController.instance.mode = BuildController.Mode.buildTileInteraction;
+		GameObject content = interactableSelect.GetComponentInChildren<GridLayoutGroup> ().gameObject;
+
+		GameObject[] characterGameObjectList = Resources.LoadAll<GameObject> ("Prefabs/Characters/");
+
+		foreach (GameObject gameObject in characterGameObjectList) 
+		{
+
+			GameObject button = Instantiate (interactableButtonPrefab);
+			button.transform.SetParent (content.transform);
+
+
+			button.GetComponent<Image> ().sprite = gameObject.GetComponentInChildren<SpriteRenderer>().sprite;
+			button.GetComponentInChildren<Text> ().text = gameObject.name;
+
+			button.GetComponent<Button> ().onClick.AddListener (() => SetCharacterBuildMode(gameObject.name));
+
+
+		}
+
+	}
+
+
+
+
+
+	public void SetCharacterBuildMode(string characterName)
+	{
+
+		BuildController.instance.characterName = characterName;
+
+		Destroy (interactableSelect);
+
+
+		// set to build Furniture mode
+
+		BuildController.instance.mode = BuildController.Mode.buildCharacter;
 
 
 	}
@@ -186,12 +234,33 @@ public class EditorUI : MonoBehaviour {
 
 
 
+
+
+
+	// CREATE TILE INTERACTION //
+
+
+	public void SetTileInteractionMode()
+	{
+
+		// set to build tileInteraction mode
+
+		BuildController.instance.mode = BuildController.Mode.buildTileInteraction;
+
+	}
+
+
+
+
+
+
+
+	// ROOM NAME
+
 	public void RoomNameChanged(string name)
 	{
 
 		EditorRoomManager.instance.room.myName = name;
-
-
 
 	}
 

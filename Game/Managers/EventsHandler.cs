@@ -102,26 +102,26 @@ public static class EventsHandler
 
 
 
-	public static Action<Furniture,Tile> cb_playerHitFurniture; 
+	public static Action<PhysicalInteractable,Tile> cb_playerHitPhysicalInteractable; 
 
-	public static void Invoke_cb_playerHitFurniture(Furniture furniture, Tile tile)
+	public static void Invoke_cb_playerHitPhysicalInteractable(PhysicalInteractable physicalInt, Tile tile)
 	{
-		if(cb_playerHitFurniture != null)
+		if(cb_playerHitPhysicalInteractable != null)
 		{
-			cb_playerHitFurniture (furniture, tile);
+			cb_playerHitPhysicalInteractable (physicalInt, tile);
 		}
 
 	}
 
 
 
-	public static Action cb_playerLeaveFurniture; 
+	public static Action cb_playerLeavePhysicalInteractable; 
 
-	public static void Invoke_cb_playerLeaveFurniture()
+	public static void Invoke_cb_playerLeavePhysicalInteractable()
 	{
-		if(cb_playerLeaveFurniture != null)
+		if(cb_playerLeavePhysicalInteractable != null)
 		{
-			cb_playerLeaveFurniture ();
+			cb_playerLeavePhysicalInteractable ();
 		}
 
 	}
@@ -156,6 +156,19 @@ public static class EventsHandler
 	// Room Manager 
 
 
+
+	public static Action<Room> cb_roomCreated; 
+
+	public static void Invoke_cb_roomCreated(Room room)
+	{
+		if(cb_roomCreated != null)
+		{
+			cb_roomCreated (room);
+		}
+
+	}
+
+
 	public static Action<Furniture> cb_furnitureChanged; 
 
 	public static void Invoke_cb_furnitureChanged(Furniture furniture)
@@ -168,16 +181,35 @@ public static class EventsHandler
 	}
 
 
-	public static Action<Room> cb_roomCreated; 
+	public static Action<Character> cb_characterChanged; 
 
-	public static void Invoke_cb_roomCreated(Room room)
+	public static void Invoke_cb_characterChanged(Character character)
 	{
-		if(cb_roomCreated != null)
+		if(cb_characterChanged != null)
 		{
-			cb_roomCreated (room);
+			cb_characterChanged (character);
 		}
 
 	}
+
+
+
+
+	public static Action<TileInteraction> cb_tileInteractionChanged; 
+
+	public static void Invoke_cb_tileInteractionChanged(TileInteraction tileInt)
+	{
+		if(cb_tileInteractionChanged != null)
+		{
+			cb_tileInteractionChanged (tileInt);
+		}
+
+	}
+
+
+
+
+
 
 
 

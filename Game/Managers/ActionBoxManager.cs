@@ -26,10 +26,10 @@ public class ActionBoxManager : MonoBehaviour {
 	public GameObject ActionBoxPrefab;
 	public GameObject ActionPrefab;
 
-	GameObject currentFurnitureFrame;
+	GameObject currentPhysicalInteractableFrame;
 	public GameObject currentActionBox;
 
-	public Furniture currentFurniture;
+	public PhysicalInteractable currentPhysicalInteractable;
 
 
 
@@ -70,12 +70,12 @@ public class ActionBoxManager : MonoBehaviour {
 	public void Initialize () 
 	{
 
-		EventsHandler.cb_playerHitFurniture += SetFurnitureFrame;
-		EventsHandler.cb_playerLeaveFurniture += CloseFurnitureFrame;	
+		EventsHandler.cb_playerHitPhysicalInteractable += SetPhysicalInteractableFrame;
+		EventsHandler.cb_playerLeavePhysicalInteractable += CloseFurnitureFrame;	
 
 		EventsHandler.cb_keyPressedDown += BrowseInteractions;
 
-		currentFurniture = null;
+		currentPhysicalInteractable = null;
 		
 	}
 
@@ -83,8 +83,8 @@ public class ActionBoxManager : MonoBehaviour {
 	public void OnDestroy()
 	{
 		
-		EventsHandler.cb_playerHitFurniture -= SetFurnitureFrame;
-		EventsHandler.cb_playerLeaveFurniture -= CloseFurnitureFrame;
+		EventsHandler.cb_playerHitPhysicalInteractable -= SetPhysicalInteractableFrame;
+		EventsHandler.cb_playerLeavePhysicalInteractable -= CloseFurnitureFrame;
 
 		EventsHandler.cb_keyPressedDown -= BrowseInteractions;
 			
@@ -101,44 +101,71 @@ public class ActionBoxManager : MonoBehaviour {
 
 
 
-	public void SetFurnitureFrame(Furniture myFurniture, Tile furnitureTile)
+	public void SetPhysicalInteractableFrame(PhysicalInteractable myPhysicalInt, Tile tile)
 	{
 
-		if (myFurniture.myInteractionList.Count == 0) 
+		if (myPhysicalInt.myInteractionList.Count == 0) 
 		{		
 			return;		
 		}
 
 
-		if (currentFurnitureFrame != null) 		
+		if (currentPhysicalInteractableFrame != null) 		
 		{			
 			return;
 		}
 
-		currentFurniture = myFurniture;
+		currentPhysicalInteractable = myPhysicalInt;
 
-		currentFurnitureFrame = Instantiate (FurnitureFramePrefab);
+		currentPhysicalInteractableFrame = Instantiate (FurnitureFramePrefab);
 
 
 		// declerations 
 
-		GameObject myFurnitureObject = FurnitureManager.instance.furnitureGameObjectMap [myFurniture];
-
-		Vector3 furnitureCenter = myFurnitureObject.GetComponent<SpriteRenderer> ().bounds.center;
-		//Debug.Log ("furnitureCenter " + furnitureCenter);
-
-		currentFurnitureFrame.GetComponent<RectTransform> ().anchoredPosition = furnitureCenter;
+		Vector3 frameBounds = Vector3.zero;
 
 
-		// positioning frame pieces
+		if (myPhysicalInt is Furniture) 		
+		{
 
-		Vector3 frameBounds = myFurnitureObject.GetComponent<SpriteRenderer> ().bounds.extents;
+			Furniture myFurniture = (Furniture)myPhysicalInt;
+
+			GameObject myObject = FurnitureManager.instance.furnitureGameObjectMap [myFurniture];
+			Vector3 center = myObject.GetComponent<SpriteRenderer> ().bounds.center;
+
+			currentPhysicalInteractableFrame.GetComponent<RectTransform> ().anchoredPosition = center;
+
+			// positioning frame pieces
+
+			frameBounds = myObject.GetComponent<SpriteRenderer> ().bounds.extents;
+
+		}
 
 
-		currentFurnitureFrame.transform.FindChild ("FramePiece_DL").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (-frameBounds.x, -frameBounds.y);
-		currentFurnitureFrame.transform.FindChild ("FramePiece_DR").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (frameBounds.x, -frameBounds.y);
-		currentFurnitureFrame.transform.FindChild ("FramePiece_UL").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (-frameBounds.x, frameBounds.y);
-		currentFurnitureFrame.transform.FindChild ("FramePiece_UR").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (frameBounds.x, frameBounds.y);
+		if (myPhysicalInt is Character) 		
+		{
+
+			Character myCharacter = (Character)myPhysicalInt;
+
+			GameObject myObject = CharacterManager.instance.characterGameObjectMap [myCharacter];
+			Vector3 center = myObject.GetComponentInChildren<SpriteRenderer> ().bounds.center;
+
+			currentPhysicalInteractableFrame.GetComponent<RectTransform> ().anchoredPosition = center;
+
+			// positioning frame pieces
+
+			frameBounds = myObject.GetComponentInChildren<SpriteRenderer> ().bounds.extents;
+
+		}
+
+
+		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_DL").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (-frameBounds.x, -frameBounds.y);
+		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_DR").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (frameBounds.x, -frameBounds.y);
+		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_UL").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (-frameBounds.x, frameBounds.y);
+		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_UR").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (frameBounds.x, frameBounds.y);
+
+
+
 
 
 	}
@@ -149,10 +176,10 @@ public class ActionBoxManager : MonoBehaviour {
 	public void CloseFurnitureFrame ()
 	{
 		
-		if (currentFurnitureFrame != null) {
-			
-			Destroy (currentFurnitureFrame.gameObject);
-			currentFurniture = null;
+		if (currentPhysicalInteractableFrame != null) 
+		{
+			Destroy (currentPhysicalInteractableFrame.gameObject);
+			currentPhysicalInteractable = null;
 
 		}
 
@@ -178,22 +205,22 @@ public class ActionBoxManager : MonoBehaviour {
 	Vector3 PositionActionBox()
 	{
 				
-		Player activeCharacter = PlayerManager.instance.myPlayer;
+		Player activePlayer = PlayerManager.instance.myPlayer;
 
-		Tile characterTile = RoomManager.instance.myRoom.myGrid.GetTileAt (activeCharacter.myPos);
-		Tile currentTile = RoomManager.instance.myRoom.myGrid.GetTileAt (currentFurniture.myPos);
+		Tile playerTile = RoomManager.instance.myRoom.myGrid.GetTileAt (activePlayer.myPos);
+		Tile currentTile = RoomManager.instance.myRoom.myGrid.GetTileAt (currentPhysicalInteractable.myPos);
 
 
 		int x = 0;
 		int y = 0;
 
 
-		if (characterTile.y == currentTile.y)
+		if (playerTile.y == currentTile.y)
 		{
 			
 			// character is left of object
 
-			if (characterTile.x < currentTile.x)
+			if (playerTile.x < currentTile.x)
 			{
 				x = -3;
 				y = 3;
@@ -201,7 +228,7 @@ public class ActionBoxManager : MonoBehaviour {
 
 			// character is right of object
 
-			if (characterTile.x > currentTile.x)
+			if (playerTile.x > currentTile.x)
 			{
 				x = 2;
 				y = 1;
@@ -210,12 +237,12 @@ public class ActionBoxManager : MonoBehaviour {
 
 
 	
-		if (characterTile.x == currentTile.x)
+		if (playerTile.x == currentTile.x)
 		{
 
 			// character is above object
 
-			if (characterTile.y > currentTile.y) 
+			if (playerTile.y > currentTile.y) 
 			{
 				x = -2;
 				y = 1;
@@ -224,7 +251,7 @@ public class ActionBoxManager : MonoBehaviour {
 
 			// character is below object
 
-			if (characterTile.y < currentTile.y)
+			if (playerTile.y < currentTile.y)
 			{
 				x = -1;
 				y = 0;
@@ -233,7 +260,7 @@ public class ActionBoxManager : MonoBehaviour {
 		}
 
 
-		return new Vector3 (characterTile.x + x, characterTile.y + y, 0);
+		return new Vector3 (playerTile.x + x, playerTile.y + y, 0);
 
 
 	}
@@ -244,7 +271,7 @@ public class ActionBoxManager : MonoBehaviour {
 	{
 
 
-		if (currentFurniture.myInteractionList.Count == 0) 
+		if (currentPhysicalInteractable.myInteractionList.Count == 0) 
 		{
 			return;
 		}
@@ -253,19 +280,19 @@ public class ActionBoxManager : MonoBehaviour {
 		myInteractionObjectDictionary = new Dictionary<Interaction, GameObject> ();
 
 
-		for (int i = 0; i < currentFurniture.myInteractionList.Count; i++) 
+		for (int i = 0; i < currentPhysicalInteractable.myInteractionList.Count; i++) 
 		{
 
 			GameObject obj = Instantiate (ActionPrefab, currentActionBox.transform);
 			obj.transform.localPosition = new Vector3 (0, 1 - i, 0);
-			obj.GetComponent<Text> ().text = currentFurniture.myInteractionList[i].myVerb;
+			obj.GetComponent<Text> ().text = currentPhysicalInteractable.myInteractionList[i].myVerb;
 
-			myInteractionObjectDictionary.Add (currentFurniture.myInteractionList[i], obj);
+			myInteractionObjectDictionary.Add (currentPhysicalInteractable.myInteractionList[i], obj);
 
 
 			// if the interaction is use item, and there are no items in the inventory, it will be in 0.5 alpha
 
-			if ((currentFurniture.myInteractionList[i].myVerb == "Use Item") && (GameManager.playerData.inventory.items.Count == 0)) 
+			if ((currentPhysicalInteractable.myInteractionList[i].myVerb == "Use Item") && (GameManager.playerData.inventory.items.Count == 0)) 
 			{
 				obj.GetComponent<Text> ().color = new Color (1f, 1f, 1f, 0.5f); 
 			}
@@ -273,7 +300,7 @@ public class ActionBoxManager : MonoBehaviour {
 
 			if (currentInteraction == null) 
 			{
-				currentInteraction = currentFurniture.myInteractionList[i];
+				currentInteraction = currentPhysicalInteractable.myInteractionList[i];
 			}
 
 		}
@@ -300,7 +327,7 @@ public class ActionBoxManager : MonoBehaviour {
 			return;
 		}
 
-		int i =	currentFurniture.myInteractionList.IndexOf (currentInteraction);
+		int i =	currentPhysicalInteractable.myInteractionList.IndexOf (currentInteraction);
 
 
 		switch (myDirection) 
@@ -308,14 +335,14 @@ public class ActionBoxManager : MonoBehaviour {
 
 		case Direction.down:
 
-			if (i < currentFurniture.myInteractionList.Count - 1) 
+				if (i < currentPhysicalInteractable.myInteractionList.Count - 1) 
 			{
-				currentInteraction = currentFurniture.myInteractionList [i + 1];
+					currentInteraction = currentPhysicalInteractable.myInteractionList [i + 1];
 			}
 
-			if (i == currentFurniture.myInteractionList.Count - 1) 
+				if (i == currentPhysicalInteractable.myInteractionList.Count - 1) 
 			{
-				currentInteraction = currentFurniture.myInteractionList [0];
+					currentInteraction = currentPhysicalInteractable.myInteractionList [0];
 			}
 
 
@@ -327,12 +354,12 @@ public class ActionBoxManager : MonoBehaviour {
 
 			if (i > 0) 
 			{
-				currentInteraction = currentFurniture.myInteractionList [i - 1];
+					currentInteraction = currentPhysicalInteractable.myInteractionList [i - 1];
 			}
 
 			if (i == 0) 
 			{
-				currentInteraction = currentFurniture.myInteractionList [currentFurniture.myInteractionList.Count - 1];
+					currentInteraction = currentPhysicalInteractable.myInteractionList [currentPhysicalInteractable.myInteractionList.Count - 1];
 			}
 
 			break;

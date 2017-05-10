@@ -116,6 +116,8 @@ public class PlayerManager : MonoBehaviour {
 		}
 
 
+		// 4 tiles in one second
+
 		float playerSpeed = 4f * Time.deltaTime;
 		float offsetX = 0;
 		float offsetY = 0;
@@ -178,13 +180,13 @@ public class PlayerManager : MonoBehaviour {
 
 		if (tile != null)
 		{
-			// FURNITURE - if there a furinture at this tile
+			// FURNITURE - if there a furniture at this tile
 
 			if (tile.myFurniture != null) 
 			{
 				if (tile.myFurniture.walkable == false) 
 				{		
-					EventsHandler.Invoke_cb_playerHitFurniture (tile.myFurniture, tile);
+					EventsHandler.Invoke_cb_playerHitPhysicalInteractable (tile.myFurniture, tile);
 					StopPlayer (InputManager.instance.lastDirection);
 
 					return;
@@ -193,12 +195,35 @@ public class PlayerManager : MonoBehaviour {
 			}				
 
 
-			// if there's no furniture at this tile
+			// CHARACTER - if there a character at this tile
 
-			if (ActionBoxManager.instance.currentFurniture != null) 
+			if (tile.myCharacter != null) 
 			{
-				EventsHandler.Invoke_cb_playerLeaveFurniture ();
+				if (tile.myCharacter.walkable == false) 
+				{		
+					EventsHandler.Invoke_cb_playerHitPhysicalInteractable (tile.myCharacter, tile);
+					StopPlayer (InputManager.instance.lastDirection);
+
+					return;
+				}
+
+			}				
+
+
+			// if there's no character at this tile
+
+			if (ActionBoxManager.instance.currentPhysicalInteractable != null) 
+			{
+				EventsHandler.Invoke_cb_playerLeavePhysicalInteractable ();
 			}	
+
+
+
+
+
+
+
+
 
 
 

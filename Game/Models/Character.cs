@@ -5,27 +5,16 @@ using System;
 
 
 [Serializable]
-public class Character : Interactable {
+public class Character : PhysicalInteractable {
 
 
-	public string myName;
-	public Vector3 myPos {get; set;}
-
-	public float offsetX = 0;
-	public float offsetY = 0;
-
-	public List<Interaction> myInteractionList;
-
-
-
+	public float speed = 4f;
+	public Tile targetTile;
 
 
 	public Character(string myName, int x, int y)
 	{
-
-		//Debug.Log ("character constructor");
-
-
+		
 		// Constructor
 
 		this.myName = myName;
@@ -35,6 +24,22 @@ public class Character : Interactable {
 
 
 		myInteractionList = new List<Interaction> ();
+
+	}
+
+
+
+
+	public void ChangeTile(Tile newTile)
+	{
+
+
+		this.x = newTile.x;
+		this.y = newTile.y;
+
+		this.myPos = new Vector3 (newTile.x, newTile.y, 0);
+
+		newTile.myCharacter = this;
 
 	}
 

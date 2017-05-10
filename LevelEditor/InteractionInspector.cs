@@ -343,16 +343,12 @@ public class InteractionInspector : MonoBehaviour {
 
 
 		if ((recieveItemDropdown.interactable == true) && (recieveItemTitleInput.interactable == true)) 
-		{
-			//Debug.Log ("creating subinteraction pick up item");
+		{	
 
 			SubInteraction subInteraction = new SubInteraction ("pickUpItem");
 			subInteraction.inventoryItem = new InventoryItem (recieveItemDropdown.options [recieveItemDropdown.value].text, recieveItemTitleInput.text);
 
-			//Debug.Log ("name" + subInteraction.inventoryItem.fileName);
-
 			interaction.subInteractionList.Add (subInteraction);
-
 
 		}
 
@@ -372,26 +368,42 @@ public class InteractionInspector : MonoBehaviour {
 		}
 
 
+		PhysicalInteractable currentPhysicalInteractable = null;
+
+		if (InspectorManager.instance.chosenFurniture != null) 
+		{
+
+			currentPhysicalInteractable = InspectorManager.instance.chosenFurniture;
+
+		} else if (InspectorManager.instance.chosenCharacter != null) 
+		{
+			currentPhysicalInteractable = InspectorManager.instance.chosenCharacter;
+
+		}
+			
+
 
 		// If this is a new interaction, add to interaction list, if not, update interaction in list
 
-
-		if (InspectorManager.instance.chosenFurniture.myInteractionList.Contains (interaction) == false) 
+		if (currentPhysicalInteractable != null)
 		{
-			InspectorManager.instance.chosenFurniture.myInteractionList.Add (interaction);
+			if (currentPhysicalInteractable.myInteractionList.Contains (interaction) == false) 
+			{
+				currentPhysicalInteractable.myInteractionList.Add (interaction);
 
-		} else {
+			} else {
 
-			int i = InspectorManager.instance.chosenFurniture.myInteractionList.IndexOf (interaction);
-			InspectorManager.instance.chosenFurniture.myInteractionList [i] = interaction;
+				int i = currentPhysicalInteractable.myInteractionList.IndexOf (interaction);
+				currentPhysicalInteractable.myInteractionList [i] = interaction;
 
+			}
 		}
 
 
 		DestroyInteractionPanel ();
 
 		InspectorManager.instance.DestroyInspector ();
-		InspectorManager.instance.CreateInspector (InspectorManager.instance.chosenFurniture);
+		InspectorManager.instance.CreateInspector (currentPhysicalInteractable);
 
 
 	}

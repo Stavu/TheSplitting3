@@ -137,11 +137,30 @@ public class EditorTileManager : MonoBehaviour {
 				for (int y = 0; y < furn.mySize.y; y++) 
 				{
 					Tile tile = EditorRoomManager.instance.room.myGrid.GetTileAt (furn.x + x, furn.y + y);
-					tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = new Color (0.3f, 0.4f, 0.5f, 0.4f);
+					tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.blue;
 
 				}
 			}
 		}
+
+
+		// Color character tiles
+
+		foreach (Character character in EditorRoomManager.instance.room.myCharacterList) 
+		{
+
+			for (int x = 0; x < character.mySize.x; x++) 
+			{
+				for (int y = 0; y < character.mySize.y; y++) 
+				{
+					Tile tile = EditorRoomManager.instance.room.myGrid.GetTileAt (character.x + x, character.y + y);
+					tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.magenta;
+
+				}
+			}
+		}
+
+
 
 
 		// Color interaction tiles 
@@ -154,7 +173,7 @@ public class EditorTileManager : MonoBehaviour {
 				for (int y = 0; y < tileInt.mySize.y; y++) 
 				{
 					Tile tile = EditorRoomManager.instance.room.myGrid.GetTileAt (tileInt.x + x, tileInt.y + y);
-					tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = new Color (0.6f, 0.9f, 0.1f, 0.4f);
+					tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.yellow;
 
 				}
 			}

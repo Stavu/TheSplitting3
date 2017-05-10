@@ -71,9 +71,9 @@ public class GameActionManager : MonoBehaviour {
 		}
 
 
-		// if there is no furniture selected, return
+		// if there is no furniture / character selected, return
 
-		if ((ActionBoxManager.instance.currentFurniture == null) && (GameManager.instance.inputState != InputState.Inventory))
+		if ((ActionBoxManager.instance.currentPhysicalInteractable == null) && (GameManager.instance.inputState != InputState.Inventory))
 		{
 
 			return;

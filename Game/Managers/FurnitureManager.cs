@@ -26,17 +26,11 @@ public class FurnitureManager : MonoBehaviour {
 
 
 
-	//public GameObject FurniturePrefab;
-
-
-
-
 	// Use this for initialization
 
 	public void Initialize () 
-	{
-		
-		EventsHandler.cb_furnitureChanged += ColorTiles;
+	{		
+	
 		EventsHandler.cb_furnitureChanged += CreateFurnitureGameObject;
 
 		furnitureGameObjectMap = new Dictionary<Furniture, GameObject> ();
@@ -45,9 +39,8 @@ public class FurnitureManager : MonoBehaviour {
 
 
 	public void OnDestroy()
-	{
+	{	
 	
-		EventsHandler.cb_furnitureChanged -= ColorTiles;
 		EventsHandler.cb_furnitureChanged -= CreateFurnitureGameObject;
 			
 	}
@@ -63,29 +56,6 @@ public class FurnitureManager : MonoBehaviour {
 	}
 
 
-
-	// Color furniture tiles inside game
-
-	public void ColorTiles(Furniture myFurniture)
-	{
-		
-		//Debug.Log ("ColorTiles");
-
-
-		List<Tile> FurnitureTiles = RoomManager.instance.myRoom.GetMyTiles(myFurniture.mySize, myFurniture.x, myFurniture.y);
-
-
-		// light the tiles
-
-	
-		foreach (Tile tile in FurnitureTiles) {
-
-			TileManager.instance.tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = new Color (0.1f, 0.3f, 0.2f, 0.4f);
-
-		}		
-
-
-	}
 
 
 

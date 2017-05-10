@@ -99,7 +99,7 @@ public class SubInteraction {
 			case "useItem":
 
 
-				InteractionManager.instance.OpenInventory_UseItem (ActionBoxManager.instance.currentFurniture);
+				InteractionManager.instance.OpenInventory_UseItem (ActionBoxManager.instance.currentPhysicalInteractable);
 
 				break;
 

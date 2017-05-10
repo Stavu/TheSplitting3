@@ -62,6 +62,39 @@ public class Tile {
 	}
 
 
+	public void PlaceCharacter(Character character)
+	{
+
+		if (character == null) 
+		{
+			Debug.LogError("Tile: PlaceRoomObject myObject is null");
+
+			return;
+		}
+
+
+		if(myCharacter != null)
+		{
+			if (myCharacter != character) 
+			{
+				Debug.LogError("Tile: PlaceRoomObject myRoomObject exists");
+
+				return;
+			}
+
+		}
+
+
+		// if everything's okay, set myFurniture
+
+		myCharacter = character;
+
+	}
+
+
+
+
+
 
 	public void PlaceTileInteraction(TileInteraction tileInteraction)
 	{

@@ -10,6 +10,8 @@ public class Utilities {
 	int myVar3; 
 
 
+
+
 	public static void AdjustOrthographicCamera(Room room)
 	{
 
@@ -103,11 +105,12 @@ public class Utilities {
 	public static GameObject CreateCharacterGameObject (Character myCharacter, Transform parent)
 	{
 
+
 		//Debug.Log ("Assign Furniture Image");
 
 		myCharacter.myPos = new Vector3 (myCharacter.x + myCharacter.mySize.x/2, myCharacter.y, 0);
 
-		GameObject obj = GameObject.Instantiate(Resources.Load<GameObject> ("Sprites/Characters/" + myCharacter.myName)); 			
+		GameObject obj = GameObject.Instantiate(Resources.Load<GameObject> ("Prefabs/Characters/" + myCharacter.myName)); 			
 		obj.transform.SetParent (parent);
 
 
@@ -118,8 +121,8 @@ public class Utilities {
 
 		// sorting order 
 
-		obj.GetComponentInParent<SpriteRenderer>().sortingOrder  = -myCharacter.y;
-		obj.GetComponentInParent<SpriteRenderer>().sortingLayerName = Constants.furniture_character_layer;
+		obj.GetComponentInChildren<SpriteRenderer>().sortingOrder  = -myCharacter.y;
+		obj.GetComponentInChildren<SpriteRenderer>().sortingLayerName = Constants.furniture_character_layer;
 
 		return obj;
 
@@ -127,6 +130,21 @@ public class Utilities {
 	}
 
 
+
+	public static Vector3 GetCharacterPosOnTile(Character character, Tile tile)
+	{	
+		
+		Vector3 pos = Vector3.zero;
+
+		if (tile != null) 
+		{			
+			pos = new Vector3 (tile.x + character.mySize.x / 2 + character.offsetX, tile.y + character.offsetY + 0.5f, character.myPos.z);
+
+		}
+
+		return pos;
+
+	}
 
 
 }

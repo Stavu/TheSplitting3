@@ -23,21 +23,10 @@ public class BuildController : MonoBehaviour {
 
 
 
-	string _furnitureName;
 
-	public string furnitureName 
-	{ 
-		get 
-		{
-			return _furnitureName;
-		}
 
-		set 
-		{
-			_furnitureName = value;
-			//Debug.Log (_furnitureName);
-		}
-	}
+	public string furnitureName;
+	public string characterName;
 
 
 
@@ -116,11 +105,21 @@ public class BuildController : MonoBehaviour {
 				break;
 
 
+			case Mode.buildCharacter:
+
+				EditorRoomManager.editorCharacterHandler.PlaceCharacter (tile, characterName);
+
+				break;
+
+
 			case Mode.buildTileInteraction:
 
 				EditorRoomManager.editorTileInteractionHandler.PlaceTileInteraction (tile);
 
 				break;
+
+
+			
 		
 		}
 
@@ -139,32 +138,11 @@ public class BuildController : MonoBehaviour {
 	{
 
 		Debug.Log ("Inspect tiles");
+	
 
-
-		Furniture currentFurniture = null;
-		TileInteraction currentTileInteraction = null;
-
-
-		currentFurniture = tile.myFurniture;
-		currentTileInteraction = tile.myTileInteraction;
-
-
-		InspectorManager.instance.chosenTileInteraction = currentTileInteraction;
-		InspectorManager.instance.chosenFurniture = currentFurniture;
-
-
-
-		if (currentFurniture == null) 
-		{
-			Debug.Log ("furniture = null");
-
-		}
-
-		if (currentTileInteraction == null) 
-		{
-
-			Debug.Log ("tileInteraction = null");
-		}
+		InspectorManager.instance.chosenFurniture = tile.myFurniture;
+		InspectorManager.instance.chosenCharacter = tile.myCharacter;
+		InspectorManager.instance.chosenTileInteraction = tile.myTileInteraction;
 
 	}
 

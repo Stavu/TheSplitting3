@@ -886,13 +886,13 @@ public class InventoryUI : MonoBehaviour {
 			return;
 		}
 
-		if (ActionBoxManager.instance.currentFurniture == null) 
+		if (ActionBoxManager.instance.currentPhysicalInteractable == null) 
 		{
 			return;
 		}
 
 
-		UseItemHelper.UseItemOnFurniture (chosenItem, ActionBoxManager.instance.currentFurniture);
+		UseItemHelper.UseItemOnPhysicalInteractable (chosenItem, ActionBoxManager.instance.currentPhysicalInteractable);
 
 		CloseInventory ();
 
