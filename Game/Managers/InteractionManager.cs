@@ -70,7 +70,6 @@ public class InteractionManager : MonoBehaviour {
 	}
 
 
-
 	// Opening the text box
 
 	public void OpenTextBox(Player speaker)

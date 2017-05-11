@@ -44,6 +44,9 @@ public class SceneLoader : MonoBehaviour {
 		ActionBoxManager.instance.Initialize ();
 		InteractionManager.instance.Initialize ();	
 		GameActionManager.instance.Initialize ();
+		DialogueManager.instance.Initialize ();
+
+
 	
 		GameManager.instance.CreatePlayerData ();
 

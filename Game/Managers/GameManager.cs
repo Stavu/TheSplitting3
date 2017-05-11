@@ -11,6 +11,7 @@ public enum InputState
 	Inventory,
 	ActionBox,
 	Dialogue,
+	DialogueBox,
 	Settings
 
 }
