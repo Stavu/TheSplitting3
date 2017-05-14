@@ -29,8 +29,11 @@ public class UseItemHelper {
 					case "door_abandoned_main_shadow":
 						
 
-						//Debug.Log ("used item");
-						InteractionManager.instance.DisplayText (PlayerManager.instance.myPlayer, "This item is no good.");
+						DialogueSentence sentence = new DialogueSentence (PlayerManager.instance.myPlayer.myName, "This item is no good.", false);
+						List<DialogueSentence> list = new List<DialogueSentence> ();
+						list.Add (sentence);
+
+						InteractionManager.instance.DisplayText (list);
 
 						InventoryItem picture = new InventoryItem ("missing_picture", "Missing Picture");
 						GameManager.playerData.inventory.AddItem (picture);
@@ -60,8 +63,11 @@ public class UseItemHelper {
 
 					case "door_abandoned_main_shadow":
 
-						//Debug.Log ("used item picture");
-						InteractionManager.instance.DisplayText (PlayerManager.instance.myPlayer, "Picutre on door.");
+						DialogueSentence sentence2 = new DialogueSentence (PlayerManager.instance.myPlayer.myName, "pic on door.", false);
+						List<DialogueSentence> list2 = new List<DialogueSentence> ();
+						list2.Add (sentence2);
+
+						InteractionManager.instance.DisplayText (list2);
 
 					
 						break;

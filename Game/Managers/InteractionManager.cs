@@ -37,14 +37,14 @@ public class InteractionManager : MonoBehaviour {
 
 	public void Initialize () {
 
-		EventsHandler.cb_escapePressed += CloseTextBox;
+
 		
 	}
 
 	public void OnDestroy()
 	{
 
-		EventsHandler.cb_escapePressed -= CloseTextBox;
+	
 
 	}
 
@@ -60,75 +60,33 @@ public class InteractionManager : MonoBehaviour {
 	// ------  TEXT ------ //
 
 
-	public void DisplayText(Player speaker, string text)
+	public void DisplayText(List<DialogueSentence> sentenceList)
 	{
 
-		OpenTextBox (speaker);
-		InsertText (text);
-		GameManager.instance.inputState = InputState.Dialogue;
-
-	}
-
-
-	// Opening the text box
-
-	public void OpenTextBox(Player speaker)
-	{
-		
 		if (currentTextBox != null) 		
 		{			
 			return;
 		}
 
 		currentTextBox = Instantiate (TextBoxPrefab);
-		currentTextBox.GetComponent<RectTransform> ().anchoredPosition = PositionTextBox (speaker);
+		DialogueTextObject textObject = currentTextBox.AddComponent<DialogueTextObject> ();
+		textObject.AddTextList (sentenceList);
 
-	}
+		GameManager.instance.inputState = InputState.Dialogue;
 
-
-
-	public void InsertText(string text)
-	{
-
-		currentTextBox.GetComponentInChildren<Text> ().text = text;
-	}
-
-
-
-	Vector3 PositionTextBox(Player speaker)
-	{		
 	
-		int offsetX = 0;
-		int offsetY = 5;
-
-		Vector3 newPos = new Vector3 (speaker.myPos.x + offsetX, speaker.myPos.y + offsetY,0);
-
-
-		//now you can set the position of the ui element
-
-		return newPos;
-
 	}
 
+	/*
+	// Change conversation
 
 
-	public void CloseTextBox ()
+	public void ChangeConversation(string conversationName)
 	{
-
-		if (currentTextBox != null) {
-
-			Destroy (currentTextBox.gameObject);
-
-			GameManager.textBoxActive = false;
-			currentTextBox = null;
-
-			GameManager.instance.inputState = InputState.Character;
-
-		}
-
+		
+	
 	}
-
-
+	*/
 
 	// inventory text
 

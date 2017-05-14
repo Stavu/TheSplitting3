@@ -27,6 +27,7 @@ public class RoomManager : MonoBehaviour {
 
 
 	public Room myRoom;
+	public Dictionary <string,ISpeaker> nameSpeakerMap;
 
 
 
@@ -52,6 +53,8 @@ public class RoomManager : MonoBehaviour {
 
 
 		CreateRoom ();
+		nameSpeakerMap = new Dictionary<string, ISpeaker> ();
+
 
 
 		foreach (Furniture furn in myRoom.myFurnitureList) 
@@ -66,6 +69,7 @@ public class RoomManager : MonoBehaviour {
 		{
 
 			EventsHandler.Invoke_cb_characterChanged (character);
+			nameSpeakerMap.Add (character.myName, character);
 
 		}
 
@@ -78,6 +82,9 @@ public class RoomManager : MonoBehaviour {
 		}
 
 
+		// adding the player to the speaker map
+
+		nameSpeakerMap.Add (PlayerManager.instance.myPlayer.myName, PlayerManager.instance.myPlayer);
 
 
 		GameManager.instance.inputState = InputState.Character; //FIXME

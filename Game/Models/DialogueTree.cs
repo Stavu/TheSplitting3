@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using System;
 
 
+[Serializable]
 public class DialogueTree {
 
 
-	string myName;
+	public string myName;
 	public List<Conversation> conversationList;
+
+	[NonSerialized]
 	public Conversation currentConversation;
 
 
@@ -21,6 +25,7 @@ public class DialogueTree {
 		currentConversation = conversation1;
 
 		conversationList = new List<Conversation> ();
+		conversationList.Add (conversation1);
 
 	}
 
@@ -50,6 +55,8 @@ public class DialogueTree {
 
 // Conversation - What the conversation is about
 
+
+[Serializable]
 public class Conversation {
 
 
@@ -78,6 +85,7 @@ public class Conversation {
 
 // Dialogue option
 
+[Serializable]
 public class DialogueOption {
 
 
@@ -85,6 +93,7 @@ public class DialogueOption {
 
 	public List<DialogueSentence> sentenceList;
 	public Condition myCondition;
+
 
 
 	// Constructor
@@ -96,12 +105,23 @@ public class DialogueOption {
 
 		sentenceList = new List<DialogueSentence> ();
 
-		DialogueSentence sentence1 = new DialogueSentence ("Daniel", "Hello, how are you?");
-		DialogueSentence sentence2 = new DialogueSentence ("llehctiM", "fine, thank you.");
+		SubInteraction subInt = new SubInteraction ("pickUpItem");
+		subInt.inventoryItem = new InventoryItem ("order_details", "Order Details");
+		List<SubInteraction> subIntList = new List<SubInteraction> ();
+		subIntList.Add (subInt);
+
+		SubInteraction subInt2 = new SubInteraction ("endDialogueTree");
+		List<SubInteraction> subIntList2 = new List<SubInteraction> ();
+		subIntList2.Add (subInt2);
+
+
+		DialogueSentence sentence1 = new DialogueSentence ("Daniel", "Hello, how are you?", false);
+		DialogueSentence sentence2 = new DialogueSentence ("llehctiM", "fine, thank you.", true, subIntList);
+		DialogueSentence sentence3 = new DialogueSentence ("Daniel", "thank you!", false, subIntList2);
 
 		sentenceList.Add (sentence1);
 		sentenceList.Add (sentence2);
-
+		sentenceList.Add (sentence3);
 
 	}
 
@@ -113,25 +133,27 @@ public class DialogueOption {
 
 // Dialogue Sentence
 
+[Serializable]
 public class DialogueSentence {
 
 
 	public string speakerName;
 	public string myText;
+	public bool subinteractImmediately = false;
+	public List<SubInteraction> mySubIntList;
 
 
 	// Constructor
 
-	public DialogueSentence(string speaker, string text)
+	public DialogueSentence(string speaker, string text, bool subIntIm, List<SubInteraction> subIntList = null)
 	{
 
 		speakerName = speaker;
 		myText = text;
-
+		mySubIntList = subIntList;
+		subinteractImmediately = subIntIm;
 
 	}
-
-
 
 
 }

@@ -147,4 +147,49 @@ public class Utilities {
 	}
 
 
+
+
+	// When it's the player
+
+
+	public static List<DialogueSentence> CreateSentenceList (ISpeaker speaker, List<string> textlist)
+	{
+
+		List<DialogueSentence> sentenceList = new List<DialogueSentence> ();
+
+
+		foreach (string str in textlist) 
+		{
+			DialogueSentence tempSentence = new DialogueSentence (speaker.speakerName, str, false);
+			sentenceList.Add (tempSentence);
+		}
+
+		return sentenceList;
+
+	}
+
+
+
+
+
+	public static List<DialogueSentence> CreateSentenceList (ISpeaker speaker, string text)
+	{
+
+		List<DialogueSentence> sentenceList = new List<DialogueSentence> ();
+
+		DialogueSentence tempSentence = new DialogueSentence (speaker.speakerName, text, false);
+		sentenceList.Add (tempSentence);
+
+		return sentenceList;
+
+	}
+
+
+
+
+
+
+
+
+
 }

@@ -27,9 +27,9 @@ public class DialogueManager : MonoBehaviour {
 	public GameObject dialogueTreeBoxPrefab;
 	public GameObject dialogueOptionPrefab;
 
-	GameObject dialogueTreeObject;
+	public GameObject dialogueTreeObject;
 
-	DialogueTree currentDialogueTree;
+	public DialogueTree currentDialogueTree;
 	int nextSentence;
 
 
@@ -71,10 +71,12 @@ public class DialogueManager : MonoBehaviour {
 
 
 	// Use this for initialization
+
 	public void Initialize () 
 	{
 
 		EventsHandler.cb_keyPressedDown += BrowseDialogueOptions;
+		//EventsHandler.cb_spacebarPressed += ActivateDialogueOption;
 
 
 	}
@@ -84,6 +86,7 @@ public class DialogueManager : MonoBehaviour {
 	{
 
 		EventsHandler.cb_keyPressedDown -= BrowseDialogueOptions;
+		//EventsHandler.cb_spacebarPressed -= ActivateDialogueOption;
 
 	}
 
@@ -121,9 +124,20 @@ public class DialogueManager : MonoBehaviour {
 
 		CreateDialogueTreeUI ();
 
+		Debug.Log (JsonUtility.ToJson (currentDialogueTree));
+
 
 	}
 
+
+
+	public void SetConversation(string conversationName)
+	{
+
+		currentDialogueTree.currentConversation = currentDialogueTree.GetConversationByName (conversationName);
+
+
+	}
 
 
 
@@ -240,66 +254,51 @@ public class DialogueManager : MonoBehaviour {
 
 	public void ActivateDialogueOption ()
 	{
+		
+		Debug.Log ("ActivateDialogueOption");
 
 		if (currentDialogueOption == null) 
 		{
-			return;
+		
+			Debug.Log ("option is null");
+		
 		}
 
-
-		DestroyDialogueTree ();
-
-
-	}
+		Debug.Log ("count" + currentDialogueOption.sentenceList.Count);
 
 
-
-	// Display Dialogue
-
-
-	public void DisplayDialogue(List<DialogueSentence> sentenceList)
-	{
-
-
-
+		SetDialogueTreeActive (false);
+		InteractionManager.instance.DisplayText (currentDialogueOption.sentenceList);
 
 	}
 
 
 
-	// Managing the conversation
 
-	public void Converse()
+
+	// HIDE //
+
+
+	public void SetDialogueTreeActive(bool isActive)
 	{
-
-		DialogueSentence sentence;
-
-		if (nextSentence >= currentDialogueOption.sentenceList.Count) 
-		{			
-			FinishDialogueOption ();
-			return;
 		
-		} 
+		if (dialogueTreeObject != null) 
+		{
+			dialogueTreeObject.SetActive (isActive);
 
-		sentence = currentDialogueOption.sentenceList [nextSentence];
+		}
 
-		InteractionManager.instance.DisplayText (sentence.speakerName, sentence.myText);
+		if (isActive == true) 
+		{
+			GameManager.instance.inputState = InputState.DialogueBox;
 
-
-	}
-
-
-
-
-	public void FinishDialogueOption()
-	{
-
-
-
-
-
+		} else {
+			
+			GameManager.instance.inputState = InputState.Dialogue;
+		}
 
 	}
+
 
 
 	// DESTROY //
@@ -307,12 +306,16 @@ public class DialogueManager : MonoBehaviour {
 
 	public void DestroyDialogueTree()
 	{
+		Debug.Log ("DestroyDialogueTree");
 
 		if (dialogueTreeObject != null) 
 		{
-		
+			Debug.Log ("Destroy");
+
 			Destroy (dialogueTreeObject);
 			currentDialogueOption = null;
+			dialogueTreeObject = null;
+
 			GameManager.instance.inputState = InputState.Character;
 		
 		}

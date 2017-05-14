@@ -343,17 +343,15 @@ public class InventoryUI : MonoBehaviour {
 			{
 				
 				case InventoryState.Browse:
-
-					InteractionManager.instance.DisplayText (PlayerManager.instance.myPlayer, "I have no items right now.");
+					
+					InteractionManager.instance.DisplayText (Utilities.CreateSentenceList(PlayerManager.instance.myPlayer, "I have no items right now."));
 
 					break;
 
 
-				case InventoryState.UseItem:
+				case InventoryState.UseItem:				
 
-					Debug.Log ("Use item no items text");
-
-					InteractionManager.instance.DisplayText (PlayerManager.instance.myPlayer, "I have no items right now.");
+					InteractionManager.instance.DisplayText (Utilities.CreateSentenceList(PlayerManager.instance.myPlayer, "I have no items right now."));
 
 					break;
 

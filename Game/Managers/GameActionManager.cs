@@ -56,11 +56,18 @@ public class GameActionManager : MonoBehaviour {
 
 
 
+	// SPACEBAR PRESSED // 
 
 
 	public void OnSpacebarPressed ()
 	{
 
+
+		Debug.Log ("input state " + GameManager.instance.inputState);
+
+
+
+		/*
 		// If there's text, close it
 
 		if (InteractionManager.instance.currentTextBox != null) 
@@ -69,12 +76,14 @@ public class GameActionManager : MonoBehaviour {
 			GameManager.instance.inputState = InputState.Character;
 			return;
 		}
+		*/
 
 
+		/*
 		// if there is no furniture / character selected, return
 
 		if ((ActionBoxManager.instance.currentPhysicalInteractable == null) && (GameManager.instance.inputState != InputState.Inventory))
-		{
+		{			
 
 			return;
 
@@ -83,6 +92,10 @@ public class GameActionManager : MonoBehaviour {
 			//Debug.Log ("currentFurniture " + currentFurniture.myName);
 
 		}
+
+		*/
+
+
 
 
 		// If there is already an actionbox, activate interaction
@@ -128,12 +141,27 @@ public class GameActionManager : MonoBehaviour {
 		}
 
 
+
+
+		if ((DialogueManager.instance.currentDialogueOption != null) && (GameManager.instance.inputState == InputState.DialogueBox))		
+		{	
+			Debug.Log ("press space");
+
+			DialogueManager.instance.ActivateDialogueOption ();
+			return;
+		}
+
+
+
 		// if there's no action box, create one
 
-		if (GameManager.instance.inputState == InputState.Character) 
+		if ((GameManager.instance.inputState == InputState.Character)  && (ActionBoxManager.instance.currentPhysicalInteractable != null))
 		{
 			ActionBoxManager.instance.OpenActionBox ();
 		}
+
+
+
 
 			}
 
@@ -154,6 +182,13 @@ public class GameActionManager : MonoBehaviour {
 
 		ActionBoxManager.instance.CloseActionBox ();
 
+		/*
+		if (GameManager.instance.inputState == InputState.DialogueBox) 
+		{
+
+
+		}
+		*/
 
 		// setting the input state back to character when closing the action box
 

@@ -12,7 +12,8 @@ public enum InputState
 	ActionBox,
 	Dialogue,
 	DialogueBox,
-	Settings
+	Settings,
+	Map
 
 }
 
@@ -42,10 +43,9 @@ public class GameManager : MonoBehaviour
 
 	public static bool actionBoxActive = false;
 	public static bool textBoxActive = false;
-	public Color danielColor;
-	public Color geMColor;
-	public Color llehctiMColor;
-	public Color StellaColor;
+
+
+	public static Dictionary<string,Color> speakerColorMap;
 
 
 	public static Room roomToLoad;
@@ -74,6 +74,13 @@ public class GameManager : MonoBehaviour
 			roomToLoad = stringRoomMap ["abandoned_wing_outside_shadow"];
 
 		}
+
+		speakerColorMap = new Dictionary<string, Color> ();
+
+		speakerColorMap.Add("Daniel", Color.white);
+		speakerColorMap.Add("geM", Color.magenta);
+		speakerColorMap.Add("llehctiM", Color.cyan);
+		speakerColorMap.Add("Stella", Color.red);
 
 	}
 

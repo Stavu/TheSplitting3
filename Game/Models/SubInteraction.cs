@@ -23,6 +23,8 @@ public class SubInteraction {
 
 	public InventoryItem inventoryItem;
 
+	public string conversationName;
+
 
 
 	// move to room interaction
@@ -50,13 +52,28 @@ public class SubInteraction {
 				Debug.Log ("SubInteract: Show dialogue");
 
 				//if (GameManager.actionBoxActive) 
-				//{
+				//{					
 					
-					InteractionManager.instance.DisplayText (PlayerManager.instance.myPlayer, textList [0]);
+				InteractionManager.instance.DisplayText (Utilities.CreateSentenceList(PlayerManager.instance.myPlayer, textList));
 
 				//}
 
 				break;
+
+
+			case "changeConversation":
+
+				DialogueManager.instance.SetConversation (conversationName);
+
+				break;
+
+
+			case "endDialogueTree":
+
+				DialogueManager.instance.DestroyDialogueTree ();
+
+				break;
+
 
 
 			case "showInventoryText":
