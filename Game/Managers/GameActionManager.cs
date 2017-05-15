@@ -66,105 +66,83 @@ public class GameActionManager : MonoBehaviour {
 		Debug.Log ("input state " + GameManager.instance.inputState);
 
 
-
-		/*
-		// If there's text, close it
-
-		if (InteractionManager.instance.currentTextBox != null) 
-		{
-			InteractionManager.instance.CloseTextBox ();
-			GameManager.instance.inputState = InputState.Character;
-			return;
-		}
-		*/
-
-
-		/*
-		// if there is no furniture / character selected, return
-
-		if ((ActionBoxManager.instance.currentPhysicalInteractable == null) && (GameManager.instance.inputState != InputState.Inventory))
-		{			
-
-			return;
-
-		} else {
-
-			//Debug.Log ("currentFurniture " + currentFurniture.myName);
-
-		}
-
-		*/
-
-
-
-
-		// If there is already an actionbox, activate interaction
-
-		if ((ActionBoxManager.instance.currentActionBox != null) && (GameManager.instance.inputState == InputState.ActionBox))		
-		{			
-			ActionBoxManager.instance.ActivateInteraction ();
-			return;
-		}
-
-
-		if (GameManager.instance.inputState == InputState.Inventory)
+		switch (GameManager.instance.inputState) 
 		{
 
-			switch (GameManager.playerData.inventory.myState) 
-			{
+			case InputState.ActionBox:
 
-				case InventoryState.UseItem:
+				// If there is already an actionbox, activate interaction
 
-					InventoryUI.instance.SelectItemToUse ();
+				if (ActionBoxManager.instance.currentActionBox != null) 
+				{
+					ActionBoxManager.instance.ActivateInteraction ();
+					return;
+				}
 
-					break;				
-
-
-				case InventoryState.Browse:
-
-					InventoryUI.instance.ActivateInteraction ();
-
-					break;	
+				break;
 
 
-				case InventoryState.Combine:
 
-					InventoryUI.instance.CombineItems ();
+			case InputState.Inventory:
 
-					break;
+				
+				switch (GameManager.playerData.inventory.myState) 
+				{
+
+					case InventoryState.UseItem:
+
+						InventoryUI.instance.SelectItemToUse ();
+
+						break;				
 
 
-			}	
+					case InventoryState.Browse:
+
+						InventoryUI.instance.ActivateInteraction ();
+
+						break;	
 
 
-			return;		
+					case InventoryState.Combine:
+
+						InventoryUI.instance.CombineItems ();
+
+						break;
+				}	
+
+				return;		
+
+
+
+
+			case InputState.DialogueBox:
+				
+				
+				if (DialogueManager.instance.currentDialogueOption != null)
+				{						
+					DialogueManager.instance.ActivateDialogueOption ();
+					return;
+				}
+
+				break;
+
+
+
+			case InputState.Character:
+
+				// if there's no action box, create one
+
+				if (ActionBoxManager.instance.currentPhysicalInteractable != null) 
+				{
+					ActionBoxManager.instance.OpenActionBox ();
+				}
+
+
+				break;
+
 		}
 
-
-
-
-		if ((DialogueManager.instance.currentDialogueOption != null) && (GameManager.instance.inputState == InputState.DialogueBox))		
-		{	
-			Debug.Log ("press space");
-
-			DialogueManager.instance.ActivateDialogueOption ();
-			return;
-		}
-
-
-
-		// if there's no action box, create one
-
-		if ((GameManager.instance.inputState == InputState.Character)  && (ActionBoxManager.instance.currentPhysicalInteractable != null))
-		{
-			ActionBoxManager.instance.OpenActionBox ();
-		}
-
-
-
-
-			}
-
+	}
 
 
 

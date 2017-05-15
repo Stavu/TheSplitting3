@@ -5,6 +5,7 @@ using UnityEngine;
 using System;
 
 
+
 [Serializable]
 public class SubInteraction {
 
@@ -24,6 +25,9 @@ public class SubInteraction {
 	public InventoryItem inventoryItem;
 
 	public string conversationName;
+
+
+
 
 
 
@@ -51,13 +55,9 @@ public class SubInteraction {
 
 				Debug.Log ("SubInteract: Show dialogue");
 
-				//if (GameManager.actionBoxActive) 
-				//{					
-					
 				InteractionManager.instance.DisplayText (Utilities.CreateSentenceList(PlayerManager.instance.myPlayer, textList));
 
-				//}
-
+			
 				break;
 
 

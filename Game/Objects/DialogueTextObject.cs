@@ -86,7 +86,7 @@ public class DialogueTextObject : MonoBehaviour {
 
 		if (DialogueManager.instance.dialogueTreeObject != null) 
 		{
-			Debug.Log ("close text box");
+			//Debug.Log ("close text box");
 			DialogueManager.instance.SetDialogueTreeActive (true);
 			//GameManager.instance.inputState = InputState.DialogueBox;
 

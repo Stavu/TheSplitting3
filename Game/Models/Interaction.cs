@@ -27,6 +27,28 @@ public class Interaction
 	}
 
 
+	public void RemoveConditionFromList(Condition condition)
+	{
+
+		if (condition == null) 
+		{
+			
+			Debug.LogError ("condition is null");
+			return;
+		}
+
+
+		if (conditionList.Contains (condition) == false) 
+		{
+			Debug.LogError ("condition is not in list");
+			return;
+		}
+
+		conditionList.Remove (condition);
+
+	}
+
+
 
 
 

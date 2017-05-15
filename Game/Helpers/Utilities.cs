@@ -185,11 +185,29 @@ public class Utilities {
 	}
 
 
+	public static bool EvaluateConditions(List<Condition> conditionList)
+	{
+
+		if (conditionList.Count == 0) 
+		{
+			return true;
+		}
 
 
+		bool evaluation = true;
+
+		foreach (Condition cond in conditionList) 
+		{
+			
+			evaluation = cond.EvaluateCondition ();
+
+		}
+
+		return evaluation;
 
 
-
+	}
 
 
 }
+

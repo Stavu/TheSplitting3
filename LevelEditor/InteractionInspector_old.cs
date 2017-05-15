@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InteractionInspector : MonoBehaviour {
+public class InteractionInspector_old : MonoBehaviour {
 
 
 	GameObject interactionPanelObject;

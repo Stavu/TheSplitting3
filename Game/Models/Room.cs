@@ -89,9 +89,7 @@ public class Room {
 	public void CreateRoomInteractables()
 	{
 
-		//Debug.Log ("Room CreateFurniture");
-
-
+	
 		// Furniture
 
 		foreach (Furniture furn in myFurnitureList) 

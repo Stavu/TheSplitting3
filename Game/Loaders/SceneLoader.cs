@@ -53,9 +53,12 @@ public class SceneLoader : MonoBehaviour {
 		RoomManager.instance.BuildRoom ();
 
 		FindObjectOfType<DebugHelper> ().Initialize ();
-
 		InventoryUI.instance.Initialize ();
 
+
+		// Testing 
+
+		//Testing.TestAll ();
 
 	}
 

@@ -283,6 +283,16 @@ public class ActionBoxManager : MonoBehaviour {
 		for (int i = 0; i < currentPhysicalInteractable.myInteractionList.Count; i++) 
 		{
 
+			// Check if passed the conditions, if not, continute to next interaction 
+					
+			bool passedConditions = Utilities.EvaluateConditions (currentPhysicalInteractable.myInteractionList [i].conditionList);
+
+			if (passedConditions == false) 
+			{
+				continue;
+			}
+
+
 			GameObject obj = Instantiate (ActionPrefab, currentActionBox.transform);
 			obj.transform.localPosition = new Vector3 (0, 1 - i, 0);
 			obj.GetComponent<Text> ().text = currentPhysicalInteractable.myInteractionList[i].myVerb;
@@ -401,7 +411,19 @@ public class ActionBoxManager : MonoBehaviour {
 		{
 			return;
 		}
+
 			
+		if (currentInteraction.subInteractionList.Count == 0) 
+		{
+			Debug.LogError ("SubInteract: There are no subinteractions.");
+			GameManager.instance.inputState = InputState.Character;
+		
+			CloseFurnitureFrame ();
+			CloseActionBox ();
+
+			return;
+		}
+
 
 
 		foreach (SubInteraction subInt in currentInteraction.subInteractionList) 
