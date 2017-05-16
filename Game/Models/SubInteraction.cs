@@ -7,24 +7,39 @@ using System;
 
 
 [Serializable]
-public class SubInteraction {
+public class SubInteraction : IConditionable {
 
 
 	public string interactionType;
 
 	public List<string> textList;
-	//public List<Condition> myConditionList;
+	public List<Condition> conditionList;
 	public string rawText;
 	public Direction direction;
 
 	public string destinationRoomName;
 	public string ItemToUseName;
 	public bool ItemToUseRemoveBool;
-	public List<InventoryItem> inventoryItems;
+	//public List<InventoryItem> inventoryItems;
 
 	public InventoryItem inventoryItem;
 
 	public string conversationName;
+
+
+
+	public List<Condition> ConditionList 
+	{
+		get
+		{ 
+			return conditionList;
+		}
+
+		set 
+		{
+			conditionList = value;
+		}
+	}
 
 
 
@@ -38,9 +53,37 @@ public class SubInteraction {
 	{
 
 		this.interactionType = interactionType;
-
+		conditionList = new List<Condition>();
 
 	}
+
+
+
+	public void RemoveConditionFromList(Condition condition)
+	{
+
+		if (condition == null) 
+		{
+
+			Debug.LogError ("condition is null");
+			return;
+		}
+
+
+		if (conditionList.Contains (condition) == false) 
+		{
+			Debug.LogError ("condition is not in list");
+			return;
+		}
+
+		conditionList.Remove (condition);
+
+	}
+
+
+
+
+	// ----- SUBINTERACT ----- //
 
 
 
@@ -50,15 +93,65 @@ public class SubInteraction {
 		switch (interactionType) {
 
 
+
+			case "showMonologue":
+
+
+				Debug.Log ("SubInteract: Show monologue");
+
+				InteractionManager.instance.DisplayText (Utilities.CreateSentenceList(PlayerManager.instance.myPlayer, textList));
+
+
+				break;
+
+
+
 			case "showDialogue":
 
 
 				Debug.Log ("SubInteract: Show dialogue");
 
 				InteractionManager.instance.DisplayText (Utilities.CreateSentenceList(PlayerManager.instance.myPlayer, textList));
-
-			
+							
 				break;
+
+
+			case "showDialogueTree":
+
+				break;
+
+
+			case "moveToRoom":
+
+				InteractionManager.instance.MoveToRoom (destinationRoomName, direction);
+
+				break;
+
+
+
+			case "pickUpItem":
+
+				InteractionManager.instance.PickUpItem (inventoryItem);
+				ActionBoxManager.instance.CloseFurnitureFrame ();			
+
+				if (GameManager.instance.inputState == InputState.ActionBox) 
+				{
+					GameManager.instance.inputState = InputState.Character;
+				}
+
+				break;
+
+
+
+			case "useItem":
+
+
+				InteractionManager.instance.OpenInventory_UseItem (ActionBoxManager.instance.currentPhysicalInteractable);
+
+				break;
+
+
+
 
 
 			case "changeConversation":
@@ -90,36 +183,7 @@ public class SubInteraction {
 				break;
 
 
-			case "moveToRoom":
-
-				InteractionManager.instance.MoveToRoom (destinationRoomName, direction);
-
-				break;
-
-
-
-			case "pickUpItem":
-
-				InteractionManager.instance.PickUpItem (inventoryItem);
-				ActionBoxManager.instance.CloseFurnitureFrame ();			
-
-				if (GameManager.instance.inputState == InputState.ActionBox) 
-				{
-					GameManager.instance.inputState = InputState.Character;
-				}
-
-
-				break;
-
-
-
-			case "useItem":
-
-
-				InteractionManager.instance.OpenInventory_UseItem (ActionBoxManager.instance.currentPhysicalInteractable);
-
-				break;
-
+		
 
 
 			case "combine":
@@ -131,7 +195,17 @@ public class SubInteraction {
 
 		}
 
+	}
 
+
+
+	public void ResetDataFields()
+	{
+
+		this.rawText = string.Empty;
+		this.destinationRoomName = string.Empty;
+
+		this.inventoryItem = null;
 
 	}
 
@@ -140,6 +214,7 @@ public class SubInteraction {
 
 
 
+}
 
 
 
@@ -147,7 +222,12 @@ public class SubInteraction {
 
 
 
+// Interface
 
+public interface ISubinteractable
+{	
+
+	List<SubInteraction> SubIntList { get; set; }
 
 
 }

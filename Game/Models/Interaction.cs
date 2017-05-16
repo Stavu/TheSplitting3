@@ -7,13 +7,42 @@ using System;
 
 
 [Serializable]
-public class Interaction
-{
+public class Interaction : IConditionable, ISubinteractable {
 
 
 	public string myVerb;
 	public List<SubInteraction> subInteractionList;
 	public List<Condition> conditionList;
+
+
+	public List<Condition> ConditionList 
+	{
+		get
+		{ 
+			return conditionList;
+		}
+
+		set 
+		{
+			conditionList = value;
+		}
+	}
+
+
+	public List<SubInteraction> SubIntList 
+	{
+		get
+		{ 
+			return subInteractionList;
+		}
+
+		set 
+		{
+			subInteractionList = value;
+		}
+	}
+
+
 
 
 	//  Constructor
@@ -50,6 +79,50 @@ public class Interaction
 
 
 
+	public void RemoveSubinteractionFromList(SubInteraction subInt)
+	{
+
+		if (subInt == null) 
+		{
+
+			Debug.LogError ("subInt is null");
+			return;
+		}
+
+
+		if (subInteractionList.Contains (subInt) == false) 
+		{
+			Debug.LogError ("subInt is not in list");
+			return;
+		}
+
+		subInteractionList.Remove (subInt);
+
+	}
+
+
 
 
 }
+
+
+
+
+
+
+// Interface
+
+public interface IConditionable
+{	
+
+	List<Condition> ConditionList { get; set; }
+
+
+	// Empty Functions
+	void RemoveConditionFromList (Condition condition);
+
+
+}
+
+
+

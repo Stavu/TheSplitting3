@@ -9,13 +9,12 @@ public class InteractionInspector : MonoBehaviour {
 	// Declarations
 
 	GameObject interactionPanelObject;
-	Interaction loadedInteraction;
+	public Interaction loadedInteraction;
 
 	// Prefabs
 
 	GameObject rowObjectPrefab;
 	GameObject conditionItemPrefab;
-
 
 	Transform panel;
 	Transform titleRow;
@@ -25,6 +24,9 @@ public class InteractionInspector : MonoBehaviour {
 
 	Button interactionConditionButton;
 
+	GameObject addSubIntPanel;
+	GameObject intButtonsPanel;
+
 	Button newSubIntButton;
 
 	Button submitButton;
@@ -32,10 +34,15 @@ public class InteractionInspector : MonoBehaviour {
 
 
 
+
 	// Use this for initialization
 
 	void Start () 
 	{
+
+		EventsHandler.cb_conditionAdded += (() => OpenInteractionPanel(loadedInteraction));
+		EventsHandler.cb_subinteractionChanged += (() => OpenInteractionPanel(loadedInteraction));
+
 		rowObjectPrefab = Resources.Load<GameObject> ("Prefabs/Editor/Row");
 		conditionItemPrefab = Resources.Load<GameObject> ("Prefabs/Editor/ConditionText");
 
@@ -46,6 +53,13 @@ public class InteractionInspector : MonoBehaviour {
 	}
 
 
+	void OnDestroy()
+	{
+
+		EventsHandler.cb_conditionAdded -= (() => OpenInteractionPanel(loadedInteraction));
+		EventsHandler.cb_subinteractionChanged -= (() => OpenInteractionPanel(loadedInteraction));
+
+	}
 
 
 	// Update is called once per frame
@@ -66,12 +80,14 @@ public class InteractionInspector : MonoBehaviour {
 
 		panel = interactionPanelObject.transform.Find ("Panel");
 
-		titleRow = panel.Find ("Panel").Find ("Row_Title");
-		interactionTitleInput = titleRow.Find ("InteractionTitle").GetComponent<InputField> ();
+		titleRow = panel.Find ("Row_Title");
+		interactionTitleInput = titleRow.Find ("InputTitle").GetComponent<InputField> ();
 		conditionContainer = titleRow.Find ("Conditions");
 
-
 		interactionConditionButton = titleRow.Find("AddConditionButton").GetComponent<Button> ();
+
+		addSubIntPanel = panel.Find ("AddSubIntPanel").gameObject;
+		intButtonsPanel = panel.Find ("InteractionButtonsPanel").gameObject;
 
 		newSubIntButton = panel.Find("AddSubIntPanel").Find("AddButton").GetComponent<Button> ();
 		cancelButton = panel.Find("InteractionButtonsPanel").Find("CancelButton").GetComponent<Button> ();
@@ -94,113 +110,222 @@ public class InteractionInspector : MonoBehaviour {
 		//interactionPanelObject.SetActive (true);
 			
 
-
+	
 		if (interaction != null) 
 		{
 
 			loadedInteraction = interaction;
+			Debug.Log ("list count" + loadedInteraction.subInteractionList.Count);
+
 
 			// interaction title input field
 
-			interactionTitleInput.text = interaction.myVerb;
+			interactionTitleInput.text = loadedInteraction.myVerb;
 
 
 			// insert interaction conditions 
 
-			for (int i = 0; i < loadedInteraction.conditionList.Count; i++) 
-			{
-
-				GameObject obj = Instantiate (conditionItemPrefab);
-				obj.transform.SetParent (conditionContainer);
-
-				Condition cond = loadedInteraction.conditionList [i];
-				string condString = "";
-
-				switch (cond.myType) 
-				{
-
-					case ConditionType.HasItem:
-
-						condString = cond.hasItem;
-
-						break;
-
-					
-					case ConditionType.EventOccured:
-
-						condString = cond.eventOccured;
-
-						break;
+			PopulateConditionContainer (loadedInteraction,conditionContainer);
 
 
-					case ConditionType.CharacterInRoom:
-
-						condString = cond.characterInRoom;
-
-						break;
-											
-				}
-
-
-				obj.GetComponent<Text> ().text = string.Format ("{0} - {1}", cond.myType, condString);
-
-
-				// Give the button event listener
-
-
-				obj.Find ("Button").GetComponent<Button> ().onClick.AddListener (() => RemoveCondition(interaction,cond));
-
-			}	
-
-
-			// Set row height
+			// Set title row height
 
 
 			if (loadedInteraction.conditionList.Count >= 2) 
 			{
+				Debug.Log ("OpenInteractionPanel: set title row height");
 
-				Rect tempRect;
-				tempRect = titleRow.GetComponent<RectTransform> ().rect;
-				titleRow.GetComponent<RectTransform> ().rect.Set (tempRect.x, tempRect.y, tempRect.width, loadedInteraction.conditionList.Count * 30);
-
+				Rect tempRect = titleRow.GetComponent<RectTransform> ().rect;
+				titleRow.GetComponent<RectTransform> ().sizeDelta = new Vector2 (tempRect.width, loadedInteraction.conditionList.Count * 30);
 			}
 
 
-			// New Condition Button 
-
-			interactionConditionButton.onClick.AddListener (OpenConditionPanel);
+			// Create row for each subinteraction in the interaction's subinterction list
 
 
 
+			if (loadedInteraction.subInteractionList.Count > 0) 
+			{
+
+				for (int i = 0; i < loadedInteraction.subInteractionList.Count; i++) 
+				{
+
+					SubInteraction subInt = loadedInteraction.subInteractionList [i];
+
+					GameObject row = Instantiate (rowObjectPrefab, panel);
+					row.name = ("Row_" + i); 
 
 
+					// Declerations
 
-			// create row for each subinteraction in the interaction's subinterction list
+					Button removeSubIntButton = row.transform.Find("RemoveButton").GetComponent<Button>();
+					Button addSubIntConditionButton = row.transform.Find("AddConditionButton").GetComponent<Button>();
+					Button editSubIntButton = row.transform.Find("SubIntButton").GetComponent<Button>();
+
+					Transform subIntConditionContainer = row.transform.Find("Conditions");
 
 
+					// Populate condition container (with condition)
 
+					PopulateConditionContainer (subInt, subIntConditionContainer);
+
+
+					// Set row height
+
+					if (subInt.conditionList.Count >= 2) 
+					{
+
+						Rect tempRect = row.GetComponent<RectTransform> ().rect;
+						row.GetComponent<RectTransform> ().sizeDelta = new Vector2 (tempRect.width, subInt.conditionList.Count * 30);
+
+
+					}
+
+
+					// Remove subinteraction button
+
+					removeSubIntButton.onClick.AddListener (() => RemoveSubinteraction(subInt));
+
+
+					// Add Condition button
+
+					addSubIntConditionButton.onClick.AddListener(() => InspectorManager.conditionInspector.CreateConditionPanel(subInt));
+
+
+					// Edit subinteraction button
+
+					editSubIntButton.transform.Find ("Text").GetComponent<Text> ().text = subInt.interactionType;
+					editSubIntButton.onClick.AddListener (() => InspectorManager.subinteractionInspector.CreateSubinteractionPanel (loadedInteraction,subInt));
+
+											
+				}
+			}
+
+
+			// Take 2 last rows to bottom
+
+			addSubIntPanel.transform.SetAsLastSibling();
+			intButtonsPanel.transform.SetAsLastSibling ();
 
 
 		} else {
 
-			loadedInteraction = null;
+						
+			loadedInteraction = new Interaction ();
+			Debug.Log ("list count" + loadedInteraction.subInteractionList.Count);
+
+
 		}
 
 
 
+		// If it's relevant both to null / not null interaction
+
+		// Title input 
+
+		interactionTitleInput.onValueChanged.AddListener (ChangeTitleText);
+
+
+
+		// New Condition Button 
+
+		interactionConditionButton.onClick.AddListener (() => InspectorManager.conditionInspector.CreateConditionPanel(loadedInteraction));
+
+
+		// New subinteraction button
+
+		newSubIntButton.onClick.AddListener (() => InspectorManager.subinteractionInspector.CreateSubinteractionPanel (loadedInteraction));
+
+
+		// Cancel button
+
+		cancelButton.onClick.AddListener (DestroyInteractionPanel);
+
+
+		// Submit button
+
+		submitButton.onClick.AddListener (SubmitInteraction);
+
+
 
 	}
 
 
 
+	public void ChangeTitleText(string titleName)
+	{
+		loadedInteraction.myVerb = titleName;
+
+	}
 
 
 
-	public void OpenConditionPanel ()
+	public void RemoveCondition (IConditionable conditionable, Condition condition)
+	{
+
+		conditionable.RemoveConditionFromList (condition);
+		OpenInteractionPanel (loadedInteraction);
+
+	}
+
+
+	public void RemoveSubinteraction (SubInteraction subInt)
+	{
+
+		loadedInteraction.RemoveSubinteractionFromList (subInt);
+		OpenInteractionPanel (loadedInteraction);
+
+	}
+
+
+
+	public void PopulateConditionContainer(IConditionable conditionable, Transform container)
 	{
 
 
+		for (int i = 0; i < conditionable.ConditionList.Count; i++) 
+		{
 
+			GameObject obj = Instantiate (conditionItemPrefab);
+			obj.transform.SetParent (container);
+
+			Condition cond = conditionable.ConditionList [i];
+			string condString = "";
+
+			switch (cond.myType) 
+			{
+
+				case ConditionType.HasItem:
+
+					condString = cond.hasItem;
+
+					break;
+
+
+				case ConditionType.EventOccured:
+
+					condString = cond.eventOccured;
+
+					break;
+
+
+				case ConditionType.CharacterInRoom:
+
+					condString = cond.characterInRoom;
+
+					break;
+
+			}
+
+
+			obj.GetComponent<Text> ().text = string.Format ("{0} - {1}", cond.myType, condString);
+
+
+			// Give the remove button (inside the condition) an event listener
+
+			obj.transform.Find ("Button").GetComponent<Button> ().onClick.AddListener (() => RemoveCondition(conditionable,cond));
+
+		}	
 
 
 
@@ -209,23 +334,20 @@ public class InteractionInspector : MonoBehaviour {
 
 
 
-	public void AddCondition (Interaction interaction, Condition condition)
+	public void DestroyInteractionPanel()
 	{
 
+		if (interactionPanelObject != null) 
+		{
+
+			Destroy(interactionPanelObject);
 
 
-
-	}
-
-
-
-	public void RemoveCondition (Interaction interaction, Condition condition)
-	{
-
-		interaction.RemoveConditionFromList (condition);
-		OpenInteractionPanel ();
+		}
 
 	}
+
+
 
 
 
@@ -250,154 +372,27 @@ public class InteractionInspector : MonoBehaviour {
 
 
 
-	public void DestroyInteractionPanel()
-	{
-
-		if (interactionPanelObject != null) 
-		{
-
-			Destroy(interactionPanelObject);
-
-		}
-
-	}
-
-
-	/*
-	public void DeactivateInteractionPanel()
-	{
-
-		if (interactionPanelObject != null) 
-		{
-			
-			interactionPanelObject.SetActive (false);
-
-		}
-
-	}
-	*/
-
-
 
 	public void SubmitInteraction()
 	{
-
-
-		// Check if there are subinteractions
-
-		Transform panel = interactionPanelObject.transform.FindChild ("Panel");
 
 
 		// create interaction 
 
 		Interaction interaction;
 
-		if (loadedInteraction != null) 
-		{
-			interaction = loadedInteraction;
 
-			// clearing subinteraction list
-
-			interaction.subInteractionList.Clear ();
-
-
-
-		} else {
-
-			interaction = new Interaction ();
-
-		}
-
-
-		// interaction verb 
-
-		InputField interactionTitleInput = panel.FindChild ("InteractionTitle").GetComponent<InputField> ();
-
-		interaction.myVerb = interactionTitleInput.text;
-		//Debug.Log ("currentType" + interaction.myVerb);
+		interaction = loadedInteraction;
 
 
 
 
-		// create subInteraction list
-
-
-
-		// create show dialogue
-
-
-		InputField interactionTextInput = panel.FindChild ("InteractionTextInput").GetComponent<InputField> ();
-
-
-		if (interactionTextInput.interactable == true) 		
-		{
-
-			SubInteraction subInteraction = new SubInteraction ("showDialogue");
-			subInteraction.rawText = interactionTextInput.text;
-
-			interaction.subInteractionList.Add (subInteraction);
-
-			subInteraction.textList = Utilities.SeparateText (subInteraction.rawText);
-
-		}
-
-
-		// create enter room
-
-
-		InputField destinationRoomInput = panel.FindChild ("DestinationRoomInput").GetComponent<InputField> ();
-
-
-		if (destinationRoomInput.interactable == true)		
-		{
-
-			SubInteraction subInteraction = new SubInteraction ("moveToRoom");
-			subInteraction.destinationRoomName = destinationRoomInput.text;
-
-
-			interaction.subInteractionList.Add (subInteraction);
-
-		}
-
-
-		// create recieve item
-
-
-		Dropdown recieveItemDropdown = panel.FindChild("RecieveItemDropdown").GetComponent<Dropdown>();
-		InputField recieveItemTitleInput = panel.FindChild ("RecieveItemTitleInput").GetComponent<InputField> ();
-
-
-		if ((recieveItemDropdown.interactable == true) && (recieveItemTitleInput.interactable == true)) 
-		{	
-
-			SubInteraction subInteraction = new SubInteraction ("pickUpItem");
-			subInteraction.inventoryItem = new InventoryItem (recieveItemDropdown.options [recieveItemDropdown.value].text, recieveItemTitleInput.text);
-
-			interaction.subInteractionList.Add (subInteraction);
-
-		}
-
-
-		// Create use item
-
-
-		//usingItemCheckBox = panel.FindChild("UsingItemCheckBox").GetComponent<Toggle>();
-
-
-		if (usingItemCheckBox.isOn == true) 
-		{
-
-			SubInteraction subInteraction = new SubInteraction ("useItem");
-			interaction.subInteractionList.Add (subInteraction);
-
-		}
 
 
 		PhysicalInteractable currentPhysicalInteractable = null;
 
 		if (InspectorManager.instance.chosenFurniture != null) 
 		{
-
 			currentPhysicalInteractable = InspectorManager.instance.chosenFurniture;
 
 		} else if (InspectorManager.instance.chosenCharacter != null) 
@@ -407,8 +402,7 @@ public class InteractionInspector : MonoBehaviour {
 		}
 
 
-
-		// If this is a new interaction, add to interaction list, if not, update interaction in list
+		// If this is a new interaction, add to interaction list
 
 		if (currentPhysicalInteractable != null)
 		{
@@ -416,16 +410,14 @@ public class InteractionInspector : MonoBehaviour {
 			{
 				currentPhysicalInteractable.myInteractionList.Add (interaction);
 
-			} else {
-
-				int i = currentPhysicalInteractable.myInteractionList.IndexOf (interaction);
-				currentPhysicalInteractable.myInteractionList [i] = interaction;
-
-			}
+			} 
 		}
 
 
 		DestroyInteractionPanel ();
+
+
+		// Refreshing inspector 
 
 		InspectorManager.instance.DestroyInspector ();
 		InspectorManager.instance.CreateInspector (currentPhysicalInteractable);

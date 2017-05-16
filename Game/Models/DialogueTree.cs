@@ -134,13 +134,26 @@ public class DialogueOption {
 // Dialogue Sentence
 
 [Serializable]
-public class DialogueSentence {
+public class DialogueSentence : ISubinteractable{
 
 
 	public string speakerName;
 	public string myText;
 	public bool subinteractImmediately = false;
 	public List<SubInteraction> mySubIntList;
+
+	public List<SubInteraction> SubIntList 
+	{
+		get
+		{ 
+			return mySubIntList;
+		}
+
+		set 
+		{
+			mySubIntList = value;
+		}
+	}
 
 
 	// Constructor

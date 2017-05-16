@@ -34,7 +34,8 @@ public class DialogueTextObject : MonoBehaviour {
 	{
 		if (Input.GetKeyDown(KeyCode.Space)) 
 		{
-			
+			Debug.Log ("Update: sentenceList count" + sentenceList.Count);
+
 			if ((sentenceList [currentEntry].mySubIntList != null) && (sentenceList[currentEntry].subinteractImmediately == false))
 			{
 				foreach (SubInteraction subInt in sentenceList [currentEntry].mySubIntList) 

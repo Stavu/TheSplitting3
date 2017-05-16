@@ -20,6 +20,8 @@ public class ConditionInspector : MonoBehaviour {
 	Button cancelButton;
 	Button submitButton;
 
+	IConditionable conditionable;
+
 
 
 
@@ -39,13 +41,20 @@ public class ConditionInspector : MonoBehaviour {
 	}
 
 
+	// Creating condition panel 
 
-	public void CreateConditionPanel()
+
+	public void CreateConditionPanel(IConditionable iConditionable)
 	{
 
+		if (conditionPanelObject != null) 
+		{		
+			return;
+		}
 
-		conditionPanelObject = Resources.Load<GameObject> ("Prefabs/InteractionPanelPrefabs/ConditionPanel");
+		conditionable = iConditionable;
 
+		conditionPanelObject = Instantiate(Resources.Load<GameObject> ("Prefabs/Editor/InteractionPanelPrefabs/ConditionPanel"));
 
 		panel = conditionPanelObject.transform.Find ("Panel");
 
@@ -56,12 +65,12 @@ public class ConditionInspector : MonoBehaviour {
 		submitButton = panel.Find ("SubmitButton").GetComponent<Button> ();
 
 
-		// populate values
+		// Populate values
 
 
 		// Dropdown
 
-		List<string> conditionTypeList;
+		List<string> conditionTypeList = new List<string>();
 
 		foreach (ConditionType condType in Enum.GetValues(typeof(ConditionType))) 
 		{
@@ -72,31 +81,58 @@ public class ConditionInspector : MonoBehaviour {
 		conditionTypeDropdown.AddOptions (conditionTypeList);
 
 
-
 		// Buttons
 
-
-		cancelButton.onClick.AddListener (cancelButton);
-
+		cancelButton.onClick.AddListener (DestroyConditionInspector);
+		submitButton.onClick.AddListener (SubmitCondition);
 
 	
+
 	}
 
 
 
-	public void Cancel()
+
+	// Cancel //
+
+	public void DestroyConditionInspector()
 	{
-
-		Destroy (conditionPanelObject);
+		if (conditionPanelObject != null) 
+		{
+			Destroy (conditionPanelObject);
+			conditionable = null;
+		}
 	}
 
 
+
+
+
+	// Submit //
 
 	public void SubmitCondition()
 	{
 
 
+		if (conditionable == null) 
+		{
+			Debug.LogError ("There is no conditionable");
+			return;	
+		
+		}
 
+
+		// Creating condition
+
+		ConditionType condType = (ConditionType)conditionTypeDropdown.value;
+		string condString = stringInput.text;
+
+		Condition condition = new Condition (condType, condString);
+
+
+		conditionable.ConditionList.Add (condition);
+		EventsHandler.Invoke_cb_conditionAdded ();
+		Destroy (conditionPanelObject);
 
 	}
 

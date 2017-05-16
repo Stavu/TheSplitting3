@@ -400,6 +400,38 @@ public static class EventsHandler
 	*/
 
 
+
+	// Condition Inspector 
+
+
+	public static Action cb_conditionAdded;
+
+	public static void Invoke_cb_conditionAdded()
+	{
+		if(cb_conditionAdded != null)
+		{
+			cb_conditionAdded ();
+		}
+
+	}
+
+
+	// Subinteraction Inspector 
+
+	public static Action cb_subinteractionChanged;
+
+	public static void Invoke_cb_subinteractionChanged()
+	{
+		if(cb_subinteractionChanged != null)
+		{
+			cb_subinteractionChanged ();
+		}
+
+	}
+
+
+
+
 	// Mouse Controller 
 
 	public static Action<Tile> cb_editorTilesSelected;
@@ -412,6 +444,9 @@ public static class EventsHandler
 		}
 
 	}
+
+
+
 
 
 
