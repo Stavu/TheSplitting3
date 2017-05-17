@@ -87,7 +87,6 @@ public class ConditionInspector : MonoBehaviour {
 		submitButton.onClick.AddListener (SubmitCondition);
 
 	
-
 	}
 
 
@@ -125,9 +124,12 @@ public class ConditionInspector : MonoBehaviour {
 		// Creating condition
 
 		ConditionType condType = (ConditionType)conditionTypeDropdown.value;
+		//Debug.Log ("conditionType" + condType);
+
 		string condString = stringInput.text;
 
 		Condition condition = new Condition (condType, condString);
+		Debug.Log ("condition Type" + condition.myType);
 
 
 		conditionable.ConditionList.Add (condition);

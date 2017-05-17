@@ -73,7 +73,6 @@ public class InteractionManager : MonoBehaviour {
 		textObject.AddTextList (sentenceList);
 
 		GameManager.instance.inputState = InputState.Dialogue;
-
 	
 	}
 

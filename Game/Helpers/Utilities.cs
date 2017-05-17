@@ -41,6 +41,10 @@ public class Utilities {
 	public static List<string> SeparateText(string rawText)
 	{
 
+		if(rawText == string.Empty)
+		{
+			return null;
+		}
 	
 		List<string> textList = new List<string> ();
 
@@ -149,7 +153,7 @@ public class Utilities {
 
 
 
-	// When it's the player
+	// When it's the player	
 
 
 	public static List<DialogueSentence> CreateSentenceList (ISpeaker speaker, List<string> textlist)

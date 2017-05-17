@@ -35,9 +35,9 @@ public class InventoryItem
 
 		// take the correct textList from the itemLookAtMap, and put it in the textList of the subinteraction 
 
-		if (GameManager.inventoryItemData.itemLookAtMap.ContainsKey (fileName))
+		if (GameManager.gameData.itemLookAtMap.ContainsKey (fileName))
 		{
-			subInt_displayInventoryText.textList = GameManager.inventoryItemData.itemLookAtMap [fileName];
+			subInt_displayInventoryText.textList = GameManager.gameData.itemLookAtMap [fileName];
 		}
 
 		interactionLookAt.subInteractionList.Add (subInt_displayInventoryText);

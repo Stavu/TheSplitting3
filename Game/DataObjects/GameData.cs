@@ -12,14 +12,20 @@ public class GameData {
 
 	public Dictionary <string,List<string>> itemLookAtMap;
 	public Dictionary <string,List<ItemData_CombineInteractions>> itemCombineMap;
+	public Dictionary <string,DialogueOption> nameDialogueOptionMap;
+	public Dictionary <string,DialogueTree> nameDialogueTreeMap;
 
 	ItemData itemData;
+
+
 
 
 	public GameData()
 	{
 		
 		CreateItemLookAtMap ();
+		CreateDialogueOptionData ();
+		CreateDialogueTreesData ();
 
 	}
 
@@ -60,6 +66,52 @@ public class GameData {
 
 
 	}
+
+
+	public void CreateDialogueOptionData()
+	{
+
+		nameDialogueOptionMap = new Dictionary<string, DialogueOption> ();
+
+		UnityEngine.Object obj = Resources.Load<UnityEngine.Object> ("Jsons/DialogueOptions/dialogue_options");
+		TextAsset textAsset = (TextAsset)obj;
+
+		DialogueOptionData dialogueOptionData = JsonUtility.FromJson<DialogueOptionData> (textAsset.text);
+
+		Debug.Log ("dialogueOptionData option list count" + dialogueOptionData.optionList.Count);
+
+		// populating the map 
+
+		foreach (DialogueOption dialogueOption in dialogueOptionData.optionList) 
+		{
+
+			nameDialogueOptionMap.Add (dialogueOption.myTitle, dialogueOption);
+			
+		}
+
+
+	}
+
+
+
+	public void CreateDialogueTreesData()
+	{
+
+		nameDialogueTreeMap = new Dictionary<string, DialogueTree> ();
+
+		System.Object[] myTextAssets = Resources.LoadAll ("Jsons/DialogueTrees");
+
+		foreach (TextAsset txt in myTextAssets) 
+		{
+			
+			DialogueTree dialogueTree = JsonUtility.FromJson<DialogueTree> (txt.text);
+			nameDialogueTreeMap.Add (dialogueTree.myName, dialogueTree);
+		}
+	}
+
+
+
+
 
 }
 

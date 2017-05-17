@@ -60,7 +60,7 @@ public class ActionBoxManager : MonoBehaviour {
 	}
 
 
-
+	List<Interaction> activeInteractionList;
 	Dictionary<Interaction,GameObject> myInteractionObjectDictionary;
 
 
@@ -276,7 +276,7 @@ public class ActionBoxManager : MonoBehaviour {
 			return;
 		}
 
-
+		activeInteractionList = new List<Interaction> ();
 		myInteractionObjectDictionary = new Dictionary<Interaction, GameObject> ();
 
 
@@ -297,6 +297,7 @@ public class ActionBoxManager : MonoBehaviour {
 			obj.transform.localPosition = new Vector3 (0, 1 - i, 0);
 			obj.GetComponent<Text> ().text = currentPhysicalInteractable.myInteractionList[i].myVerb;
 
+			activeInteractionList.Add(currentPhysicalInteractable.myInteractionList[i]);
 			myInteractionObjectDictionary.Add (currentPhysicalInteractable.myInteractionList[i], obj);
 
 
@@ -337,7 +338,7 @@ public class ActionBoxManager : MonoBehaviour {
 			return;
 		}
 
-		int i =	currentPhysicalInteractable.myInteractionList.IndexOf (currentInteraction);
+		int i =	activeInteractionList.IndexOf (currentInteraction);
 
 
 		switch (myDirection) 
@@ -345,14 +346,14 @@ public class ActionBoxManager : MonoBehaviour {
 
 		case Direction.down:
 
-				if (i < currentPhysicalInteractable.myInteractionList.Count - 1) 
+				if (i < activeInteractionList.Count - 1) 
 			{
-					currentInteraction = currentPhysicalInteractable.myInteractionList [i + 1];
+				currentInteraction = activeInteractionList [i + 1];
 			}
 
-				if (i == currentPhysicalInteractable.myInteractionList.Count - 1) 
+				if (i == activeInteractionList.Count - 1) 
 			{
-					currentInteraction = currentPhysicalInteractable.myInteractionList [0];
+				currentInteraction = activeInteractionList [0];
 			}
 
 
@@ -364,12 +365,12 @@ public class ActionBoxManager : MonoBehaviour {
 
 			if (i > 0) 
 			{
-					currentInteraction = currentPhysicalInteractable.myInteractionList [i - 1];
+				currentInteraction = activeInteractionList [i - 1];
 			}
 
 			if (i == 0) 
 			{
-					currentInteraction = currentPhysicalInteractable.myInteractionList [currentPhysicalInteractable.myInteractionList.Count - 1];
+				currentInteraction = activeInteractionList [activeInteractionList.Count - 1];
 			}
 
 			break;

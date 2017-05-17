@@ -44,7 +44,7 @@ public class TileInspector : MonoBehaviour {
 
 		Debug.Log("CreateTileInspector");
 
-		InspectorManager.instance.DestroyInspector ();
+		InspectorManager.physicalInteractableInspector.DestroyInspector ();
 		DestroyTileInspector ();
 
 		tileInspectorObject = Instantiate (InspectorManager.instance.tileInspectorObjectPrefab);
@@ -77,19 +77,19 @@ public class TileInspector : MonoBehaviour {
 
 		if (currentTileInteraction.mySubInt != null) 
 		{			
-			if (currentTileInteraction.mySubInt.rawText != null) 
+			if (currentTileInteraction.mySubInt.RawText != null) 
 			{
 
-				Debug.Log ("CreateTileInspector: insert raw text" + currentTileInteraction.mySubInt.rawText);
+				//Debug.Log ("CreateTileInspector: insert raw text" + currentTileInteraction.mySubInt.RawText);
 
 				textInputCheckBox.isOn = true;
 				interactionTextInput.interactable = true;
 
-				interactionTextInput.text = currentTileInteraction.mySubInt.rawText;
+				interactionTextInput.text = currentTileInteraction.mySubInt.RawText;
 
 			} else {
 
-				Debug.Log ("rawText = null");
+				Debug.Log ("RawText = null");
 			}
 		}
 
@@ -181,10 +181,9 @@ public class TileInspector : MonoBehaviour {
 		{
 
 			SubInteraction subInteraction = new SubInteraction ("showDialogue");
-			subInteraction.rawText = interactionTextInput.text;
-			Debug.Log ("raw " + subInteraction.rawText);
+			subInteraction.RawText = interactionTextInput.text;
+			Debug.Log ("raw " + subInteraction.RawText);
 
-			subInteraction.textList = Utilities.SeparateText (subInteraction.rawText);
 			InspectorManager.instance.chosenTileInteraction.mySubInt = subInteraction;
 
 		}

@@ -12,7 +12,10 @@ public enum ConditionType
 
 	HasItem,
 	EventOccured,
-	CharacterInRoom
+	CharacterInRoom,
+	LacksItem,
+	EventDidntOccur,
+	CharacterNotInRoom
 
 }
 
@@ -29,11 +32,16 @@ public class Condition {
 	public string hasItem;
 	public string eventOccured;
 	public string characterInRoom;
+	public string lacksItem;
+	public string eventDidntOccur;
+	public string characterNotInRoom;
 
 
 
 	public Condition(ConditionType type, string myString)
 	{
+
+		myType = type;
 
 		switch (myType) 
 		{
@@ -55,6 +63,27 @@ public class Condition {
 			case ConditionType.CharacterInRoom:
 
 				characterInRoom = myString;
+
+				break;	
+
+
+			case ConditionType.LacksItem:
+
+				lacksItem = myString;
+
+				break;
+
+
+			case ConditionType.EventDidntOccur:
+
+				eventDidntOccur = myString;
+
+				break;
+
+
+			case ConditionType.CharacterNotInRoom:
+
+				characterNotInRoom = myString;
 
 				break;	
 		
@@ -85,6 +114,28 @@ public class Condition {
 			case ConditionType.CharacterInRoom:
 				
 				return GameManager.playerData.CheckIfCharacterExistsInRoom (characterInRoom);
+
+			
+
+			case ConditionType.LacksItem:
+
+				return !GameManager.playerData.CheckIfItemExists (lacksItem);
+
+				break;
+
+
+			case ConditionType.EventDidntOccur:
+
+				return !GameManager.playerData.CheckIfEventExists (eventDidntOccur);
+
+				break;
+
+
+			case ConditionType.CharacterNotInRoom:
+
+				return !GameManager.playerData.CheckIfCharacterExistsInRoom (characterNotInRoom);
+
+				break;	
 
 
 		}

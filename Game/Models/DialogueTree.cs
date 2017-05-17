@@ -16,19 +16,6 @@ public class DialogueTree {
 	public Conversation currentConversation;
 
 
-	public DialogueTree()
-	{
-		// test
-
-		myName = "testTree";
-		Conversation conversation1 = new Conversation ();
-		currentConversation = conversation1;
-
-		conversationList = new List<Conversation> ();
-		conversationList.Add (conversation1);
-
-	}
-
 
 
 	// Find conversation by name
@@ -64,64 +51,52 @@ public class Conversation {
 	public List<DialogueOption> optionList;
 
 
-	// Constructor
-
-	public Conversation()
-	{
-		// test
-
-		myName = "testConversation";
-
-		optionList = new List<DialogueOption> ();
-		DialogueOption option1 = new DialogueOption ("How are you?");
-		DialogueOption option2 = new DialogueOption ("My name is Daniel.");
-		optionList.Add (option1);
-		optionList.Add (option2);
-
-	}
-
 }
 
 
 // Dialogue option
 
 [Serializable]
-public class DialogueOption {
+public class DialogueOption: IConditionable {
 
 
 	public string myTitle;
 
 	public List<DialogueSentence> sentenceList;
-	public Condition myCondition;
+
+	public List<Condition> conditionList;
+	public List<Condition> ConditionList 
+	{
+		get
+		{ 
+			return conditionList;
+		}
+
+		set 
+		{
+			conditionList = value;
+		}
+	}
 
 
-
-	// Constructor
-
-	public DialogueOption(string title)
+	public void RemoveConditionFromList(Condition condition)
 	{
 
-		myTitle = title;
+		if (condition == null) 
+		{
 
-		sentenceList = new List<DialogueSentence> ();
-
-		SubInteraction subInt = new SubInteraction ("pickUpItem");
-		subInt.inventoryItem = new InventoryItem ("order_details", "Order Details");
-		List<SubInteraction> subIntList = new List<SubInteraction> ();
-		subIntList.Add (subInt);
-
-		SubInteraction subInt2 = new SubInteraction ("endDialogueTree");
-		List<SubInteraction> subIntList2 = new List<SubInteraction> ();
-		subIntList2.Add (subInt2);
+			Debug.LogError ("condition is null");
+			return;
+		}
 
 
-		DialogueSentence sentence1 = new DialogueSentence ("Daniel", "Hello, how are you?", false);
-		DialogueSentence sentence2 = new DialogueSentence ("llehctiM", "fine, thank you.", true, subIntList);
-		DialogueSentence sentence3 = new DialogueSentence ("Daniel", "thank you!", false, subIntList2);
+		if (conditionList.Contains (condition) == false) 
+		{
+			Debug.LogError ("condition is not in list");
+			return;
+		}
 
-		sentenceList.Add (sentence1);
-		sentenceList.Add (sentence2);
-		sentenceList.Add (sentence3);
+		conditionList.Remove (condition);
 
 	}
 
@@ -134,14 +109,14 @@ public class DialogueOption {
 // Dialogue Sentence
 
 [Serializable]
-public class DialogueSentence : ISubinteractable{
+public class DialogueSentence : ISubinteractable {
 
 
 	public string speakerName;
 	public string myText;
 	public bool subinteractImmediately = false;
-	public List<SubInteraction> mySubIntList;
 
+	public List<SubInteraction> mySubIntList;
 	public List<SubInteraction> SubIntList 
 	{
 		get
@@ -156,7 +131,6 @@ public class DialogueSentence : ISubinteractable{
 	}
 
 
-	// Constructor
 
 	public DialogueSentence(string speaker, string text, bool subIntIm, List<SubInteraction> subIntList = null)
 	{
@@ -167,6 +141,5 @@ public class DialogueSentence : ISubinteractable{
 		subinteractImmediately = subIntIm;
 
 	}
-
 
 }

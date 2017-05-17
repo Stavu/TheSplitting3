@@ -40,8 +40,8 @@ public class InteractionInspector : MonoBehaviour {
 	void Start () 
 	{
 
-		EventsHandler.cb_conditionAdded += (() => OpenInteractionPanel(loadedInteraction));
-		EventsHandler.cb_subinteractionChanged += (() => OpenInteractionPanel(loadedInteraction));
+		EventsHandler.cb_conditionAdded += CreateInteractionPanel;
+		EventsHandler.cb_subinteractionChanged += CreateInteractionPanel;
 
 		rowObjectPrefab = Resources.Load<GameObject> ("Prefabs/Editor/Row");
 		conditionItemPrefab = Resources.Load<GameObject> ("Prefabs/Editor/ConditionText");
@@ -56,8 +56,8 @@ public class InteractionInspector : MonoBehaviour {
 	void OnDestroy()
 	{
 
-		EventsHandler.cb_conditionAdded -= (() => OpenInteractionPanel(loadedInteraction));
-		EventsHandler.cb_subinteractionChanged -= (() => OpenInteractionPanel(loadedInteraction));
+		EventsHandler.cb_conditionAdded -= CreateInteractionPanel;
+		EventsHandler.cb_subinteractionChanged -= CreateInteractionPanel;
 
 	}
 
@@ -76,6 +76,15 @@ public class InteractionInspector : MonoBehaviour {
 
 	public void CreateInteractionPanel()
 	{
+
+		Debug.Log ("CreateInteractionPanel");
+
+		if (interactionPanelObject != null) 
+		{
+			Debug.Log ("destroy interactionpanel");
+			DestroyInteractionPanel ();
+		}
+
 		interactionPanelObject = Instantiate (InspectorManager.instance.interactionPanelObjectPrefab);
 
 		panel = interactionPanelObject.transform.Find ("Panel");
@@ -93,6 +102,9 @@ public class InteractionInspector : MonoBehaviour {
 		cancelButton = panel.Find("InteractionButtonsPanel").Find("CancelButton").GetComponent<Button> ();
 		submitButton = panel.Find("InteractionButtonsPanel").Find("SubmitButton").GetComponent<Button> ();
 
+
+		OpenInteractionPanel ();
+
 	}
 
 
@@ -100,21 +112,16 @@ public class InteractionInspector : MonoBehaviour {
 
 	// Opening interaction panel after created
 
-	public void OpenInteractionPanel(Interaction interaction = null)
+	void OpenInteractionPanel()
 	{
-
-		DestroyInteractionPanel ();
-		CreateInteractionPanel ();
-
-
+		
 		//interactionPanelObject.SetActive (true);
 			
-
 	
-		if (interaction != null) 
+		if (loadedInteraction != null) 
 		{
 
-			loadedInteraction = interaction;
+
 			Debug.Log ("list count" + loadedInteraction.subInteractionList.Count);
 
 
@@ -246,8 +253,6 @@ public class InteractionInspector : MonoBehaviour {
 
 		submitButton.onClick.AddListener (SubmitInteraction);
 
-
-
 	}
 
 
@@ -264,7 +269,7 @@ public class InteractionInspector : MonoBehaviour {
 	{
 
 		conditionable.RemoveConditionFromList (condition);
-		OpenInteractionPanel (loadedInteraction);
+		CreateInteractionPanel ();
 
 	}
 
@@ -273,7 +278,7 @@ public class InteractionInspector : MonoBehaviour {
 	{
 
 		loadedInteraction.RemoveSubinteractionFromList (subInt);
-		OpenInteractionPanel (loadedInteraction);
+		CreateInteractionPanel ();
 
 	}
 
@@ -312,6 +317,27 @@ public class InteractionInspector : MonoBehaviour {
 				case ConditionType.CharacterInRoom:
 
 					condString = cond.characterInRoom;
+
+					break;
+
+
+				case ConditionType.LacksItem:
+
+					condString = cond.lacksItem;
+
+					break;
+
+
+				case ConditionType.EventDidntOccur:
+
+					condString = cond.eventDidntOccur;
+
+					break;
+
+
+				case ConditionType.CharacterNotInRoom:
+
+					condString = cond.characterNotInRoom;
 
 					break;
 
@@ -419,8 +445,8 @@ public class InteractionInspector : MonoBehaviour {
 
 		// Refreshing inspector 
 
-		InspectorManager.instance.DestroyInspector ();
-		InspectorManager.instance.CreateInspector (currentPhysicalInteractable);
+		InspectorManager.physicalInteractableInspector.DestroyInspector ();
+		InspectorManager.physicalInteractableInspector.CreateInspector (currentPhysicalInteractable);
 
 
 	}

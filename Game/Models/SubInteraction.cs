@@ -14,7 +14,7 @@ public class SubInteraction : IConditionable {
 
 	public List<string> textList;
 	public List<Condition> conditionList;
-	public string rawText;
+
 	public Direction direction;
 
 	public string destinationRoomName;
@@ -25,7 +25,27 @@ public class SubInteraction : IConditionable {
 	public InventoryItem inventoryItem;
 
 	public string conversationName;
+	public string dialogueOptionTitle;
+	public string dialogueTreeName;
 
+
+	public string rawText;
+	public string RawText 
+	{
+		get
+		{ 
+			return rawText;
+		}
+
+		set 
+		{
+			rawText = value;
+
+			textList = Utilities.SeparateText (rawText);
+			
+
+		}
+	}
 
 
 	public List<Condition> ConditionList 
@@ -40,8 +60,6 @@ public class SubInteraction : IConditionable {
 			conditionList = value;
 		}
 	}
-
-
 
 
 
@@ -90,6 +108,19 @@ public class SubInteraction : IConditionable {
 	public void SubInteract ()
 	{
 
+
+		// Check if passed the conditions, if not, return
+
+		bool passedConditions = Utilities.EvaluateConditions (conditionList);
+
+		if (passedConditions == false) 
+		{
+			Debug.Log ("Did not pass conditions");
+			return;
+		}
+
+
+
 		switch (interactionType) {
 
 
@@ -111,12 +142,27 @@ public class SubInteraction : IConditionable {
 
 				Debug.Log ("SubInteract: Show dialogue");
 
-				InteractionManager.instance.DisplayText (Utilities.CreateSentenceList(PlayerManager.instance.myPlayer, textList));
+				DialogueOption dialogueOption = GameManager.gameData.nameDialogueOptionMap [this.dialogueOptionTitle];
+				InteractionManager.instance.DisplayText (dialogueOption.sentenceList);
 							
 				break;
 
 
 			case "showDialogueTree":
+
+				DialogueTree dialogueTree = GameManager.gameData.nameDialogueTreeMap [this.dialogueTreeName];
+
+				if (dialogueTree.currentConversation == null) 
+				{					
+					if (dialogueTree.conversationList.Count == 0) 
+					{					
+						Debug.LogError ("There are no conversations");
+					}
+
+					dialogueTree.currentConversation = dialogueTree.conversationList [0];				
+				}
+
+				DialogueManager.instance.ActivateDialogueTree (dialogueTree);
 
 				break;
 
@@ -152,8 +198,6 @@ public class SubInteraction : IConditionable {
 
 
 
-
-
 			case "changeConversation":
 
 				DialogueManager.instance.SetConversation (conversationName);
@@ -182,8 +226,7 @@ public class SubInteraction : IConditionable {
 
 				break;
 
-
-		
+			
 
 
 			case "combine":
@@ -202,7 +245,7 @@ public class SubInteraction : IConditionable {
 	public void ResetDataFields()
 	{
 
-		this.rawText = string.Empty;
+		this.RawText = string.Empty;
 		this.destinationRoomName = string.Empty;
 
 		this.inventoryItem = null;

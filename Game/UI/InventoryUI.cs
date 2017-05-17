@@ -773,9 +773,9 @@ public class InventoryUI : MonoBehaviour {
 
 		// Check the first item for combining information
 
-		if(GameManager.inventoryItemData.itemCombineMap.ContainsKey(itemName))
+		if(GameManager.gameData.itemCombineMap.ContainsKey(itemName))
 		{
-			itemsToCombineList = GameManager.inventoryItemData.itemCombineMap [itemName];
+			itemsToCombineList = GameManager.gameData.itemCombineMap [itemName];
 
 			for (int i = 0; i < itemsToCombineList.Count; i++) 
 			{
@@ -791,9 +791,9 @@ public class InventoryUI : MonoBehaviour {
 
 		// Check the second item for combining information
 
-		if ((subInteractionList == null) && (GameManager.inventoryItemData.itemCombineMap.ContainsKey(targetName)))	
+		if ((subInteractionList == null) && (GameManager.gameData.itemCombineMap.ContainsKey(targetName)))	
 		{			
-			itemsToCombineList = GameManager.inventoryItemData.itemCombineMap [targetName];
+			itemsToCombineList = GameManager.gameData.itemCombineMap [targetName];
 
 			for (int i = 0; i < itemsToCombineList.Count; i++) 
 			{

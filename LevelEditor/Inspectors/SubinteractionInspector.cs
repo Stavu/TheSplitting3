@@ -116,7 +116,7 @@ public class SubinteractionInspector : MonoBehaviour {
 
 				case "showMonologue":
 
-					textInputBig.text = subInt.rawText;
+					textInputBig.text = subInt.RawText;
 
 					break;
 
@@ -281,19 +281,21 @@ public class SubinteractionInspector : MonoBehaviour {
 
 			case "showMonologue":
 
-				currentSubint.rawText = textInputBig.text;
-				
+				currentSubint.RawText = textInputBig.text;
+
 				break;
 
 
 			case "showDialogue":
 
+				currentSubint.dialogueOptionTitle = textInputSmall.text;
 
 				break;
 
 
 			case "showDialogueTree":
 
+				currentSubint.dialogueTreeName = textInputSmall.text;
 
 				break;
 

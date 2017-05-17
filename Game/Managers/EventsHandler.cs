@@ -424,6 +424,9 @@ public static class EventsHandler
 	{
 		if(cb_subinteractionChanged != null)
 		{
+			Delegate[] delegateList = cb_subinteractionChanged.GetInvocationList();
+			Debug.Log (delegateList.Length);
+
 			cb_subinteractionChanged ();
 		}
 

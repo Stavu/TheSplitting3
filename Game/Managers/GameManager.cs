@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
 
 
 	public static PlayerData playerData;
-	public static GameData inventoryItemData;
+	public static GameData gameData;
 
 	public InputState inputState = InputState.Character;
 
@@ -109,28 +109,35 @@ public class GameManager : MonoBehaviour
 
 		Object[] myTextAssets = Resources.LoadAll ("Jsons/Rooms");
 
-		foreach (TextAsset txt in myTextAssets) {
+		foreach (TextAsset txt in myTextAssets) 
+		{
 			Room myRoom;
 			myRoom = JsonUtility.FromJson<Room> (txt.text);
 
 			// Adding room to dictionary
 
 			stringRoomMap.Add (myRoom.myName, myRoom);
+
+
+
 			
 		}
 
 
+
 	}
+
+
 
 	public void CreateInventoryItemData()
 	{
 
-		if (inventoryItemData != null) 
+		if (gameData != null) 
 		{
 			return;
 		}
 
-		inventoryItemData = new GameData ();
+		gameData = new GameData ();
 
 
 	}
