@@ -29,13 +29,13 @@ public class EditorUI : MonoBehaviour {
 
 
 
-
-	public GameObject bgSelectPrefab; 
 	Dropdown dropDownMenu;
 	public GameObject interactableSelectPrefab;
 	public GameObject interactableButtonPrefab;
 
 	GameObject interactableSelect;
+
+
 
 
 
@@ -64,8 +64,8 @@ public class EditorUI : MonoBehaviour {
 	public void CreateBgSelect()
 	{	
 
-		bgSelectPrefab = Instantiate (bgSelectPrefab);
-		dropDownMenu = bgSelectPrefab.GetComponentInChildren<Dropdown>();
+		//bgSelectPrefab = Instantiate (bgSelectPrefab);
+		dropDownMenu = gameObject.GetComponentInChildren<Dropdown>();
 		List<string> bgNameList = new List<string> ();
 		Sprite[] bgSpriteList = Resources.LoadAll <Sprite> ("Sprites/Rooms/");
 
@@ -82,29 +82,34 @@ public class EditorUI : MonoBehaviour {
 		dropDownMenu.onValueChanged.AddListener (ChangeRoomBg);
 
 
+		// Go to game button
+
+		Button toGameButton = transform.Find ("ToGameButton").GetComponent<Button> ();
+		toGameButton.onClick.AddListener(() => SceneManager.LoadScene("Main"));
+
 
 		// new furniture button
 
-		Button furnButton = bgSelectPrefab.transform.FindChild ("FurnitureButton").GetComponent<Button>();
+		Button furnButton = transform.FindChild ("FurnitureButton").GetComponent<Button>();
 		furnButton.onClick.AddListener (CreateFurnitureSelect);
 
 
 		// new character button
 
-		Button characterButton = bgSelectPrefab.transform.FindChild ("CharacterButton").GetComponent<Button>();
+		Button characterButton = transform.FindChild ("CharacterButton").GetComponent<Button>();
 		characterButton.onClick.AddListener (CreateCharacterSelect);
 
 
 		// tile interaction button
 
-		Button tileIntButton = bgSelectPrefab.transform.FindChild ("TileInteractionButton").GetComponent<Button>();
+		Button tileIntButton = transform.FindChild ("TileInteractionButton").GetComponent<Button>();
 		tileIntButton.onClick.AddListener (SetTileInteractionMode);
 
 
 
 		// room name button
 
-		InputField roomNameInput = bgSelectPrefab.transform.FindChild ("RoomNameInput").GetComponent<InputField> ();
+		InputField roomNameInput = transform.FindChild ("RoomNameInput").GetComponent<InputField> ();
 
 		roomNameInput.onEndEdit.AddListener (RoomNameChanged);
 

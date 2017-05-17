@@ -35,11 +35,15 @@ public class DebugHelper : MonoBehaviour {
 
 
 
+
 	// Use this for initialization
 	public void Initialize () {
 		
 
 		CreateRoomSelect ();
+
+		Button toEditorButton = gameObject.transform.Find ("ToEditorButton").GetComponent<Button> ();
+		toEditorButton.onClick.AddListener(() => SceneManager.LoadScene("LevelEditor"));
 
 
 	}
