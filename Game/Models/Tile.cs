@@ -129,5 +129,34 @@ public class Tile {
 
 
 
+	public bool IsWalkable()
+	{
+
+		if (myCharacter != null) 
+		{		
+			return false;
+		}
+
+		if (myFurniture != null) 
+		{		
+			if (myFurniture.walkable == false) 
+			{
+				return false;
+			}		
+		}
+
+		if (myTileInteraction != null) 
+		{	
+			if (myTileInteraction.walkable == false) 
+			{
+				return false;
+			}
+		}
+
+		return true;
+
+	}
+
+
 
 }

@@ -24,10 +24,12 @@ public class PlayerManager : MonoBehaviour {
 
 
 	public GameObject CharacterPrefab;
-	public Player myPlayer;
+	public static Player myPlayer;
 
 	public Dictionary<Player,GameObject> playerGameObjectMap;
+	public static Vector2 entrancePoint = new Vector2(15,6);
 
+	public static List<Player> playerList;
 
 
 
@@ -35,6 +37,7 @@ public class PlayerManager : MonoBehaviour {
 
 	public void Initialize () 
 	{
+		Debug.Log ("player manager initialize");
 
 		EventsHandler.cb_roomCreated += CreatePlayer;
 		EventsHandler.cb_playerCreated += CreatePlayerObject;
@@ -45,7 +48,21 @@ public class PlayerManager : MonoBehaviour {
 
 		playerGameObjectMap = new Dictionary<Player, GameObject> ();
 
+
+		// When first loading the game - create one and assign player
+
+		if (playerList == null) 
+		{
+			playerList = new List<Player> ();
+
+			playerList.Add (new Player ("Daniel", new Vector2 (1, 1), new Vector3(3.5f,3.5f,0)));
+			playerList.Add (new Player ("llehctiM", new Vector2 (1, 1), new Vector3 (entrancePoint.x, entrancePoint.y, 0)));
+
+			myPlayer = playerList [0];
+		}
 	}
+
+
 
 
 	public void OnDestroy()
@@ -72,12 +89,15 @@ public class PlayerManager : MonoBehaviour {
 
 	public void CreatePlayer(Room myRoom)	
 	{
-			
-		//Debug.Log ("created character");	
 
-		myPlayer = new Player("Daniel", new Vector2(1,1), new Vector3(3.5f,3.5f,0));
+		if (entrancePoint == null) 
+		{		
+			entrancePoint = new Vector2 (15f, 10f);
+		}
 
-		//EventsHandler.Invoke_cb_playerCreated (myPlayer);
+		//myPlayer = new Player("Daniel", new Vector2(1,1), new Vector3(entrancePoint.x,entrancePoint.y,0));
+
+		myPlayer.myPos = entrancePoint;
 
 		CreatePlayerObject (myPlayer);
 
@@ -102,6 +122,8 @@ public class PlayerManager : MonoBehaviour {
 
 
 	}
+
+
 
 
 
@@ -222,11 +244,6 @@ public class PlayerManager : MonoBehaviour {
 
 
 
-
-
-
-
-
 			// TILE INTERACTION - If the next tile is interactable
 
 			if (tile.myTileInteraction != null) 
@@ -256,6 +273,7 @@ public class PlayerManager : MonoBehaviour {
 			// Walk to new pos
 
 			myPlayer.ChangePosition (newPos);
+			myPlayer.myDirection = myDirection;
 			UpdatePlayerObjectPosition (myPlayer, myDirection);
 
 

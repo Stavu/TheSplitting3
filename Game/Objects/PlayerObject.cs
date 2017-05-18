@@ -10,16 +10,21 @@ public class PlayerObject : MonoBehaviour {
 
 	AnimatorStateInfo ASI;
 
+
+
+
 	// Use this for initialization
+
 	void Start () 
 	{
 		mySpriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer> ();
 		myAnimator = gameObject.GetComponent<Animator> ();
-
+		StopCharacter (PlayerManager.myPlayer.myDirection);
 	}
 
 	
 	// Update is called once per frame
+
 	void Update () 
 	{
 		
@@ -75,12 +80,9 @@ public class PlayerObject : MonoBehaviour {
 			
 				PlayAnimation ("Walk_back");	
 
-				break;
-						
+				break;					
 		
 		}
-
-
 	}
 
 

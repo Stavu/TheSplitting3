@@ -130,14 +130,20 @@ public class ActionBoxManager : MonoBehaviour {
 
 			Furniture myFurniture = (Furniture)myPhysicalInt;
 
-			GameObject myObject = FurnitureManager.instance.furnitureGameObjectMap [myFurniture];
-			Vector3 center = myObject.GetComponent<SpriteRenderer> ().bounds.center;
+			SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [myFurniture].GetComponent<SpriteRenderer>();
+		
+			if (sr == null) 
+			{
+				sr = FurnitureManager.instance.furnitureGameObjectMap [myFurniture].GetComponentInChildren<SpriteRenderer>();
+			}
+
+			Vector3 center = sr.bounds.center;
 
 			currentPhysicalInteractableFrame.GetComponent<RectTransform> ().anchoredPosition = center;
 
 			// positioning frame pieces
 
-			frameBounds = myObject.GetComponent<SpriteRenderer> ().bounds.extents;
+			frameBounds = sr.bounds.extents;
 
 		}
 
@@ -205,7 +211,7 @@ public class ActionBoxManager : MonoBehaviour {
 	Vector3 PositionActionBox()
 	{
 				
-		Player activePlayer = PlayerManager.instance.myPlayer;
+		Player activePlayer = PlayerManager.myPlayer;
 
 		Tile playerTile = RoomManager.instance.myRoom.myGrid.GetTileAt (activePlayer.myPos);
 		Tile currentTile = RoomManager.instance.myRoom.myGrid.GetTileAt (currentPhysicalInteractable.myPos);

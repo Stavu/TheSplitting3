@@ -1,0 +1,174 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
+
+
+
+public enum FadeState
+{
+
+	FadeIn,
+	FadeOut,
+	Inactive
+
+}
+
+
+
+
+public class NavigationManager : MonoBehaviour {
+
+
+	// Singleton //
+
+	public static NavigationManager instance { get; protected set; }
+
+	void Awake ()
+	{		
+		if (instance == null) {
+			instance = this;
+		} else if (instance != this) {
+			Destroy (gameObject);	
+		}
+
+		DontDestroyOnLoad (gameObject);
+	}
+
+	// Singleton //
+
+
+	GameObject fadeCanvas;
+	Image fadeImage;
+
+	float fadeSpeed = 0.5f;
+	static Color lastColor;
+
+
+
+	// Use this for initialization
+
+	void Start () 
+	{	
+		Debug.Log ("navigation start");
+
+		fadeCanvas = Instantiate(Resources.Load<GameObject>("Prefabs/FadeCanvas"));
+		fadeImage = fadeCanvas.transform.Find ("Image").GetComponent<Image> ();
+
+		fadeImage.material.SetFloat ("_Fade", 0);
+
+		SceneManager.sceneLoaded += StartFadeIn;
+	}
+
+
+	void OnDestroy()
+	{
+
+		SceneManager.sceneLoaded -= StartFadeIn;
+
+	}
+
+
+	// Update is called once per frame
+
+	void Update () 
+	{
+		
+	}
+
+
+
+	public void NavigateToScene(string scene, Color color)
+	{
+
+		GameManager.instance.inputState = InputState.NoInput;
+
+		lastColor = color;
+		StartCoroutine(FadeOut (scene, color));	
+
+
+	}
+
+
+	// Fading from scene to black / white screen
+
+
+
+	// -- FADE OUT -- //
+
+	IEnumerator FadeOut(string scene, Color color)
+	{
+
+		fadeImage.color = color;
+		float i = 0;
+
+		while (i < 1) 
+		{
+			fadeImage.material.SetFloat ("_Fade", i);
+			i += Time.deltaTime / fadeSpeed;
+
+			yield return new WaitForFixedUpdate();					
+		}
+
+		fadeImage.material.SetFloat ("_Fade", 1);
+
+		// While screen is black, reload the scene
+
+		GameManager.instance.inputState = InputState.Character;
+		SceneManager.LoadScene (scene);
+
+	}
+
+
+
+	// -- FADE IN -- //
+
+	IEnumerator FadeIn()
+	{
+
+		Debug.LogFormat ("fade in");
+
+		fadeImage.color = lastColor;
+		float i = 1;
+
+		while (i > 0) 
+		{
+			fadeImage.material.SetFloat ("_Fade", i);
+			i -= Time.deltaTime / fadeSpeed;
+
+			yield return new WaitForFixedUpdate();
+		}
+
+		fadeImage.material.SetFloat ("_Fade", 0);
+
+	}
+
+
+
+	public void StartFadeIn(Scene scene, LoadSceneMode mode)
+	{
+		fadeCanvas = Instantiate(Resources.Load<GameObject>("Prefabs/FadeCanvas"));
+		fadeImage = fadeCanvas.transform.Find ("Image").GetComponent<Image> ();
+		StartCoroutine(FadeIn());	
+
+	}
+
+
+
+
+	/*
+
+	public void DebugMashu(Scene scene, LoadSceneMode mode)
+	{
+
+		Debug.Log ("debug mashu");
+
+	}
+
+	*/
+
+
+}

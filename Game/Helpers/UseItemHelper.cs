@@ -29,7 +29,7 @@ public class UseItemHelper {
 					case "door_abandoned_main_shadow":
 						
 
-						DialogueSentence sentence = new DialogueSentence (PlayerManager.instance.myPlayer.myName, "This item is no good.", false);
+						DialogueSentence sentence = new DialogueSentence (PlayerManager.myPlayer.myName, "This item is no good.", false);
 						List<DialogueSentence> list = new List<DialogueSentence> ();
 						list.Add (sentence);
 
@@ -63,7 +63,7 @@ public class UseItemHelper {
 
 					case "door_abandoned_main_shadow":
 
-						DialogueSentence sentence2 = new DialogueSentence (PlayerManager.instance.myPlayer.myName, "pic on door.", false);
+						DialogueSentence sentence2 = new DialogueSentence (PlayerManager.myPlayer.myName, "pic on door.", false);
 						List<DialogueSentence> list2 = new List<DialogueSentence> ();
 						list2.Add (sentence2);
 

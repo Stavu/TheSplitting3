@@ -8,6 +8,7 @@ using System;
 public class PhysicalInteractable : Interactable {
 
 
+	public string identificationName;
 	public string myName;
 
 	public Vector3 myPos {get; set;}

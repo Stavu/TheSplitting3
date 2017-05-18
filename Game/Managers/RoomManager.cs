@@ -84,7 +84,7 @@ public class RoomManager : MonoBehaviour {
 
 		// adding the player to the speaker map
 
-		nameSpeakerMap.Add (PlayerManager.instance.myPlayer.myName, PlayerManager.instance.myPlayer);
+		nameSpeakerMap.Add (PlayerManager.myPlayer.myName, PlayerManager.myPlayer);
 
 
 		GameManager.instance.inputState = InputState.Character; //FIXME

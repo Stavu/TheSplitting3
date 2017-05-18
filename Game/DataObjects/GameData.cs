@@ -78,7 +78,7 @@ public class GameData {
 
 		DialogueOptionData dialogueOptionData = JsonUtility.FromJson<DialogueOptionData> (textAsset.text);
 
-		Debug.Log ("dialogueOptionData option list count" + dialogueOptionData.optionList.Count);
+		//Debug.Log ("dialogueOptionData option list count" + dialogueOptionData.optionList.Count);
 
 		// populating the map 
 

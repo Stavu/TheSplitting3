@@ -18,6 +18,7 @@ public class Furniture : PhysicalInteractable {
 		// Constructor
 
 		this.myName = myName;
+		this.identificationName = myName;
 
 		this.x = x;
 		this.y = y;

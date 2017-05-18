@@ -31,6 +31,10 @@ public class Player : ISpeaker{
 
 	public Color myTextColor;
 
+	[NonSerialized]
+	public Direction myDirection;
+
+
 
 	public string speakerName 
 	{

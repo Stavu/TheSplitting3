@@ -18,6 +18,8 @@ public class SubInteraction : IConditionable {
 	public Direction direction;
 
 	public string destinationRoomName;
+	public Vector2 entrancePoint;
+
 	public string ItemToUseName;
 	public bool ItemToUseRemoveBool;
 	//public List<InventoryItem> inventoryItems;
@@ -27,6 +29,8 @@ public class SubInteraction : IConditionable {
 	public string conversationName;
 	public string dialogueOptionTitle;
 	public string dialogueTreeName;
+	public string animationToPlay;
+	public string targetFurniture;
 
 
 	public string rawText;
@@ -115,7 +119,7 @@ public class SubInteraction : IConditionable {
 
 		if (passedConditions == false) 
 		{
-			Debug.Log ("Did not pass conditions");
+			//Debug.Log ("Did not pass conditions");
 			return;
 		}
 
@@ -128,9 +132,9 @@ public class SubInteraction : IConditionable {
 			case "showMonologue":
 
 
-				Debug.Log ("SubInteract: Show monologue");
+				//Debug.Log ("SubInteract: Show monologue");
 
-				InteractionManager.instance.DisplayText (Utilities.CreateSentenceList(PlayerManager.instance.myPlayer, textList));
+				InteractionManager.instance.DisplayText (Utilities.CreateSentenceList(PlayerManager.myPlayer, textList));
 
 
 				break;
@@ -140,7 +144,7 @@ public class SubInteraction : IConditionable {
 			case "showDialogue":
 
 
-				Debug.Log ("SubInteract: Show dialogue");
+				//Debug.Log ("SubInteract: Show dialogue");
 
 				DialogueOption dialogueOption = GameManager.gameData.nameDialogueOptionMap [this.dialogueOptionTitle];
 				InteractionManager.instance.DisplayText (dialogueOption.sentenceList);
@@ -166,10 +170,18 @@ public class SubInteraction : IConditionable {
 
 				break;
 
+			
+			case "PlayAnimation":
+
+				FurnitureManager.instance.SetFurnitureAnimationState (targetFurniture, animationToPlay);
+				GameManager.instance.inputState = InputState.Character;
+
+				break;
+
 
 			case "moveToRoom":
 
-				InteractionManager.instance.MoveToRoom (destinationRoomName, direction);
+				InteractionManager.instance.MoveToRoom (destinationRoomName, entrancePoint);
 
 				break;
 

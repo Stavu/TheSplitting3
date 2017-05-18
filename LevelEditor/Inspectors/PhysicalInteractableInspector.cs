@@ -7,7 +7,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 
 	GameObject inspectorObjectPrefab;
-
 	GameObject inspectorObject;
 
 
@@ -51,6 +50,9 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 		Debug.Log ("name " + currentPhysicalInteractable.myName);
 
 		panel.FindChild ("Name").GetComponent<Text> ().text = currentPhysicalInteractable.myName;
+
+		panel.Find ("IdentificationName").GetComponent<InputField> ().text = currentPhysicalInteractable.identificationName;
+		panel.Find ("IdentificationName").GetComponent<InputField> ().onEndEdit.AddListener (ChangeIdentificationName);
 
 		panel.FindChild ("SizeX").FindChild("Placeholder").GetComponent<Text> ().text = currentPhysicalInteractable.mySize.x.ToString();
 		panel.FindChild ("SizeY").FindChild("Placeholder").GetComponent<Text> ().text = currentPhysicalInteractable.mySize.y.ToString();
@@ -131,6 +133,38 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 
 	// --------- EDITING --------- // 
+
+
+
+	// identification
+
+	public void ChangeIdentificationName (string name)
+	{
+		if (InspectorManager.instance.chosenFurniture != null) 
+		{
+			if (name == string.Empty) 
+			{
+				InspectorManager.instance.chosenFurniture.identificationName = InspectorManager.instance.chosenFurniture.myName;
+
+			} else {			
+
+				InspectorManager.instance.chosenFurniture.identificationName = name;
+			}
+
+		} else if (InspectorManager.instance.chosenCharacter != null) 
+		{			
+			if (name == string.Empty) 
+			{
+				InspectorManager.instance.chosenCharacter.identificationName = InspectorManager.instance.chosenCharacter.myName;
+
+			} else {			
+
+				InspectorManager.instance.chosenCharacter.identificationName = name;
+			}
+		}
+
+	}
+
 
 
 	// change size

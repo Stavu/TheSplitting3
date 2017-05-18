@@ -13,7 +13,8 @@ public enum InputState
 	Dialogue,
 	DialogueBox,
 	Settings,
-	Map
+	Map,
+	NoInput
 
 }
 

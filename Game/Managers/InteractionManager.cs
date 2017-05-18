@@ -116,12 +116,39 @@ public class InteractionManager : MonoBehaviour {
 	// move to room
 
 
-	public void MoveToRoom(string roomName, Direction direction)
+	public void MoveToRoom(string roomName, Vector2 entrancePoint)
 	{
-	
+
 		GameManager.roomToLoad = GameManager.instance.stringRoomMap [roomName];
 
-		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+		if (entrancePoint == null) 
+		{
+			Debug.LogError ("entrance point is null");
+		}
+
+		Tile tempTile = RoomManager.instance.myRoom.myGrid.GetTileAt ((int)entrancePoint.x, (int)entrancePoint.y);
+
+		Debug.Log (entrancePoint);
+
+		// Errors with destination tile
+
+		if (tempTile != null) 
+		{			
+			if (tempTile.IsWalkable() == false) 
+			{
+				Debug.LogError ("destination tile is not walkable");
+			}
+
+		} else {
+
+			Debug.LogError ("destination tile is null");
+		}
+
+
+		PlayerManager.entrancePoint = entrancePoint;
+		NavigationManager.instance.NavigateToScene (SceneManager.GetActiveScene ().name, Color.black);
+
+		//SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 	
 	}
 

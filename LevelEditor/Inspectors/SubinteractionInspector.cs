@@ -16,7 +16,9 @@ public class SubinteractionInspector : MonoBehaviour {
 	InputField textInputBig;
 	InputField textInputSmall;
 
+	Transform moveToRoom;
 	Transform recieveItem;
+	Transform playAnimation;
 
 	Button cancelButton;
 	Button submitButton;
@@ -36,6 +38,7 @@ public class SubinteractionInspector : MonoBehaviour {
 		subIntTypeList.Add ("showMonologue");
 		subIntTypeList.Add ("showDialogue");
 		subIntTypeList.Add ("showDialogueTree");
+		subIntTypeList.Add ("PlayAnimation");
 		subIntTypeList.Add ("moveToRoom");
 		subIntTypeList.Add ("pickUpItem");
 		subIntTypeList.Add ("useItem");
@@ -74,6 +77,9 @@ public class SubinteractionInspector : MonoBehaviour {
 		textInputSmall = panel.Find ("TextInputSmall").GetComponent<InputField> ();
 
 		recieveItem = panel.Find ("RecieveItem");
+		moveToRoom = panel.Find ("MoveToRoom");
+		playAnimation = panel.Find ("PlayAnimation");
+
 
 		cancelButton = panel.Find ("CancelButton").GetComponent<Button> ();
 		submitButton = panel.Find ("SubmitButton").GetComponent<Button> ();
@@ -123,21 +129,31 @@ public class SubinteractionInspector : MonoBehaviour {
 
 				case "showDialogue":
 
-					//textInputSmall.text = subInt.myDialogue;
+					textInputSmall.text = subInt.dialogueOptionTitle;
 
 					break;
 
 
 				case "showDialogueTree":
 
-					//textInputSmall.text = subInt.myDialogueTree;
+					textInputSmall.text = subInt.dialogueTreeName;
+
+					break;
+
+				
+				case "PlayAnimation":
+
+					playAnimation.Find("AnimationNameInput").GetComponent<InputField>().text = subInt.animationToPlay;
+					playAnimation.Find("FurnitureNameInput").GetComponent<InputField>().text = subInt.targetFurniture;
 
 					break;
 
 
 				case "moveToRoom":
-
-					textInputSmall.text = subInt.destinationRoomName;
+									
+					moveToRoom.Find ("TextInputSmall1").GetComponent<InputField> ().text = subInt.destinationRoomName;
+					moveToRoom.Find ("InputX").GetComponent<InputField> ().text = subInt.entrancePoint.x.ToString();
+					moveToRoom.Find ("InputY").GetComponent<InputField> ().text = subInt.entrancePoint.y.ToString();
 
 					break;
 
@@ -193,7 +209,10 @@ public class SubinteractionInspector : MonoBehaviour {
 		
 		textInputBig.gameObject.SetActive (false);
 		textInputSmall.gameObject.SetActive (false);
+		moveToRoom.gameObject.SetActive (false);
 		recieveItem.gameObject.SetActive (false);
+		playAnimation.gameObject.SetActive (false);
+
 
 		string typeString = subIntTypeList [type];
 
@@ -211,10 +230,23 @@ public class SubinteractionInspector : MonoBehaviour {
 			case "showDialogue":
 
 			case "showDialogueTree":
+				
+				textInputSmall.gameObject.SetActive (true);
+
+				break;
+
+
+			case "PlayAnimation":
+
+				playAnimation.gameObject.SetActive (true);
+
+				break;
+
+
 
 			case "moveToRoom":
 
-				textInputSmall.gameObject.SetActive (true);
+				moveToRoom.gameObject.SetActive (true);
 
 				break;
 
@@ -300,16 +332,28 @@ public class SubinteractionInspector : MonoBehaviour {
 				break;
 
 
+			case "PlayAnimation":
+
+				currentSubint.animationToPlay = playAnimation.Find ("AnimationNameInput").GetComponent<InputField> ().text;
+				currentSubint.targetFurniture = playAnimation.Find ("FurnitureNameInput").GetComponent<InputField> ().text;
+					
+				break;
+
+
 			case "moveToRoom":
 
-				currentSubint.destinationRoomName = textInputSmall.text;
+				currentSubint.destinationRoomName = moveToRoom.Find ("TextInputSmall1").GetComponent<InputField> ().text;
+
+				Vector2 entrancePoint = new Vector2 (int.Parse (moveToRoom.Find ("InputX").GetComponent<InputField> ().text),
+					                      			 int.Parse (moveToRoom.Find ("InputY").GetComponent<InputField> ().text));
+
+				currentSubint.entrancePoint = entrancePoint;
 
 				break;
 
 
 			case "pickUpItem":
-
-			
+							
 				string itemFileName = recieveItem.Find ("TextInputSmall1").GetComponent<InputField> ().text;
 				string itemTitleName = recieveItem.Find ("TextInputSmall2").GetComponent<InputField> ().text;
 

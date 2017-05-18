@@ -62,8 +62,7 @@ public class GameActionManager : MonoBehaviour {
 	public void OnSpacebarPressed ()
 	{
 
-
-		Debug.Log ("input state " + GameManager.instance.inputState);
+		//Debug.Log ("input state " + GameManager.instance.inputState);
 
 
 		switch (GameManager.instance.inputState) 
@@ -184,7 +183,7 @@ public class GameActionManager : MonoBehaviour {
 	public void OnHitTileInteraction(Tile tile)
 	{		
 
-		Debug.Log ("OnHitTileInteraction");
+		//Debug.Log ("OnHitTileInteraction");
 		
 		TileInteraction tileInt = tile.myTileInteraction;
 
@@ -207,7 +206,7 @@ public class GameActionManager : MonoBehaviour {
 
 	public void OnLeaveTileInteraction ()
 	{
-		Debug.Log ("OnLeaveTileInteraction");
+		//Debug.Log ("OnLeaveTileInteraction");
 		currentTileInteraction = null;
 
 	}
