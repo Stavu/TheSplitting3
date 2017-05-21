@@ -29,6 +29,8 @@ public class EditorSceneLoader : MonoBehaviour {
 	void CreateManagers()
 	{
 
+
+
 		Instantiate (managers);	
 
 		// Initializing
@@ -42,10 +44,12 @@ public class EditorSceneLoader : MonoBehaviour {
 
 		if (EditorRoomManager.loadRoomFromMemory == true) 
 		{
+			Debug.Log ("loading room");
 			EditorRoomManager.instance.SetRoomBackground (EditorRoomManager.instance.room.bgName);
 
 		} else {
 
+			Debug.Log ("creating room");
 			EditorRoomManager.instance.SetRoomBackground ("abandoned_lobby_bg");
 		}
 	

@@ -12,11 +12,25 @@ public class TileInspector : MonoBehaviour {
 
 	Transform panel;
 
+	InputField sizeXInput;
+	InputField sizeYInput;
+	InputField posXInput;
+	InputField posYInput;
+
+	Text sizeXPlaceholder;
+	Text sizeYPlaceholder;
+	Text posXPlaceholder;
+	Text posYPlaceholder;
+
 	InputField interactionTextInput;
 	Toggle textInputCheckBox;
 
 	InputField destinationRoomInput;
 	Toggle enterRoomCheckBox;
+
+	Toggle walkableToggle;
+
+	Button deleteButton;
 
 
 
@@ -49,31 +63,66 @@ public class TileInspector : MonoBehaviour {
 
 		tileInspectorObject = Instantiate (InspectorManager.instance.tileInspectorObjectPrefab);
 
-		Transform panel = tileInspectorObject.transform.FindChild ("Panel");
+
+		// Assign 
+
+		panel = tileInspectorObject.transform.FindChild ("Panel");
+
+		sizeXInput = panel.Find ("SizeX").GetComponent<InputField> ();
+		sizeYInput = panel.Find ("SizeY").GetComponent<InputField> ();
+		posXInput = panel.Find ("PosX").GetComponent<InputField> ();
+		posYInput = panel.Find ("PosY").GetComponent<InputField> ();
+
+		sizeXPlaceholder = panel.Find ("SizeX").Find ("Placeholder").GetComponent<Text> ();
+		sizeYPlaceholder = panel.Find ("SizeY").Find ("Placeholder").GetComponent<Text> ();
+		posXPlaceholder = panel.Find ("PosX").Find ("Placeholder").GetComponent<Text> ();
+		posYPlaceholder = panel.Find ("PosY").Find ("Placeholder").GetComponent<Text> ();
+
+		// Dialogue
+
+		interactionTextInput = panel.Find("InteractionTextInput").GetComponent<InputField> ();
+		textInputCheckBox = panel.Find ("TextInputCheckBox").GetComponent<Toggle> ();
+
+		// Destination room
+
+		destinationRoomInput = panel.FindChild("DestinationRoomInput").GetComponent<InputField>();
+		enterRoomCheckBox = panel.FindChild ("EnterRoomCheckBox").GetComponent<Toggle> ();
+
+		// walkable 
+
+		walkableToggle = panel.FindChild ("Walkable").GetComponent<Toggle> ();
+
+		// delete ubtton
+
+		deleteButton = panel.FindChild ("DeleteButton").GetComponent<Button> ();
+
 
 
 		// SIZE AND POSITION //
 
-		panel.FindChild ("SizeX").FindChild("Placeholder").GetComponent<Text> ().text = currentTileInteraction.mySize.x.ToString();
-		panel.FindChild ("SizeY").FindChild("Placeholder").GetComponent<Text> ().text = currentTileInteraction.mySize.y.ToString();
+		sizeXPlaceholder.text = currentTileInteraction.mySize.x.ToString();
+		sizeYPlaceholder.text = currentTileInteraction.mySize.y.ToString();
 
-		panel.FindChild ("SizeX").GetComponent<InputField> ().onEndEdit.AddListener (ChangeTileInteractionWidth);
-		panel.FindChild ("SizeY").GetComponent<InputField> ().onEndEdit.AddListener (ChangeTileInteractionHeight);
+		posXPlaceholder.text = currentTileInteraction.x.ToString();
+		posYPlaceholder.text = currentTileInteraction.y.ToString();
 
-		panel.FindChild ("PosX").FindChild("Placeholder").GetComponent<Text> ().text = currentTileInteraction.x.ToString();
-		panel.FindChild ("PosY").FindChild("Placeholder").GetComponent<Text> ().text = currentTileInteraction.y.ToString();
 
-		panel.FindChild ("PosX").GetComponent<InputField> ().onEndEdit.AddListener (ChangeTileInteractionX);
-		panel.FindChild ("PosY").GetComponent<InputField> ().onEndEdit.AddListener (ChangeTileInteractionY);
+		// Listeners
+
+		sizeXInput.onEndEdit.AddListener (ChangeTileInteractionWidth);
+		sizeYInput.onEndEdit.AddListener (ChangeTileInteractionHeight);
+	
+		posXInput.onEndEdit.AddListener (ChangeTileInteractionX);
+		posYInput.onEndEdit.AddListener (ChangeTileInteractionY);
+
+		deleteButton.onClick.AddListener (DeleteTileInteraction);
+
 
 
 		// INTERACTIONS //
 
-		// Dialogue
 
-		interactionTextInput = panel.FindChild("InteractionTextInput").GetComponent<InputField> ();
-		textInputCheckBox = panel.FindChild ("TextInputCheckBox").GetComponent<Toggle> ();
-
+		// dialogue
 
 		if (currentTileInteraction.mySubInt != null) 
 		{			
@@ -94,11 +143,7 @@ public class TileInspector : MonoBehaviour {
 		}
 
 
-		// Destination room
-
-		destinationRoomInput = panel.FindChild("DestinationRoomInput").GetComponent<InputField>();
-		enterRoomCheckBox = panel.FindChild ("EnterRoomCheckBox").GetComponent<Toggle> ();
-
+		// move to room
 
 		if (currentTileInteraction.mySubInt != null) 
 		{			
@@ -110,6 +155,18 @@ public class TileInspector : MonoBehaviour {
 				destinationRoomInput.text = currentTileInteraction.mySubInt.destinationRoomName;
 
 			}
+		}
+
+
+		// walkable 
+
+		if (currentTileInteraction.walkable == true) 
+		{
+			walkableToggle.isOn = true;
+			
+		} else {
+		
+			walkableToggle.isOn = false;
 		}
 
 
@@ -127,6 +184,9 @@ public class TileInspector : MonoBehaviour {
 
 	}
 
+
+
+	// CHECK TILE INSPECTOR TOGGLES //
 
 	public void CheckTileInspectorToggles(bool boolean)
 	{
@@ -161,21 +221,13 @@ public class TileInspector : MonoBehaviour {
 
 
 
+
+	// ----- SUBMIT ----- //
+
 	public void SubmitTileInteraction()
 	{
 
-
-		// Check if there are subinteractions
-
-		Transform panel = tileInspectorObject.transform.FindChild ("Panel");
-
-
-
 		// create show dialogue
-
-
-		InputField interactionTextInput = panel.FindChild ("InteractionTextInput").GetComponent<InputField> ();
-
 
 		if (interactionTextInput.interactable == true) 		
 		{
@@ -192,9 +244,6 @@ public class TileInspector : MonoBehaviour {
 		// create enter room
 
 
-		InputField destinationRoomInput = panel.FindChild ("DestinationRoomInput").GetComponent<InputField> ();
-
-
 		if (destinationRoomInput.interactable == true)		
 		{
 
@@ -204,6 +253,19 @@ public class TileInspector : MonoBehaviour {
 			InspectorManager.instance.chosenTileInteraction.mySubInt = subInteraction;
 
 		}
+
+
+		// walkable
+
+		if (walkableToggle.isOn) 
+		{
+			InspectorManager.instance.chosenTileInteraction.walkable = true;
+		
+		} else {
+			
+			InspectorManager.instance.chosenTileInteraction.walkable = false;
+		}
+
 
 
 		DestroyTileInspector ();
@@ -259,8 +321,22 @@ public class TileInspector : MonoBehaviour {
 
 
 
+	public void DeleteTileInteraction()
+	{
 
+		TileInteraction tileInt = InspectorManager.instance.chosenTileInteraction;
 
+		Tile tile = EditorRoomManager.instance.room.myGrid.GetTileAt (tileInt.x, tileInt.y);
+
+		EditorRoomManager.instance.room.myTileInteractionList.Remove (tileInt);
+		tile.myTileInteraction = null;
+
+		InspectorManager.instance.chosenTileInteraction = null;
+
+		EventsHandler.Invoke_cb_tileLayoutChanged ();
+		//DestroyTileInspector ();
+
+	}
 
 
 

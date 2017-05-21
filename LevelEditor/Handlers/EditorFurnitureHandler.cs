@@ -68,6 +68,7 @@ public class EditorFurnitureHandler : MonoBehaviour
 
 		Sprite furnitureSprite = Resources.Load <Sprite> ("Sprites/Furniture/" + furnitureName);
 
+
 		furn.mySize = new Vector2 (Mathf.Ceil(furnitureSprite.bounds.size.x), 1f);
 
 

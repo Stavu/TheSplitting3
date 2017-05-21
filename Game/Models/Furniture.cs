@@ -8,6 +8,8 @@ using System;
 public class Furniture : PhysicalInteractable {
 
 
+	public bool imageFlipped = false;
+
 
 	public Furniture(string myName, int x, int y)
 	{

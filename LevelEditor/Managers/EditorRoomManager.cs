@@ -73,6 +73,7 @@ public class EditorRoomManager : MonoBehaviour {
 	{
 
 		Room tempRoom = new Room (myWidth,myHeight);
+
 		tempRoom.myFurnitureList = new List<Furniture> ();
 		tempRoom.myCharacterList = new List<Character> ();
 		tempRoom.myTileInteractionList = new List<TileInteraction> ();
@@ -85,7 +86,112 @@ public class EditorRoomManager : MonoBehaviour {
 	}
 
 
+	// Create Mirror Room
+
+	public RoomMirror CreateEmptyRoomMirror(int myWidth, int myHeight)
+	{
+
+		RoomMirror tempRoom = new RoomMirror (myWidth,myHeight);
+
+		tempRoom.myFurnitureList = new List<Furniture> ();
+		tempRoom.myCharacterList = new List<Character> ();
+		tempRoom.myTileInteractionList = new List<TileInteraction> ();
+
+		tempRoom.myFurnitureList_Shadow = new List<Furniture> ();
+		tempRoom.myTileInteractionList_Shadow = new List<TileInteraction> ();
+
+		furnitureGameObjectMap = new Dictionary<Furniture, GameObject> ();
+		characterGameObjectMap = new Dictionary<Character, GameObject> ();
+
+		return tempRoom;
+
+	}
+
+
+
+	// Creating a new flipped room in the editor (helper)
+
+	public Room CreateFlippedRoom (Room room)
+	{
+
+		Room newRoom = CreateEmptyRoom(room.myWidth, room.myHeight);
+
+		newRoom.bgName = room.bgName;
+		newRoom.bgFlipped = !room.bgFlipped;
+
+		newRoom.myGrid = new Grid (newRoom.myWidth, newRoom.myHeight);
+
+		// the new room's state - if the old room is real then the new one is mirror, and vice versa
+
+		newRoom.roomState = room.roomState == RoomState.Real ? RoomState.Mirror : RoomState.Real;
+
+		// Interactables
+
+		foreach (Furniture furn in room.myFurnitureList) 
+		{			
+			Furniture flippedFurn = new Furniture (furn.myName, (room.myGrid.myWidth - 1 - furn.x - ((int)furn.mySize.x - 1)), furn.y);
+
+			flippedFurn.offsetX = flippedFurn.imageFlipped ? furn.offsetX : -furn.offsetX;
+			flippedFurn.offsetY = furn.offsetY;
+			flippedFurn.mySize = furn.mySize;
+			flippedFurn.walkable = furn.walkable;
+
+			newRoom.myFurnitureList.Add (flippedFurn);
+
+			Tile tile = newRoom.myGrid.GetTileAt (flippedFurn.x, flippedFurn.y);
+			tile.myFurniture = flippedFurn;
+
+			flippedFurn.imageFlipped = !furn.imageFlipped;
+
+		}
+
+		newRoom.myFurnitureList.ForEach (furn => Debug.Log (furn.myName));
+
+
+		foreach (Character character in room.myCharacterList) 
+		{			
+			Character flippedCharacter = new Character (character.myName, (room.myGrid.myWidth - 1 - character.x - ((int)character.mySize.x - 1)), character.y);
+
+			flippedCharacter.offsetX = character.offsetX;
+			flippedCharacter.offsetY = character.offsetY;
+			flippedCharacter.mySize = character.mySize;
+			flippedCharacter.walkable = character.walkable;
+
+			newRoom.myCharacterList.Add (flippedCharacter);
+
+			Tile tile = newRoom.myGrid.GetTileAt (flippedCharacter.x, flippedCharacter.y);
+			tile.myCharacter = flippedCharacter;
+		}
+
+
+		foreach (TileInteraction tileInt in room.myTileInteractionList) 
+		{		
+			TileInteraction flippedTileInteraction = new TileInteraction ((room.myGrid.myWidth - 1 - tileInt.x - ((int)tileInt.mySize.x - 1)), tileInt.y);
+		
+			flippedTileInteraction.mySize = tileInt.mySize;
+			flippedTileInteraction.walkable = tileInt.walkable;
+
+			newRoom.myTileInteractionList.Add (flippedTileInteraction);
+
+			Tile tile = newRoom.myGrid.GetTileAt (flippedTileInteraction.x, flippedTileInteraction.y);
+			tile.myTileInteraction = flippedTileInteraction;
+		}
+
+
+
+
+
+		return newRoom;
+
+
+	}
+
 	 
+
+
+
+
+
 
 	// adding background image 
 
@@ -94,7 +200,8 @@ public class EditorRoomManager : MonoBehaviour {
 
 	public void SetRoomBackground(string name = "abandoned_lobby_bg")
 	{
-		
+
+		Debug.Log ("SetRoomBackground");
 
 		if (roomBackground != null) 
 		{
@@ -106,6 +213,9 @@ public class EditorRoomManager : MonoBehaviour {
 
 		if (loadRoomFromMemory == false) 
 		{
+
+			Debug.Log ("new room");
+
 			roomSprite = Resources.Load <Sprite> ("Sprites/Rooms/" + name);
 
 			int myWidth = (int)roomSprite.bounds.size.x;
@@ -116,6 +226,8 @@ public class EditorRoomManager : MonoBehaviour {
 
 					
 		} else {
+			
+			Debug.Log ("old room");
 
 			room = LoadRoom (roomToLoad);
 			roomSprite = Resources.Load <Sprite> ("Sprites/Rooms/" + room.bgName );
@@ -132,9 +244,12 @@ public class EditorRoomManager : MonoBehaviour {
 
 		GameObject obj = new GameObject (room.myName);
 
-		obj.AddComponent<SpriteRenderer> ().sprite = roomSprite;
-		obj.transform.position = new Vector3 (0, 0, 0);
-		obj.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.room_layer;
+		SpriteRenderer sr = obj.AddComponent<SpriteRenderer>();
+		sr.sprite = roomSprite;
+		sr.flipX = room.bgFlipped;
+
+		obj.transform.position = new Vector3 (room.myWidth/2f, 0, 0);
+		sr.sortingLayerName = Constants.room_layer;
 		obj.transform.SetParent (this.transform);
 
 		roomBackground = obj;

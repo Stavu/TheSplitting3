@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Utilities {
 
@@ -80,7 +81,8 @@ public class Utilities {
 
 		SpriteRenderer sr = obj.AddComponent<SpriteRenderer>();
 
-		sr.sprite = Resources.Load<Sprite> ("Sprites/Furniture/" + myFurniture.myName); 
+		sr.sprite = Resources.Load<Sprite> ("Sprites/Furniture/" + myFurniture.myName);
+		sr.flipX = myFurniture.imageFlipped;
 
 		obj.transform.position = new Vector3 (myFurniture.myPos.x + myFurniture.offsetX, myFurniture.myPos.y + 0.5f + myFurniture.offsetY, myFurniture.myPos.z);
 
@@ -211,6 +213,17 @@ public class Utilities {
 
 
 	}
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

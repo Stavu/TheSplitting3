@@ -130,7 +130,7 @@ public class RoomManager : MonoBehaviour {
 
 		obj.AddComponent<SpriteRenderer> ().sprite = Resources.Load <Sprite> ("Sprites/Rooms/" + room.bgName);
 
-		obj.transform.position = new Vector3 (0, 0, 0);
+		obj.transform.position = new Vector3 (room.myWidth/2f, 0, 0);
 
 		obj.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.room_layer;
 

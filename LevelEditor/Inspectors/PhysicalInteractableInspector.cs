@@ -9,6 +9,44 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 	GameObject inspectorObjectPrefab;
 	GameObject inspectorObject;
 
+	Transform panel;
+
+	Text nameText;
+	InputField identificationText;
+
+	Toggle imageFlippedToggle;
+
+	// inputs
+
+	InputField sizeXInput;
+	InputField sizeYInput;
+
+	InputField posXInput;
+	InputField posYInput;
+
+	InputField offsetXInput;
+	InputField offsetYInput;
+
+	// placeholders
+
+	Text sizeXPlaceholder;
+	Text sizeYPlaceholder;
+
+	Text posXPlaceholder;
+	Text posYPlaceholder;
+
+	Text offsetXPlaceholder;
+	Text offsetYPlaceholder;
+
+
+	// delete button
+
+	Button deleteButton;
+
+
+
+
+
 
 
 	// Use this for initialization
@@ -42,38 +80,88 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 		DestroyInspector ();
 
-
 		inspectorObject = Instantiate (inspectorObjectPrefab);
 
-		Transform panel = inspectorObject.transform.FindChild ("Panel");
 
-		Debug.Log ("name " + currentPhysicalInteractable.myName);
+		// Assign 
 
-		panel.FindChild ("Name").GetComponent<Text> ().text = currentPhysicalInteractable.myName;
+		panel = inspectorObject.transform.FindChild ("Panel");
 
-		panel.Find ("IdentificationName").GetComponent<InputField> ().text = currentPhysicalInteractable.identificationName;
-		panel.Find ("IdentificationName").GetComponent<InputField> ().onEndEdit.AddListener (ChangeIdentificationName);
+		nameText = panel.FindChild ("Name").GetComponent<Text> ();
+		identificationText = panel.Find ("IdentificationName").GetComponent<InputField> ();
 
-		panel.FindChild ("SizeX").FindChild("Placeholder").GetComponent<Text> ().text = currentPhysicalInteractable.mySize.x.ToString();
-		panel.FindChild ("SizeY").FindChild("Placeholder").GetComponent<Text> ().text = currentPhysicalInteractable.mySize.y.ToString();
+		imageFlippedToggle = panel.Find ("ImageFlippedToggle").GetComponent<Toggle> ();
 
-		panel.FindChild ("SizeX").GetComponent<InputField> ().onEndEdit.AddListener (changeWidth);
-		panel.FindChild ("SizeY").GetComponent<InputField> ().onEndEdit.AddListener (changeHeight);
+		deleteButton = panel.Find ("DeleteButton").GetComponent<Button> ();
 
+		sizeXInput = panel.FindChild ("SizeX").GetComponent<InputField> ();
+		sizeYInput = panel.FindChild ("SizeY").GetComponent<InputField> ();
 
-		panel.FindChild ("PosX").FindChild("Placeholder").GetComponent<Text> ().text = currentPhysicalInteractable.x.ToString();
-		panel.FindChild ("PosY").FindChild("Placeholder").GetComponent<Text> ().text = currentPhysicalInteractable.y.ToString();
+		posXInput = panel.FindChild ("PosX").GetComponent<InputField> ();
+		posYInput = panel.FindChild ("PosY").GetComponent<InputField> ();
 
-		panel.FindChild ("PosX").GetComponent<InputField> ().onEndEdit.AddListener (changeX);
-		panel.FindChild ("PosY").GetComponent<InputField> ().onEndEdit.AddListener (changeY);
-
-
-		panel.FindChild ("OffsetX").FindChild("Placeholder").GetComponent<Text> ().text = currentPhysicalInteractable.offsetX.ToString();
-		panel.FindChild ("OffsetY").FindChild("Placeholder").GetComponent<Text> ().text = currentPhysicalInteractable.offsetY.ToString();
+		offsetXInput = panel.FindChild ("OffsetX").GetComponent<InputField> ();
+		offsetYInput = panel.FindChild ("OffsetY").GetComponent<InputField> ();
 
 
-		panel.FindChild ("OffsetX").GetComponent<InputField> ().onEndEdit.AddListener (changeOffsetX);
-		panel.FindChild ("OffsetY").GetComponent<InputField> ().onEndEdit.AddListener (changeOffsetY);
+		// placeholders 
+
+		sizeXPlaceholder = panel.FindChild ("SizeX").FindChild ("Placeholder").GetComponent<Text> ();
+		sizeYPlaceholder = panel.FindChild ("SizeY").FindChild("Placeholder").GetComponent<Text> ();
+
+		posXPlaceholder = panel.FindChild ("PosX").FindChild ("Placeholder").GetComponent<Text> ();
+		posYPlaceholder = panel.FindChild ("PosY").FindChild ("Placeholder").GetComponent<Text> ();
+
+		offsetXPlaceholder = panel.FindChild ("OffsetX").FindChild ("Placeholder").GetComponent<Text> ();
+		offsetYPlaceholder = panel.FindChild ("OffsetY").FindChild ("Placeholder").GetComponent<Text> ();
+
+
+		// Text
+
+		nameText.text = currentPhysicalInteractable.myName;
+		identificationText.text = currentPhysicalInteractable.identificationName;
+
+		sizeXPlaceholder.text = currentPhysicalInteractable.mySize.x.ToString();
+		sizeYPlaceholder.text = currentPhysicalInteractable.mySize.y.ToString();
+
+		posXPlaceholder.text = currentPhysicalInteractable.x.ToString();
+		posYPlaceholder.text = currentPhysicalInteractable.y.ToString();
+			
+		offsetXPlaceholder.text = currentPhysicalInteractable.offsetX.ToString();
+		offsetYPlaceholder.text = currentPhysicalInteractable.offsetY.ToString();
+
+
+		// Listeners
+
+		identificationText.onEndEdit.AddListener (ChangeIdentificationName);
+
+		sizeXInput.onEndEdit.AddListener (changeWidth);
+		sizeYInput.onEndEdit.AddListener (changeHeight);
+	
+		posXInput.onEndEdit.AddListener (changeX);
+		posYInput.onEndEdit.AddListener (changeY);
+
+		offsetXInput.onEndEdit.AddListener (changeOffsetX);
+		offsetYInput.onEndEdit.AddListener (changeOffsetY);
+
+		deleteButton.onClick.AddListener (() => EditorUI.DisplayAlert("Are you sure?", DeletePhysicalInteractable));
+
+
+		// Toggle 
+
+		if (currentPhysicalInteractable is Furniture) 
+		{
+			Furniture furn = (Furniture)currentPhysicalInteractable;
+
+			imageFlippedToggle.interactable = true;
+			imageFlippedToggle.isOn = furn.imageFlipped;
+
+			imageFlippedToggle.onValueChanged.AddListener (SetImageFlipped);
+						
+		} else {
+
+			imageFlippedToggle.interactable = false;
+		}
 
 
 
@@ -162,6 +250,22 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 				InspectorManager.instance.chosenCharacter.identificationName = name;
 			}
 		}
+
+	}
+
+
+	// image flipping 
+
+
+	public void SetImageFlipped(bool isFlipped)
+	{
+
+		Furniture furn = InspectorManager.instance.chosenFurniture;
+
+		furn.imageFlipped = isFlipped;
+		EditorRoomManager.instance.furnitureGameObjectMap [furn].GetComponent<SpriteRenderer> ().flipX = isFlipped;
+
+		changeOffsetX ((-furn.offsetX).ToString ());
 
 	}
 
@@ -262,6 +366,8 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 		{			
 			EditorRoomManager.instance.ChangeInteractableOffsetX (newX, InspectorManager.instance.chosenCharacter);
 		}
+
+		offsetXInput.text = x;
 	}
 
 
@@ -280,11 +386,60 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 		{			
 			EditorRoomManager.instance.ChangeInteractableOffsetY (newY, InspectorManager.instance.chosenCharacter);
 		}	
+
+		offsetYInput.text = y;
 	}
 
 
 
 
+	public void DeletePhysicalInteractable()
+	{
+
+		// Furniture
+
+		if (InspectorManager.instance.chosenFurniture != null) 
+		{
+
+			Furniture furn = InspectorManager.instance.chosenFurniture;
+			GameObject obj = EditorRoomManager.instance.furnitureGameObjectMap[furn];
+			Tile tile = EditorRoomManager.instance.room.myGrid.GetTileAt (furn.x, furn.y);
+
+
+			Destroy (obj.gameObject);
+			EditorRoomManager.instance.furnitureGameObjectMap.Remove (furn);
+			EditorRoomManager.instance.room.myFurnitureList.Remove (furn);
+			tile.myFurniture = null;
+
+			InspectorManager.instance.chosenFurniture = null;
+
+		}
+
+		// Character 
+
+		if (InspectorManager.instance.chosenCharacter != null) 
+		{
+
+			Character character = InspectorManager.instance.chosenCharacter;
+			GameObject obj = EditorRoomManager.instance.characterGameObjectMap[character];
+			Tile tile = EditorRoomManager.instance.room.myGrid.GetTileAt (character.x, character.y);
+
+
+			Destroy (obj.gameObject);
+			EditorRoomManager.instance.characterGameObjectMap.Remove (character);
+			EditorRoomManager.instance.room.myCharacterList.Remove (character);
+			tile.myCharacter = null;
+
+			InspectorManager.instance.chosenCharacter = null;
+		}
+
+
+
+		EventsHandler.Invoke_cb_tileLayoutChanged ();
+		//DestroyInspector ();
+
+
+	}
 
 
 

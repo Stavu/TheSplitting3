@@ -67,6 +67,10 @@ public class EditorLoadRoom : MonoBehaviour {
 	}
 
 
+
+
+
+
 	// Load room
 
 	public void LoadRoom(string roomString)

@@ -5,6 +5,18 @@ using UnityEngine;
 using System;
 
 
+
+
+
+public enum RoomState
+{
+
+	Real,
+	Mirror
+
+}
+
+
 [Serializable]
 public class Room {
 
@@ -16,6 +28,7 @@ public class Room {
 	public Grid myGrid;
 
 	public string bgName;
+	public bool bgFlipped = false;
 
 	public List <Furniture> myFurnitureList;
 	public List <Character> myCharacterList;
@@ -23,6 +36,7 @@ public class Room {
 
 	public Dictionary<Furniture,Vector2> furniturePositionMap;
 
+	public RoomState roomState;
 
 
 
@@ -49,6 +63,8 @@ public class Room {
 
 		this.myWidth = myWidth;
 		this.myHeight = myHeight;
+
+		roomState = RoomState.Real;
 
 		//this.bgName = bgName;
 
