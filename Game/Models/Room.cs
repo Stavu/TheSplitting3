@@ -40,6 +40,9 @@ public class Room {
 
 
 
+
+
+
 	// empty constructor
 
 	/*
@@ -68,8 +71,13 @@ public class Room {
 
 		//this.bgName = bgName;
 
-
+	
 		myGrid = new Grid (myWidth,myHeight);
+
+		this.myFurnitureList = new List<Furniture> ();
+		this.myCharacterList = new List<Character> ();
+		this.myTileInteractionList = new List<TileInteraction> ();
+
 
 	}
 

@@ -16,6 +16,9 @@ public class RoomMirror : Room {
 
 	string bgName_Shadow;
 
+	public List<Furniture> myFurnitureList_Persistant;
+	public List<TileInteraction> myTileInteractionList_Persistant;
+
 	public List<Furniture> myFurnitureList_Shadow;
 	public List<TileInteraction> myTileInteractionList_Shadow;
 
@@ -24,8 +27,18 @@ public class RoomMirror : Room {
 
 	// Shallow Room - for editor
 
-	public RoomMirror(int myWidth, int myHeight) : base(myWidth, myHeight)
+	public RoomMirror(Room room) : base(room.myWidth, room.myHeight)
 	{
+
+		this.myFurnitureList_Persistant = new List<Furniture> ();
+		this.myTileInteractionList_Persistant = new List<TileInteraction> ();
+
+		this.myFurnitureList_Shadow = new List<Furniture> ();
+		this.myTileInteractionList_Shadow = new List<TileInteraction> ();
+
+
+
+
 
 	}
 
@@ -43,6 +56,9 @@ public class RoomMirror : Room {
 
 
 	}
+
+
+
 
 
 

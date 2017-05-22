@@ -68,15 +68,12 @@ public class EditorRoomManager : MonoBehaviour {
 	}
 
 
+	// Create Empty Room
 
 	public Room CreateEmptyRoom(int myWidth, int myHeight)
 	{
 
 		Room tempRoom = new Room (myWidth,myHeight);
-
-		tempRoom.myFurnitureList = new List<Furniture> ();
-		tempRoom.myCharacterList = new List<Character> ();
-		tempRoom.myTileInteractionList = new List<TileInteraction> ();
 
 		furnitureGameObjectMap = new Dictionary<Furniture, GameObject> ();
 		characterGameObjectMap = new Dictionary<Character, GameObject> ();
@@ -86,19 +83,12 @@ public class EditorRoomManager : MonoBehaviour {
 	}
 
 
-	// Create Mirror Room
+	// Create Empty Mirror Room
 
 	public RoomMirror CreateEmptyRoomMirror(int myWidth, int myHeight)
 	{
 
 		RoomMirror tempRoom = new RoomMirror (myWidth,myHeight);
-
-		tempRoom.myFurnitureList = new List<Furniture> ();
-		tempRoom.myCharacterList = new List<Character> ();
-		tempRoom.myTileInteractionList = new List<TileInteraction> ();
-
-		tempRoom.myFurnitureList_Shadow = new List<Furniture> ();
-		tempRoom.myTileInteractionList_Shadow = new List<TileInteraction> ();
 
 		furnitureGameObjectMap = new Dictionary<Furniture, GameObject> ();
 		characterGameObjectMap = new Dictionary<Character, GameObject> ();
@@ -114,16 +104,35 @@ public class EditorRoomManager : MonoBehaviour {
 	public Room CreateFlippedRoom (Room room)
 	{
 
-		Room newRoom = CreateEmptyRoom(room.myWidth, room.myHeight);
 
+		Room newRoom;
 		newRoom.bgName = room.bgName;
 		newRoom.bgFlipped = !room.bgFlipped;
 
 		newRoom.myGrid = new Grid (newRoom.myWidth, newRoom.myHeight);
 
+
 		// the new room's state - if the old room is real then the new one is mirror, and vice versa
 
-		newRoom.roomState = room.roomState == RoomState.Real ? RoomState.Mirror : RoomState.Real;
+		if (room.roomState == RoomState.Real) 
+		{
+			newRoom.roomState = RoomState.Mirror;
+		
+		} else {
+
+			newRoom.roomState = RoomState.Real;
+		}
+
+
+		if (newRoom.roomState == RoomState.Real) 
+		{
+			newRoom = CreateEmptyRoom (room.myWidth, room.myHeight);
+
+		} else {
+			
+			newRoom = CreateEmptyRoomMirror (room.myWidth, room.myHeight);
+		}
+
 
 		// Interactables
 

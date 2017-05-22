@@ -30,12 +30,21 @@ public class EditorUI : MonoBehaviour {
 
 
 
-	Dropdown dropDownMenu;
+	Dropdown backgroundDropdown;
 	public GameObject interactableSelectPrefab;
 	public GameObject interactableButtonPrefab;
 
 	GameObject interactableSelect;
 
+	InputField roomNameInput;
+
+	Button toGameButton;
+	Button furnButton;
+	Button characterButton;
+	Button tileIntButton;
+
+	Button flipRoomButton;
+	Dropdown roomStateDropdown;
 
 
 
@@ -65,11 +74,10 @@ public class EditorUI : MonoBehaviour {
 	public void CreateBgSelect()
 	{	
 
-		//bgSelectPrefab = Instantiate (bgSelectPrefab);
-		dropDownMenu = gameObject.GetComponentInChildren<Dropdown>();
+		// Lists
+
 		List<string> bgNameList = new List<string> ();
 		Sprite[] bgSpriteList = Resources.LoadAll <Sprite> ("Sprites/Rooms/");
-
 
 		foreach (Sprite spr in bgSpriteList) 
 		{
@@ -78,58 +86,43 @@ public class EditorUI : MonoBehaviour {
 
 		}
 
-		dropDownMenu.AddOptions (bgNameList);
-		dropDownMenu.onValueChanged.AddListener (ChangeRoomBg);
+
+		// Assign
+
+		toGameButton = transform.Find ("ToGameButton").GetComponent<Button> ();
+
+		roomNameInput = transform.Find ("RoomNameInput").GetComponent<InputField> ();
+		backgroundDropdown = gameObject.GetComponentInChildren<Dropdown>();
+		furnButton = transform.Find ("FurnitureButton").GetComponent<Button>();
+		characterButton = transform.Find ("CharacterButton").GetComponent<Button>();
+		tileIntButton = transform.Find ("TileInteractionButton").GetComponent<Button> ();
+		flipRoomButton = transform.Find ("FlipRoomButton").GetComponent<Button>();
+		roomStateDropdown = transform.Find ("RoomStateDropdown").GetComponent<Dropdown>();
 
 
-		// Go to game button
 
-		Button toGameButton = transform.Find ("ToGameButton").GetComponent<Button> ();
+		// Listeners
+
 		toGameButton.onClick.AddListener(() => SceneManager.LoadScene("Main"));
 
-
-		// new furniture button
-
-		Button furnButton = transform.Find ("FurnitureButton").GetComponent<Button>();
+		backgroundDropdown.AddOptions (bgNameList);
+		backgroundDropdown.onValueChanged.AddListener (ChangeRoomBg);
+	
 		furnButton.onClick.AddListener (CreateFurnitureSelect);
-
-
-		// new character button
-
-		Button characterButton = transform.Find ("CharacterButton").GetComponent<Button>();
 		characterButton.onClick.AddListener (CreateCharacterSelect);
+		tileIntButton.onClick.AddListener (SetTileInteractionMode);	
 
-
-		// tile interaction button
-
-		Button tileIntButton = transform.Find ("TileInteractionButton").GetComponent<Button>();
-		tileIntButton.onClick.AddListener (SetTileInteractionMode);
-
-
-		// flip room button
-
-		Button flipRoomButton = transform.Find ("FlipRoomButton").GetComponent<Button>();
 		flipRoomButton.onClick.AddListener (FlipRoom);
-
-
-		// room state dropdown
-
-		Dropdown roomStateDropdown = transform.Find ("RoomStateDropdown").GetComponent<Dropdown>();
 		roomStateDropdown.onValueChanged.AddListener (SetRoomState);
-
 		roomStateDropdown.value = (int)EditorRoomManager.instance.room.roomState;
-
-
-
-		// room name button
-
-		InputField roomNameInput = transform.Find ("RoomNameInput").GetComponent<InputField> ();
 
 		roomNameInput.onEndEdit.AddListener (RoomNameChanged);
 
+
+		// Room name 
+
 		if (EditorRoomManager.instance.room.myName != null) 
 		{
-
 			roomNameInput.text = EditorRoomManager.instance.room.myName;
 		}
 
@@ -144,7 +137,7 @@ public class EditorUI : MonoBehaviour {
 
 		Debug.Log ("change room bg");
 
-		string spriteName = dropDownMenu.options [optionNum].text;
+		string spriteName = backgroundDropdown.options [optionNum].text;
 
 		EditorRoomManager.instance.SetRoomBackground (spriteName);
 
