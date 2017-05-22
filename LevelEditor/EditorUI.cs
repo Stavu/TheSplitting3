@@ -46,7 +46,7 @@ public class EditorUI : MonoBehaviour {
 	Button flipRoomButton;
 	Dropdown roomStateDropdown;
 
-
+	Toggle shadowToggle;
 
 
 	// Use this for initialization
@@ -98,7 +98,7 @@ public class EditorUI : MonoBehaviour {
 		tileIntButton = transform.Find ("TileInteractionButton").GetComponent<Button> ();
 		flipRoomButton = transform.Find ("FlipRoomButton").GetComponent<Button>();
 		roomStateDropdown = transform.Find ("RoomStateDropdown").GetComponent<Dropdown>();
-
+		shadowToggle = transform.Find ("ShadowToggle").GetComponent<Toggle>();
 
 
 		// Listeners
@@ -119,12 +119,33 @@ public class EditorUI : MonoBehaviour {
 		roomNameInput.onEndEdit.AddListener (RoomNameChanged);
 
 
+
 		// Room name 
 
 		if (EditorRoomManager.instance.room.myName != null) 
 		{
 			roomNameInput.text = EditorRoomManager.instance.room.myName;
 		}
+
+
+		// Shadow state 
+
+		if (EditorRoomManager.instance.room.roomState == RoomState.Real) 
+		{
+			shadowToggle.interactable = false;
+		
+		} else {
+
+			shadowToggle.interactable = true;
+			shadowToggle.isOn = EditorRoomManager.instance.room.myMirrorRoom.inTheShadow;
+			roomStateDropdown.interactable = !shadowToggle.isOn;
+		}
+
+
+
+
+
+		shadowToggle.onValueChanged.AddListener (SetShadowState);
 
 
 	}
@@ -280,13 +301,15 @@ public class EditorUI : MonoBehaviour {
 
 
 
+	// --------------- MIRROR ROOM ---------------- //
+
+
 
 
 	public void FlipRoom ()
 	{
 
-
-		Room newRoom = EditorRoomManager.instance.CreateFlippedRoom (EditorRoomManager.instance.room);
+		Room newRoom = EditorRoomHelper.CreateFlippedRoom (EditorRoomManager.instance.room);
 
 		string roomString = JsonUtility.ToJson (newRoom);
 
@@ -296,7 +319,6 @@ public class EditorUI : MonoBehaviour {
 		EditorRoomManager.loadRoomFromMemory = true;
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
-
 	}
 
 
@@ -305,10 +327,39 @@ public class EditorUI : MonoBehaviour {
 
 		EditorRoomManager.instance.room.roomState = (RoomState)i;
 
+		if (EditorRoomManager.instance.room.roomState == RoomState.Real) 
+		{
+
+			shadowToggle.interactable = false;
+
+		} else {
+			
+			shadowToggle.interactable = true;
+
+		}
+			
+	
+	}
 
 
+
+
+	public void SetShadowState(bool inShadow)
+	{
+
+		EditorRoomManager.instance.room.myMirrorRoom.inTheShadow = inShadow;
+		EditorRoomManager.roomToLoad = JsonUtility.ToJson (EditorRoomManager.instance.room);
+
+		Debug.Log (EditorRoomManager.roomToLoad);
+
+		EditorRoomManager.loadRoomFromMemory = true;
+
+		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
 	}
+
+
+
 
 
 

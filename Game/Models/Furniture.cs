@@ -30,6 +30,28 @@ public class Furniture : PhysicalInteractable {
 			
 	}
 
+
+	// Constructor for flipped furniture
+
+	public Furniture(Room room, Furniture furn)
+	{		
+	
+		this.myName = furn.myName;
+		this.x = room.MyGrid.myWidth - 1 - furn.x - ((int)furn.mySize.x - 1);
+		this.y = furn.y;
+
+		this.imageFlipped = !furn.imageFlipped;
+
+		this.offsetX = -furn.offsetX;
+		this.offsetY = furn.offsetY;
+		this.mySize = furn.mySize;
+		this.walkable = furn.walkable;
+
+	}
+
+
+
+
 }
 
 

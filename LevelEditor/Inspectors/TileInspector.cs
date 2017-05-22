@@ -29,6 +29,7 @@ public class TileInspector : MonoBehaviour {
 	Toggle enterRoomCheckBox;
 
 	Toggle walkableToggle;
+	Toggle persistentToggle;
 
 	Button deleteButton;
 
@@ -91,6 +92,10 @@ public class TileInspector : MonoBehaviour {
 		// walkable 
 
 		walkableToggle = panel.FindChild ("Walkable").GetComponent<Toggle> ();
+
+		// Persistent
+
+		persistentToggle = panel.FindChild ("Persistent").GetComponent<Toggle> ();
 
 		// delete ubtton
 
@@ -170,6 +175,35 @@ public class TileInspector : MonoBehaviour {
 		}
 
 
+
+		// Persistent
+
+
+		if (EditorRoomManager.instance.room.roomState == RoomState.Real) 
+		{
+			persistentToggle.interactable = false;
+
+		} else {
+
+			persistentToggle.interactable = true;
+
+			if (EditorRoomManager.instance.room.myMirrorRoom.myTileInteractionList_Persistant.Contains (currentTileInteraction)) 
+			{
+				persistentToggle.isOn = true;
+
+			} else {
+
+				persistentToggle.isOn = false;
+
+			}
+
+			persistentToggle.onValueChanged.AddListener (TileInteractionePersistantToggleClicked);
+
+		} 
+
+
+
+
 		// Inspector toggles 
 
 		textInputCheckBox.onValueChanged.AddListener (CheckTileInspectorToggles);
@@ -183,6 +217,23 @@ public class TileInspector : MonoBehaviour {
 		panel.FindChild("SubmitButton").GetComponent<Button> ().onClick.AddListener  (() => SubmitTileInteraction());
 
 	}
+
+
+
+	// Persistency
+
+	public void TileInteractionePersistantToggleClicked(bool isPersistent)
+	{
+	
+		TileInteraction tileInt = InspectorManager.instance.chosenTileInteraction;
+
+		EditorRoomHelper.SetTileInteractionPersistency (isPersistent,tileInt);
+
+
+
+
+	}
+
 
 
 
@@ -326,7 +377,7 @@ public class TileInspector : MonoBehaviour {
 
 		TileInteraction tileInt = InspectorManager.instance.chosenTileInteraction;
 
-		Tile tile = EditorRoomManager.instance.room.myGrid.GetTileAt (tileInt.x, tileInt.y);
+		Tile tile = EditorRoomManager.instance.room.MyGrid.GetTileAt (tileInt.x, tileInt.y);
 
 		EditorRoomManager.instance.room.myTileInteractionList.Remove (tileInt);
 		tile.myTileInteraction = null;

@@ -87,7 +87,7 @@ public class EditorTileManager : MonoBehaviour {
 
 		//Debug.Log ("tiles");
 
-		foreach (Tile tile in myRoom.myGrid.gridArray) 
+		foreach (Tile tile in myRoom.MyGrid.gridArray) 
 		{
 			GameObject obj = Instantiate (TilePrefab, tilesParent.transform);
 
@@ -114,7 +114,7 @@ public class EditorTileManager : MonoBehaviour {
 	public void ColorTiles()
 	{
 
-		//Debug.Log ("ColorTiles");
+		Debug.Log ("ColorTiles");
 
 
 		// First - Clean tile layout
@@ -123,67 +123,71 @@ public class EditorTileManager : MonoBehaviour {
 		{
 
 			obj.GetComponent<SpriteRenderer> ().color = new Color (1f, 1f, 1f, 0.1f);
-			
-		}
 
+		}
 
 		// Color furniture tiles
 
-		foreach (Furniture furn in EditorRoomManager.instance.room.myFurnitureList) 
+		foreach (Tile tile in EditorRoomManager.instance.room.MyGrid.gridArray) 
 		{
 
-			for (int x = 0; x < furn.mySize.x; x++) 
+			if (tile.myFurniture != null) 
 			{
-				for (int y = 0; y < furn.mySize.y; y++) 
+				Furniture furn = tile.myFurniture;
+
+				for (int x = 0; x < furn.mySize.x; x++) 
 				{
-					Tile tile = EditorRoomManager.instance.room.myGrid.GetTileAt (furn.x + x, furn.y + y);
-					tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.blue;
+					for (int y = 0; y < furn.mySize.y; y++) 
+					{
+						Tile tempTile = EditorRoomManager.instance.room.MyGrid.GetTileAt (furn.x + x, furn.y + y);
+						tileGameObjectMap [tempTile].GetComponent<SpriteRenderer> ().color = Color.blue;
 
+					}
 				}
+
+				continue;
 			}
-		}
 
 
-		// Color character tiles
-
-		foreach (Character character in EditorRoomManager.instance.room.myCharacterList) 
-		{
-
-			for (int x = 0; x < character.mySize.x; x++) 
+			if (tile.myCharacter != null) 
 			{
-				for (int y = 0; y < character.mySize.y; y++) 
+				Character character = tile.myCharacter;
+
+				for (int x = 0; x < character.mySize.x; x++) 
 				{
-					Tile tile = EditorRoomManager.instance.room.myGrid.GetTileAt (character.x + x, character.y + y);
-					tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.magenta;
+					for (int y = 0; y < character.mySize.y; y++) 
+					{
+						Tile tempTile = EditorRoomManager.instance.room.MyGrid.GetTileAt (character.x + x, character.y + y);
+						tileGameObjectMap [tempTile].GetComponent<SpriteRenderer> ().color = Color.magenta;
 
+					}
 				}
+
+				continue;
 			}
-		}
 
 
-
-
-		// Color interaction tiles 
-
-		foreach (TileInteraction tileInt in EditorRoomManager.instance.room.myTileInteractionList) 
-		{
-
-			for (int x = 0; x < tileInt.mySize.x; x++) 
+			if (tile.myTileInteraction != null) 
 			{
-				for (int y = 0; y < tileInt.mySize.y; y++) 
-				{
-					Tile tile = EditorRoomManager.instance.room.myGrid.GetTileAt (tileInt.x + x, tileInt.y + y);
-					tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.yellow;
+				TileInteraction tileInt = tile.myTileInteraction;
 
+				for (int x = 0; x < tileInt.mySize.x; x++) 
+				{
+					for (int y = 0; y < tileInt.mySize.y; y++) 
+					{
+						Tile tempTile = EditorRoomManager.instance.room.MyGrid.GetTileAt (tileInt.x + x, tileInt.y + y);
+						tileGameObjectMap [tempTile].GetComponent<SpriteRenderer> ().color = Color.yellow;
+
+					}
 				}
+
+				continue;
 			}
+
 		}
 
 
 	}
-
-
-
 
 
 

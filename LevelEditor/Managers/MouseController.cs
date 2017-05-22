@@ -126,7 +126,7 @@ public class MouseController : MonoBehaviour {
 
 			// Creation of the marker
 
-			Tile tile = EditorRoomManager.instance.room.myGrid.GetTileAt (posX, posY);
+			Tile tile = EditorRoomManager.instance.room.MyGrid.GetTileAt (posX, posY);
 
 			if (tile != null) 
 			{
@@ -217,7 +217,7 @@ public class MouseController : MonoBehaviour {
 				for (int y = startY; y <= endY; y++) 
 				{
 
-					Tile tile = EditorRoomManager.instance.room.myGrid.GetTileAt (x, y);
+					Tile tile = EditorRoomManager.instance.room.MyGrid.GetTileAt (x, y);
 
 					if (tile != null) 
 					{
@@ -252,7 +252,7 @@ public class MouseController : MonoBehaviour {
 				for (int y = startY; y <= endY; y++) 
 				{
 
-					Tile tile = EditorRoomManager.instance.room.myGrid.GetTileAt (x, y);
+					Tile tile = EditorRoomManager.instance.room.MyGrid.GetTileAt (x, y);
 
 					if (tile != null) 
 					{

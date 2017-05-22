@@ -126,7 +126,7 @@ public class InteractionManager : MonoBehaviour {
 			Debug.LogError ("entrance point is null");
 		}
 
-		Tile tempTile = RoomManager.instance.myRoom.myGrid.GetTileAt ((int)entrancePoint.x, (int)entrancePoint.y);
+		Tile tempTile = RoomManager.instance.myRoom.MyGrid.GetTileAt ((int)entrancePoint.x, (int)entrancePoint.y);
 
 		Debug.Log (entrancePoint);
 

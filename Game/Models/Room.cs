@@ -27,6 +27,42 @@ public class Room {
 
 	public Grid myGrid;
 
+	public Grid MyGrid
+	{
+		get
+		{ 
+			if (roomState == RoomState.Mirror) 
+			{
+				if (myMirrorRoom.inTheShadow == true) 
+				{
+					return myMirrorRoom.shadowGrid;
+				}
+
+				return myGrid;
+			}
+
+			return myGrid;
+		}
+
+		set 
+		{
+			if (roomState == RoomState.Mirror) 
+			{
+				if (myMirrorRoom.inTheShadow == true) 
+				{
+					myMirrorRoom.shadowGrid = value;
+				}
+
+				myGrid = value;
+			}
+
+			myGrid = value;
+		}
+	}
+
+
+
+
 	public string bgName;
 	public bool bgFlipped = false;
 
@@ -38,7 +74,7 @@ public class Room {
 
 	public RoomState roomState;
 
-
+	public RoomMirror myMirrorRoom;
 
 
 
@@ -179,7 +215,7 @@ public class Room {
 			for (int j = 0; j < mySize.y; j++) {
 
 
-				Tile tempTile = myGrid.GetTileAt (x + i, y + j);
+				Tile tempTile = MyGrid.GetTileAt (x + i, y + j);
 
 				if (tempTile == null) 
 				{

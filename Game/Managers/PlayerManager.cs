@@ -190,7 +190,7 @@ public class PlayerManager : MonoBehaviour {
 		}
 
 
-		Tile tile = RoomManager.instance.myRoom.myGrid.GetTileAt(new Vector3 (newPos.x + offsetX, newPos.y + offsetY, newPos.z));
+		Tile tile = RoomManager.instance.myRoom.MyGrid.GetTileAt(new Vector3 (newPos.x + offsetX, newPos.y + offsetY, newPos.z));
 
 		if (tile == null) 
 		{			
@@ -311,7 +311,7 @@ public class PlayerManager : MonoBehaviour {
 	public void FindPlayerTile(Player myPlayer)
 	{
 
-		Tile currentTile = RoomManager.instance.myRoom.myGrid.GetTileAt(myPlayer.myPos);
+		Tile currentTile = RoomManager.instance.myRoom.MyGrid.GetTileAt(myPlayer.myPos);
 
 
 		// light the tile
@@ -326,7 +326,7 @@ public class PlayerManager : MonoBehaviour {
 	public void UpdatePlayerSortingLayer(Player myPlayer)
 	{
 		
-		Tile currentTile = RoomManager.instance.myRoom.myGrid.GetTileAt(myPlayer.myPos);
+		Tile currentTile = RoomManager.instance.myRoom.MyGrid.GetTileAt(myPlayer.myPos);
 
 		playerGameObjectMap[myPlayer].GetComponent<SpriteRenderer> ().sortingOrder = -currentTile.y;
 

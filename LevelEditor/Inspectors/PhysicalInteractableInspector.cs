@@ -15,6 +15,7 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 	InputField identificationText;
 
 	Toggle imageFlippedToggle;
+	Toggle persistentToggle;
 
 	// inputs
 
@@ -91,6 +92,7 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 		identificationText = panel.Find ("IdentificationName").GetComponent<InputField> ();
 
 		imageFlippedToggle = panel.Find ("ImageFlippedToggle").GetComponent<Toggle> ();
+		persistentToggle = panel.Find ("PersistentToggle").GetComponent<Toggle> ();
 
 		deleteButton = panel.Find ("DeleteButton").GetComponent<Button> ();
 
@@ -164,6 +166,45 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 		}
 
 
+		// Persistent - only if furniture
+
+		if (currentPhysicalInteractable is Furniture) 
+		{
+
+			Furniture furn = (Furniture)currentPhysicalInteractable;
+
+			if (EditorRoomManager.instance.room.roomState == RoomState.Real) 
+			{
+				persistentToggle.interactable = false;
+
+			} else {
+
+				persistentToggle.interactable = true;
+
+				if (EditorRoomManager.instance.room.myMirrorRoom.myFurnitureList_Persistant.Contains (furn)) 
+				{
+					persistentToggle.isOn = true;
+
+				} else {
+
+					persistentToggle.isOn = false;
+
+				}
+			}
+
+			persistentToggle.onValueChanged.AddListener (FurniturePersistantToggleClicked);
+
+
+		} else {
+			
+			persistentToggle.interactable = false;
+		}
+
+
+
+
+
+
 
 		// create existing interactions
 
@@ -224,6 +265,9 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 
 
+
+
+
 	// identification
 
 	public void ChangeIdentificationName (string name)
@@ -268,6 +312,24 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 		changeOffsetX ((-furn.offsetX).ToString ());
 
 	}
+
+
+
+	// persistency
+
+
+
+	public void FurniturePersistantToggleClicked(bool isPersistent)
+	{
+
+		Furniture furn = InspectorManager.instance.chosenFurniture;
+
+		EditorRoomHelper.SetFurniturePersistency (isPersistent,furn);
+
+	}
+
+
+
 
 
 
@@ -403,7 +465,7 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 			Furniture furn = InspectorManager.instance.chosenFurniture;
 			GameObject obj = EditorRoomManager.instance.furnitureGameObjectMap[furn];
-			Tile tile = EditorRoomManager.instance.room.myGrid.GetTileAt (furn.x, furn.y);
+			Tile tile = EditorRoomManager.instance.room.MyGrid.GetTileAt (furn.x, furn.y);
 
 
 			Destroy (obj.gameObject);
@@ -422,7 +484,7 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 			Character character = InspectorManager.instance.chosenCharacter;
 			GameObject obj = EditorRoomManager.instance.characterGameObjectMap[character];
-			Tile tile = EditorRoomManager.instance.room.myGrid.GetTileAt (character.x, character.y);
+			Tile tile = EditorRoomManager.instance.room.MyGrid.GetTileAt (character.x, character.y);
 
 
 			Destroy (obj.gameObject);

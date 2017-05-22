@@ -49,17 +49,38 @@ public class EditorTileInteractionHandler : MonoBehaviour {
 
 
 
-		// Adding to room tileInteraction List
 
-		EditorRoomManager.instance.room.myTileInteractionList.Add (tileInteraction);
+		// According to state, add to list
 
-		tile.myTileInteraction = tileInteraction;
+		if (EditorRoomManager.instance.room.roomState == RoomState.Real) 
+		{			
+			// Real
+
+			EditorRoomManager.instance.room.myTileInteractionList.Add (tileInteraction);
+			tile.myTileInteraction = tileInteraction;
+
+		} else {
+
+			if (EditorRoomManager.instance.room.myMirrorRoom.inTheShadow == true) 
+			{			
+				// Shadow
+
+				EditorRoomManager.instance.room.myMirrorRoom.myTileInteractionList_Shadow.Add (tileInteraction);
+				tile.myTileInteraction = tileInteraction;
+
+			} else {
+
+				// Mirror
+
+				EditorRoomManager.instance.room.myTileInteractionList.Add (tileInteraction);
+				tile.myTileInteraction = tileInteraction;
+			}
+		}
 
 
 		EventsHandler.Invoke_cb_editorTileInteractioneModelChanged (tileInteraction);
 
-
-
+	
 	}
 
 

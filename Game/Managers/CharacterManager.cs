@@ -58,8 +58,8 @@ public class CharacterManager : MonoBehaviour {
 
 		if (Input.GetKeyDown (KeyCode.E)) 
 		{
-			Tile tileA = RoomManager.instance.myRoom.myGrid.GetTileAt (13, 7);
-			Tile tileB = RoomManager.instance.myRoom.myGrid.GetTileAt (2, 7);
+			Tile tileA = RoomManager.instance.myRoom.MyGrid.GetTileAt (13, 7);
+			Tile tileB = RoomManager.instance.myRoom.MyGrid.GetTileAt (2, 7);
 			Tile tileC = foo ? tileA : tileB;
 
 			Character myCharacter = GetCharacterByName ("llehctiM");
@@ -91,7 +91,7 @@ public class CharacterManager : MonoBehaviour {
 	public void MoveToTile(Character character, Tile myTargetTile)
 	{
 
-		Tile currentTile = RoomManager.instance.myRoom.myGrid.GetTileAt (character.x, character.y);
+		Tile currentTile = RoomManager.instance.myRoom.MyGrid.GetTileAt (character.x, character.y);
 
 		if (currentTile.myCharacter == character) 
 		{

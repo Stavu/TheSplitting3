@@ -36,7 +36,7 @@ public class PlayerObject : MonoBehaviour {
 
 		// Updating the player's sorting layer
 
-		Tile currentTile = RoomManager.instance.myRoom.myGrid.GetTileAt(myPlayer.myPos);
+		Tile currentTile = RoomManager.instance.myRoom.MyGrid.GetTileAt(myPlayer.myPos);
 
 		mySpriteRenderer.sortingOrder = -currentTile.y;
 

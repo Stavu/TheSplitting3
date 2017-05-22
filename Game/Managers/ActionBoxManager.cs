@@ -213,8 +213,8 @@ public class ActionBoxManager : MonoBehaviour {
 				
 		Player activePlayer = PlayerManager.myPlayer;
 
-		Tile playerTile = RoomManager.instance.myRoom.myGrid.GetTileAt (activePlayer.myPos);
-		Tile currentTile = RoomManager.instance.myRoom.myGrid.GetTileAt (currentPhysicalInteractable.myPos);
+		Tile playerTile = RoomManager.instance.myRoom.MyGrid.GetTileAt (activePlayer.myPos);
+		Tile currentTile = RoomManager.instance.myRoom.MyGrid.GetTileAt (currentPhysicalInteractable.myPos);
 
 
 		int x = 0;

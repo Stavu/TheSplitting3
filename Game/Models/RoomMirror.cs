@@ -7,14 +7,14 @@ using System;
 
 
 [Serializable]
-public class RoomMirror : Room {
+public class RoomMirror {
 
 
 	// declerations 
 
 	public bool inTheShadow;
 
-	string bgName_Shadow;
+	public string bgName_Shadow;
 
 	public List<Furniture> myFurnitureList_Persistant;
 	public List<TileInteraction> myTileInteractionList_Persistant;
@@ -22,12 +22,12 @@ public class RoomMirror : Room {
 	public List<Furniture> myFurnitureList_Shadow;
 	public List<TileInteraction> myTileInteractionList_Shadow;
 
-
+	public Grid shadowGrid;
 
 
 	// Shallow Room - for editor
 
-	public RoomMirror(Room room) : base(room.myWidth, room.myHeight)
+	public RoomMirror() 
 	{
 
 		this.myFurnitureList_Persistant = new List<Furniture> ();
@@ -37,16 +37,15 @@ public class RoomMirror : Room {
 		this.myTileInteractionList_Shadow = new List<TileInteraction> ();
 
 
-
-
-
 	}
 
 
 
+	/*
+
 	// Real Room - for game 
 
-	public RoomMirror(RoomMirror clone): base(clone)
+	public RoomMirror(RoomMirror clone)
 	{
 
 		this.bgName_Shadow = clone.bgName_Shadow;
@@ -57,7 +56,7 @@ public class RoomMirror : Room {
 
 	}
 
-
+	*/
 
 
 

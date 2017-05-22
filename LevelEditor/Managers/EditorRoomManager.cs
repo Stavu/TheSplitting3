@@ -83,123 +83,6 @@ public class EditorRoomManager : MonoBehaviour {
 	}
 
 
-	// Create Empty Mirror Room
-
-	public RoomMirror CreateEmptyRoomMirror(int myWidth, int myHeight)
-	{
-
-		RoomMirror tempRoom = new RoomMirror (myWidth,myHeight);
-
-		furnitureGameObjectMap = new Dictionary<Furniture, GameObject> ();
-		characterGameObjectMap = new Dictionary<Character, GameObject> ();
-
-		return tempRoom;
-
-	}
-
-
-
-	// Creating a new flipped room in the editor (helper)
-
-	public Room CreateFlippedRoom (Room room)
-	{
-
-
-		Room newRoom;
-		newRoom.bgName = room.bgName;
-		newRoom.bgFlipped = !room.bgFlipped;
-
-		newRoom.myGrid = new Grid (newRoom.myWidth, newRoom.myHeight);
-
-
-		// the new room's state - if the old room is real then the new one is mirror, and vice versa
-
-		if (room.roomState == RoomState.Real) 
-		{
-			newRoom.roomState = RoomState.Mirror;
-		
-		} else {
-
-			newRoom.roomState = RoomState.Real;
-		}
-
-
-		if (newRoom.roomState == RoomState.Real) 
-		{
-			newRoom = CreateEmptyRoom (room.myWidth, room.myHeight);
-
-		} else {
-			
-			newRoom = CreateEmptyRoomMirror (room.myWidth, room.myHeight);
-		}
-
-
-		// Interactables
-
-		foreach (Furniture furn in room.myFurnitureList) 
-		{			
-			Furniture flippedFurn = new Furniture (furn.myName, (room.myGrid.myWidth - 1 - furn.x - ((int)furn.mySize.x - 1)), furn.y);
-
-			flippedFurn.offsetX = flippedFurn.imageFlipped ? furn.offsetX : -furn.offsetX;
-			flippedFurn.offsetY = furn.offsetY;
-			flippedFurn.mySize = furn.mySize;
-			flippedFurn.walkable = furn.walkable;
-
-			newRoom.myFurnitureList.Add (flippedFurn);
-
-			Tile tile = newRoom.myGrid.GetTileAt (flippedFurn.x, flippedFurn.y);
-			tile.myFurniture = flippedFurn;
-
-			flippedFurn.imageFlipped = !furn.imageFlipped;
-
-		}
-
-		newRoom.myFurnitureList.ForEach (furn => Debug.Log (furn.myName));
-
-
-		foreach (Character character in room.myCharacterList) 
-		{			
-			Character flippedCharacter = new Character (character.myName, (room.myGrid.myWidth - 1 - character.x - ((int)character.mySize.x - 1)), character.y);
-
-			flippedCharacter.offsetX = character.offsetX;
-			flippedCharacter.offsetY = character.offsetY;
-			flippedCharacter.mySize = character.mySize;
-			flippedCharacter.walkable = character.walkable;
-
-			newRoom.myCharacterList.Add (flippedCharacter);
-
-			Tile tile = newRoom.myGrid.GetTileAt (flippedCharacter.x, flippedCharacter.y);
-			tile.myCharacter = flippedCharacter;
-		}
-
-
-		foreach (TileInteraction tileInt in room.myTileInteractionList) 
-		{		
-			TileInteraction flippedTileInteraction = new TileInteraction ((room.myGrid.myWidth - 1 - tileInt.x - ((int)tileInt.mySize.x - 1)), tileInt.y);
-		
-			flippedTileInteraction.mySize = tileInt.mySize;
-			flippedTileInteraction.walkable = tileInt.walkable;
-
-			newRoom.myTileInteractionList.Add (flippedTileInteraction);
-
-			Tile tile = newRoom.myGrid.GetTileAt (flippedTileInteraction.x, flippedTileInteraction.y);
-			tile.myTileInteraction = flippedTileInteraction;
-		}
-
-
-
-
-
-		return newRoom;
-
-
-	}
-
-	 
-
-
-
-
 
 
 	// adding background image 
@@ -220,10 +103,9 @@ public class EditorRoomManager : MonoBehaviour {
 
 		Sprite roomSprite;
 
-		if (loadRoomFromMemory == false) 
-		{
+		if (loadRoomFromMemory == false) {
 
-			Debug.Log ("new room");
+			//Debug.Log ("new room");
 
 			roomSprite = Resources.Load <Sprite> ("Sprites/Rooms/" + name);
 
@@ -239,9 +121,7 @@ public class EditorRoomManager : MonoBehaviour {
 			Debug.Log ("old room");
 
 			room = LoadRoom (roomToLoad);
-			roomSprite = Resources.Load <Sprite> ("Sprites/Rooms/" + room.bgName );
-
-
+			roomSprite = Resources.Load <Sprite> ("Sprites/Rooms/" + room.bgName);
 
 		}
 			
@@ -364,8 +244,8 @@ public class EditorRoomManager : MonoBehaviour {
 
 
 	
-		Tile tile = room.myGrid.GetTileAt (interactable.x, interactable.y);
-		Tile tileNew = room.myGrid.GetTileAt (x, interactable.y);
+		Tile tile = room.MyGrid.GetTileAt (interactable.x, interactable.y);
+		Tile tileNew = room.MyGrid.GetTileAt (x, interactable.y);
 
 		if (tileNew == null) 
 		{			
@@ -423,8 +303,8 @@ public class EditorRoomManager : MonoBehaviour {
 	public void ChangeInteractableTileY(int y, Interactable interactable)
 	{
 
-		Tile tile = room.myGrid.GetTileAt (interactable.x, interactable.y);
-		Tile tileNew = room.myGrid.GetTileAt (interactable.x, y);
+		Tile tile = room.MyGrid.GetTileAt (interactable.x, interactable.y);
+		Tile tileNew = room.MyGrid.GetTileAt (interactable.x, y);
 
 
 		if (tileNew == null) 
@@ -538,31 +418,118 @@ public class EditorRoomManager : MonoBehaviour {
 	public Room LoadRoom(string roomString)
 	{
 
+		Debug.Log ("LoadRoom");
 
 		Room tempRoom = JsonUtility.FromJson<Room> (roomString);
-
 		tempRoom.myGrid = new Grid (tempRoom.myWidth, tempRoom.myHeight);
 
-		foreach (Furniture furn in tempRoom.myFurnitureList) 
+
+		// MIRROR ROOM
+
+		if (tempRoom.roomState == RoomState.Mirror)
 		{
-			Tile tile = tempRoom.myGrid.GetTileAt (furn.x, furn.y);
-			tile.myFurniture = furn;
 
-		}
+			tempRoom.myMirrorRoom.shadowGrid = new Grid (tempRoom.myWidth, tempRoom.myHeight);
 
 
-		foreach (Character character in tempRoom.myCharacterList) 
-		{
-			Tile tile = tempRoom.myGrid.GetTileAt (character.x, character.y);
-			tile.myCharacter = character;
+			if (tempRoom.myMirrorRoom.inTheShadow == true) 
+			{
+				
+				foreach (Furniture furn in tempRoom.myMirrorRoom.myFurnitureList_Shadow) 
+				{
+					Tile tileShadow = tempRoom.myMirrorRoom.shadowGrid.GetTileAt (furn.x, furn.y);
+					tileShadow.myFurniture = furn;
 
-		}
+				}
+
+				foreach (TileInteraction tileInt in tempRoom.myMirrorRoom.myTileInteractionList_Shadow) 
+				{
+					Tile tileShadow = tempRoom.myMirrorRoom.shadowGrid.GetTileAt (tileInt.x, tileInt.y);
+					tileShadow.myTileInteraction = tileInt;
+
+				}
+
+			} else {
+
+				foreach (Furniture furn in tempRoom.myFurnitureList) 
+				{
+					Tile tile = tempRoom.MyGrid.GetTileAt (furn.x, furn.y);
+					tile.myFurniture = furn;
+
+				}
+
+				foreach (TileInteraction tileInt in tempRoom.myTileInteractionList) 
+				{
+					Tile tile = tempRoom.MyGrid.GetTileAt (tileInt.x, tileInt.y);
+					tile.myTileInteraction = tileInt;
+
+				}
+
+			}
 
 
-		foreach (TileInteraction tileInt in tempRoom.myTileInteractionList) 
-		{
-			Tile tile = tempRoom.myGrid.GetTileAt (tileInt.x, tileInt.y);
-			tile.myTileInteraction = tileInt;
+
+			// Persistant Interactables 
+
+			foreach (Furniture furn in tempRoom.myMirrorRoom.myFurnitureList_Persistant) 
+			{
+
+				Tile tile = tempRoom.MyGrid.GetTileAt (furn.x, furn.y);
+				tile.myFurniture = furn;
+
+				Tile tileShadow = tempRoom.myMirrorRoom.shadowGrid.GetTileAt (furn.x, furn.y);
+				tileShadow.myFurniture = furn;
+
+			}
+
+			foreach (TileInteraction tileInt in tempRoom.myMirrorRoom.myTileInteractionList_Persistant) 
+			{
+				
+				Tile tile = tempRoom.MyGrid.GetTileAt (tileInt.x, tileInt.y);
+				tile.myTileInteraction = tileInt;
+
+				Tile tileShadow = tempRoom.myMirrorRoom.shadowGrid.GetTileAt (tileInt.x, tileInt.y);
+				tileShadow.myTileInteraction = tileInt;
+
+			}
+
+			foreach (Character character in tempRoom.myCharacterList) 
+			{
+				Tile tile = tempRoom.MyGrid.GetTileAt (character.x, character.y);
+				tile.myCharacter = character;
+
+				Tile tileShadow = tempRoom.myMirrorRoom.shadowGrid.GetTileAt (character.x, character.y);
+				tileShadow.myCharacter = character;
+
+			}
+
+		} else {
+			
+			
+			// REAL ROOM 
+
+			foreach (Furniture furn in tempRoom.myFurnitureList) 
+			{
+				Tile tile = tempRoom.MyGrid.GetTileAt (furn.x, furn.y);
+				tile.myFurniture = furn;
+
+			}
+
+
+			foreach (Character character in tempRoom.myCharacterList) 
+			{
+				Tile tile = tempRoom.MyGrid.GetTileAt (character.x, character.y);
+				tile.myCharacter = character;
+
+			}
+
+
+			foreach (TileInteraction tileInt in tempRoom.myTileInteractionList) 
+			{
+				Tile tile = tempRoom.MyGrid.GetTileAt (tileInt.x, tileInt.y);
+				tile.myTileInteraction = tileInt;
+
+			}
 
 		}
 

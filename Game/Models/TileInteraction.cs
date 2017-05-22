@@ -28,4 +28,22 @@ public class TileInteraction : Interactable {
 
 
 
+
+	// Constructor for flipped furniture
+
+	public TileInteraction(Room room, TileInteraction tileInt)
+	{		
+		
+		this.x = room.MyGrid.myWidth - 1 - tileInt.x - ((int)tileInt.mySize.x - 1);
+		this.y = tileInt.y;
+
+		this.mySize = tileInt.mySize;
+		this.walkable = tileInt.walkable;
+
+	}
+
+
+
+
+
 }

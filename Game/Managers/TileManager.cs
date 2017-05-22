@@ -67,7 +67,7 @@ public class TileManager : MonoBehaviour {
 		GameObject tiles = new GameObject ("Tiles");
 
 
-		foreach (Tile tile in myRoom.myGrid.gridArray) 
+		foreach (Tile tile in myRoom.MyGrid.gridArray) 
 		{
 			GameObject obj = Instantiate (TilePrefab, tiles.transform);
 

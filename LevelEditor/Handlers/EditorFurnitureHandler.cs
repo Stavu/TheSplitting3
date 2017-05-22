@@ -38,8 +38,7 @@ public class EditorFurnitureHandler : MonoBehaviour
 
 	public void PlaceFurniture(Tile tile, string furnitureName)
 	{
-
-
+		
 		if(furnitureName == null)
 		{
 			return;
@@ -58,7 +57,6 @@ public class EditorFurnitureHandler : MonoBehaviour
 		}
 
 
-
 		// create furniture
 
 		Furniture furn = new Furniture (furnitureName, tile.x, tile.y);
@@ -68,13 +66,35 @@ public class EditorFurnitureHandler : MonoBehaviour
 
 		Sprite furnitureSprite = Resources.Load <Sprite> ("Sprites/Furniture/" + furnitureName);
 
-
 		furn.mySize = new Vector2 (Mathf.Ceil(furnitureSprite.bounds.size.x), 1f);
 
 
-		EditorRoomManager.instance.room.myFurnitureList.Add (furn);
+		// According to state, add to list
 
-		tile.myFurniture = furn;
+		if (EditorRoomManager.instance.room.roomState == RoomState.Real) 
+		{			
+			// Real
+
+			EditorRoomManager.instance.room.myFurnitureList.Add (furn);
+			tile.myFurniture = furn;
+		
+		} else {
+
+			if (EditorRoomManager.instance.room.myMirrorRoom.inTheShadow == true) 
+			{			
+				// Shadow
+
+				EditorRoomManager.instance.room.myMirrorRoom.myFurnitureList_Shadow.Add (furn);
+				tile.myFurniture = furn;
+
+			} else {
+
+				// Mirror
+
+				EditorRoomManager.instance.room.myFurnitureList.Add (furn);
+				tile.myFurniture = furn;
+			}
+		}
 
 
 		EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn);
@@ -83,17 +103,45 @@ public class EditorFurnitureHandler : MonoBehaviour
 	}
 
 
+
+
+	// -- FACTORY -- //
+
 	public void FurnitureFactory(Room room)
 	{
 
 		//Debug.Log ("FurnitureFactory");
 
-		foreach (Furniture furn in room.myFurnitureList) 
-		{			
+		if (room.roomState == RoomState.Real) 
+		{
+			
+			// -- REAL ROOM -- //
 
-			EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn);
+			room.myFurnitureList.ForEach (furn => EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn));
+
+		} else {
+
+			// -- MIRROR ROOM GENERAL -- //
+
+			if (room.myMirrorRoom.inTheShadow == true) 
+			{
+				// SHADOW ROOM
+
+				room.myMirrorRoom.myFurnitureList_Shadow.ForEach (furn => EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn));
+
+			} else {
+
+				// MIRROR ROOM
+				
+				room.myFurnitureList.ForEach (furn => EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn));
+			}
+
+			// PERSISTANT FURNITURE
+
+			room.myMirrorRoom.myFurnitureList_Persistant.ForEach (furn => EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn));
 
 		}
+			
 
 	}
 

@@ -29,8 +29,6 @@ public class EditorSceneLoader : MonoBehaviour {
 	void CreateManagers()
 	{
 
-
-
 		Instantiate (managers);	
 
 		// Initializing

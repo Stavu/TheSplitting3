@@ -61,7 +61,7 @@ public class EditorLoadRoom : MonoBehaviour {
 			roomButton.transform.SetParent (contentObject.transform);
 
 			roomButton.GetComponentInChildren<Text> ().text = room.myName;		
-			roomButton.onClick.AddListener (() => LoadRoom(txt.text));
+			roomButton.onClick.AddListener (() => LoadRoomClicked(txt.text));
 
 		}
 	}
@@ -73,7 +73,7 @@ public class EditorLoadRoom : MonoBehaviour {
 
 	// Load room
 
-	public void LoadRoom(string roomString)
+	public void LoadRoomClicked(string roomString)
 	{
 
 		EditorRoomManager.roomToLoad = roomString;
