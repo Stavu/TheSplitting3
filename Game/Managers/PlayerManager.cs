@@ -313,10 +313,9 @@ public class PlayerManager : MonoBehaviour {
 
 		Tile currentTile = RoomManager.instance.myRoom.MyGrid.GetTileAt(myPlayer.myPos);
 
-
 		// light the tile
 
-		TileManager.instance.tileGameObjectMap [currentTile].GetComponent<SpriteRenderer> ().color = new Color (0.1f,0.1f,0.1f,0.2f);
+		TileManager.instance.GetTileObject(currentTile.x, currentTile.y).GetComponent<SpriteRenderer> ().color = new Color (0.1f,0.1f,0.1f,0.2f);
 
 	}
 

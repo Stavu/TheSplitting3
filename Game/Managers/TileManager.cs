@@ -21,6 +21,7 @@ public class TileManager : MonoBehaviour {
 	// Singleton //
 
 
+	GameObject tiles;
 
 	public GameObject TilePrefab;
 	public Dictionary<Tile,GameObject> tileGameObjectMap;
@@ -64,7 +65,7 @@ public class TileManager : MonoBehaviour {
 	void CreateTileObject(Room myRoom)
 	{
 
-		GameObject tiles = new GameObject ("Tiles");
+		tiles = new GameObject ("Tiles");
 
 
 		foreach (Tile tile in myRoom.MyGrid.gridArray) 
@@ -76,14 +77,28 @@ public class TileManager : MonoBehaviour {
 
 			tileGameObjectMap.Add(tile, obj);
 
-
 			// adding object to hirarchy under TileManager
-
-		//	obj.transform.SetParent (this.transform);
+		
 			obj.name = "Tile " + tile.x + "," + tile.y;
 
 
 		}
+
+	}
+
+
+
+	public GameObject GetTileObject(int x, int y)
+	{
+		
+		GameObject obj = tiles.transform.Find ("Tile " + x + "," + y).gameObject;
+
+		if (obj == null) 
+		{
+			Debug.LogError ("obj is null");
+		}
+
+		return obj;
 
 	}
 
@@ -97,7 +112,7 @@ public class TileManager : MonoBehaviour {
 		//Debug.Log ("ColorTiles");
 
 
-		List<Tile> InteractableTiles = RoomManager.instance.myRoom.GetMyTiles(interactable.mySize, interactable.x, interactable.y);
+		List<Tile> InteractableTiles = RoomManager.instance.myRoom.GetMyTiles(RoomManager.instance.myRoom.MyGrid, interactable.mySize, interactable.x, interactable.y);
 
 
 		// light the tiles

@@ -43,12 +43,12 @@ public class EditorSceneLoader : MonoBehaviour {
 		if (EditorRoomManager.loadRoomFromMemory == true) 
 		{
 			Debug.Log ("loading room");
-			EditorRoomManager.instance.SetRoomBackground (EditorRoomManager.instance.room.bgName);
+			EditorRoomManager.instance.InitializeRoom (EditorRoomManager.instance.room.bgName);
 
 		} else {
 
 			Debug.Log ("creating room");
-			EditorRoomManager.instance.SetRoomBackground ("abandoned_lobby_bg");
+			EditorRoomManager.instance.InitializeRoom ("abandoned_lobby_bg");
 		}
 	
 

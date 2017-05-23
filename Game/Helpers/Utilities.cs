@@ -176,8 +176,6 @@ public class Utilities {
 
 
 
-
-
 	public static List<DialogueSentence> CreateSentenceList (ISpeaker speaker, string text)
 	{
 
@@ -215,11 +213,45 @@ public class Utilities {
 	}
 
 
+	// FADE IN AND OUT - from shadow to mirror and vice versa //
 
 
+	public static IEnumerator FadeBetweenSprites(List<SpriteRenderer> fadeOutSprites, List<SpriteRenderer> fadeInSprites)
+	{
+		
+		float speed = 1f;
+		float inter = 0;
 
+		while(inter < 1)
+		{
+			foreach (SpriteRenderer sr in fadeOutSprites) 
+			{
+				sr.color = new Color (1,1,1,1-inter);
+			}
 
+			foreach (SpriteRenderer sr in fadeInSprites) 
+			{
+				sr.color = new Color (1,1,1,inter);
+			}
 
+			// speed - how many seconds it will take 
+
+			inter += Time.deltaTime / speed;
+		
+			yield return new WaitForFixedUpdate ();
+		
+		}
+
+		foreach (SpriteRenderer sr in fadeOutSprites) 
+		{
+			sr.color = Color.clear;
+		}
+
+		foreach (SpriteRenderer sr in fadeInSprites) 
+		{
+			sr.color = Color.white;
+		}
+	}
 
 
 

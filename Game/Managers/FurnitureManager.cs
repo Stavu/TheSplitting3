@@ -127,6 +127,13 @@ public class FurnitureManager : MonoBehaviour {
 	}
 
 
+
+
+
+
+
+
+
 	// Setting furniture animation state
 
 	public void SetFurnitureAnimationState(string furnitureName, string state)

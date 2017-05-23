@@ -4,6 +4,7 @@ using UnityEngine;
 
 using System;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 
 
@@ -34,6 +35,8 @@ public class EditorRoomManager : MonoBehaviour {
 
 
 	public Room room; 
+	GameObject roomBackground;
+
 	public Dictionary<Furniture,GameObject> furnitureGameObjectMap;
 	public Dictionary<Character,GameObject> characterGameObjectMap;
 
@@ -64,7 +67,6 @@ public class EditorRoomManager : MonoBehaviour {
 			editorTileInteractionHandler.Initialize ();
 
 		}
-
 	}
 
 
@@ -88,65 +90,124 @@ public class EditorRoomManager : MonoBehaviour {
 	// adding background image 
 
 
-	GameObject roomBackground;
-
-	public void SetRoomBackground(string name = "abandoned_lobby_bg")
+	public void InitializeRoom(string name = "abandoned_lobby_bg")
 	{
 
 		Debug.Log ("SetRoomBackground");
 
-		if (roomBackground != null) 
+
+		if (roomToLoad == null) 
 		{
-			Destroy (roomBackground);			
-		}	
-
-
-		Sprite roomSprite;
-
-		if (loadRoomFromMemory == false) {
-
-			//Debug.Log ("new room");
-
-			roomSprite = Resources.Load <Sprite> ("Sprites/Rooms/" + name);
-
-			int myWidth = (int)roomSprite.bounds.size.x;
-			int myHeight = (int)roomSprite.bounds.size.y;
-
-			room = CreateEmptyRoom (myWidth, myHeight);
-			room.bgName = name;	
-
-					
-		} else {
-			
-			Debug.Log ("old room");
-
-			room = LoadRoom (roomToLoad);
-			roomSprite = Resources.Load <Sprite> ("Sprites/Rooms/" + room.bgName);
-
+			CreateNewRoomFromSprite (name);
 		}
+
+		room = LoadRoom (roomToLoad);
 			
 		EventsHandler.Invoke_cb_editorNewRoomCreated (room);
 
-
-
 		// Creating room object
 
-		GameObject obj = new GameObject (room.myName);
-
-		SpriteRenderer sr = obj.AddComponent<SpriteRenderer>();
-		sr.sprite = roomSprite;
-		sr.flipX = room.bgFlipped;
-
-		obj.transform.position = new Vector3 (room.myWidth/2f, 0, 0);
-		sr.sortingLayerName = Constants.room_layer;
-		obj.transform.SetParent (this.transform);
-
-		roomBackground = obj;
+		SetBackgroundObject (room);
 
 		Utilities.AdjustOrthographicCamera (room);
 
 	}
 
+
+	// Create New Room
+
+	public void CreateNewRoomFromSprite(string name)
+	{
+		
+		Sprite roomSprite = Resources.Load <Sprite> ("Sprites/Rooms/" + name);
+
+		int myWidth = (int)roomSprite.bounds.size.x;
+		int myHeight = (int)roomSprite.bounds.size.y;
+
+		Room room = CreateEmptyRoom (myWidth, myHeight);
+		room.bgName = name;	
+
+		roomToLoad = JsonUtility.ToJson (room);
+
+		SceneManager.LoadScene ("LevelEditor");
+
+	}
+
+
+
+
+
+	// Room background 
+
+	public void ChangeRoomBackground(string name = "abandoned_lobby_bg")
+	{
+
+		if (room.RoomState == RoomState.Real) 
+		{
+			room.bgName = name;
+		
+		} else {
+
+			if (room.myMirrorRoom.inTheShadow == true) 
+			{
+				room.myMirrorRoom.bgName_Shadow = name;
+
+			} else {
+				
+				room.bgName = name;
+			}
+		}
+
+		SetBackgroundObject (room);
+
+	}
+
+
+
+	public void SetBackgroundObject(Room room)
+	{
+
+		if (roomBackground != null) 
+		{
+			Destroy (roomBackground);			
+		}	
+	
+		SpriteRenderer sr;	
+		Sprite roomSprite;
+
+		if (room.RoomState == RoomState.Real) 
+		{
+			roomBackground = new GameObject (room.myName);
+			sr = roomBackground.AddComponent<SpriteRenderer> ();
+			roomSprite = Resources.Load <Sprite> ("Sprites/Rooms/" + room.bgName);
+			sr.flipX = room.bgFlipped;
+		
+		} else {
+
+			if (room.myMirrorRoom.inTheShadow == true) 
+			{
+				roomBackground = new GameObject (room.myName + "_shadow");
+				sr = roomBackground.AddComponent<SpriteRenderer> ();
+				roomSprite = Resources.Load <Sprite> ("Sprites/Rooms/" + room.myMirrorRoom.bgName_Shadow);
+				sr.flipX = room.myMirrorRoom.bgFlipped_Shadow;
+
+			} else {
+
+				roomBackground = new GameObject (room.myName);
+				sr = roomBackground.AddComponent<SpriteRenderer> ();
+				roomSprite = Resources.Load <Sprite> ("Sprites/Rooms/" + room.bgName);
+				sr.flipX = room.bgFlipped;
+			}
+		}
+
+		sr.sprite = roomSprite;
+		roomBackground.transform.position = new Vector3 (room.myWidth/2f, 0, 0);
+		sr.sortingLayerName = Constants.room_layer;
+		roomBackground.transform.SetParent (this.transform);
+
+		Utilities.AdjustOrthographicCamera (room);
+
+	}
 
 
 	// SERIALIZE ROOM //
@@ -512,7 +573,6 @@ public class EditorRoomManager : MonoBehaviour {
 			{
 				Tile tile = tempRoom.MyGrid.GetTileAt (furn.x, furn.y);
 				tile.myFurniture = furn;
-
 			}
 
 
@@ -520,7 +580,6 @@ public class EditorRoomManager : MonoBehaviour {
 			{
 				Tile tile = tempRoom.MyGrid.GetTileAt (character.x, character.y);
 				tile.myCharacter = character;
-
 			}
 
 
@@ -528,12 +587,8 @@ public class EditorRoomManager : MonoBehaviour {
 			{
 				Tile tile = tempRoom.MyGrid.GetTileAt (tileInt.x, tileInt.y);
 				tile.myTileInteraction = tileInt;
-
 			}
-
 		}
-
-
 
 		return tempRoom;
 

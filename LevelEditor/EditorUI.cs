@@ -8,9 +8,7 @@ using System;
 
 
 
-
 public class EditorUI : MonoBehaviour {
-
 
 
 	// Singleton //
@@ -23,7 +21,6 @@ public class EditorUI : MonoBehaviour {
 		} else if (instance != this) {
 			Destroy (gameObject);
 		}
-
 	}
 
 	// Singleton //
@@ -43,6 +40,8 @@ public class EditorUI : MonoBehaviour {
 	Button characterButton;
 	Button tileIntButton;
 
+	Button newRoomButton;
+
 	Button flipRoomButton;
 	Dropdown roomStateDropdown;
 
@@ -52,23 +51,16 @@ public class EditorUI : MonoBehaviour {
 	// Use this for initialization
 
 	public void CreateUI () {
-
-
+		
 		CreateBgSelect ();
 
-
-
 	}
-
-
 
 	// Update is called once per frame
 	void Update () 
 	{
 
 	}
-
-
 
 
 	public void CreateBgSelect()
@@ -86,7 +78,6 @@ public class EditorUI : MonoBehaviour {
 
 		}
 
-
 		// Assign
 
 		toGameButton = transform.Find ("ToGameButton").GetComponent<Button> ();
@@ -96,6 +87,7 @@ public class EditorUI : MonoBehaviour {
 		furnButton = transform.Find ("FurnitureButton").GetComponent<Button>();
 		characterButton = transform.Find ("CharacterButton").GetComponent<Button>();
 		tileIntButton = transform.Find ("TileInteractionButton").GetComponent<Button> ();
+		newRoomButton = transform.Find ("NewRoomButton").GetComponent<Button> ();			
 		flipRoomButton = transform.Find ("FlipRoomButton").GetComponent<Button>();
 		roomStateDropdown = transform.Find ("RoomStateDropdown").GetComponent<Dropdown>();
 		shadowToggle = transform.Find ("ShadowToggle").GetComponent<Toggle>();
@@ -106,12 +98,14 @@ public class EditorUI : MonoBehaviour {
 		toGameButton.onClick.AddListener(() => SceneManager.LoadScene("Main"));
 
 		backgroundDropdown.AddOptions (bgNameList);
-		backgroundDropdown.onValueChanged.AddListener (ChangeRoomBg);
+		backgroundDropdown.onValueChanged.AddListener (NewBackgroundSelected);
 	
 		furnButton.onClick.AddListener (CreateFurnitureSelect);
+
 		characterButton.onClick.AddListener (CreateCharacterSelect);
 		tileIntButton.onClick.AddListener (SetTileInteractionMode);	
 
+		newRoomButton.onClick.AddListener (CreateBackgroundSelect);
 		flipRoomButton.onClick.AddListener (FlipRoom);
 		roomStateDropdown.onValueChanged.AddListener (SetRoomState);
 		roomStateDropdown.value = (int)EditorRoomManager.instance.room.RoomState;
@@ -141,48 +135,59 @@ public class EditorUI : MonoBehaviour {
 			roomStateDropdown.interactable = !shadowToggle.isOn;
 		}
 
-
-
-
-
 		shadowToggle.onValueChanged.AddListener (SetShadowState);
-
 
 	}
 
 
 
 
-	public void ChangeRoomBg(int optionNum)
+	public void NewBackgroundSelected(int optionNum)
 	{
 
 		Debug.Log ("change room bg");
 
 		string spriteName = backgroundDropdown.options [optionNum].text;
 
-		EditorRoomManager.instance.SetRoomBackground (spriteName);
+		EditorRoomManager.instance.ChangeRoomBackground (spriteName);
 
 	}
 
 
 
+	// CREATING BACKGROUND //
+
+	public void CreateBackgroundSelect()
+	{
+		interactableSelect = Instantiate (interactableSelectPrefab);
+
+		GameObject content = interactableSelect.GetComponentInChildren<GridLayoutGroup> ().gameObject;				
+		Sprite[] bgSpriteList = Resources.LoadAll<Sprite> ("Sprites/Rooms/");
+
+		foreach (Sprite sprite in bgSpriteList) 
+		{
+			GameObject button = Instantiate (interactableButtonPrefab);
+			button.transform.SetParent (content.transform);
+
+			button.GetComponent<Image> ().sprite = sprite;
+			button.GetComponentInChildren<Text> ().text = sprite.name;
+
+			button.GetComponent<Button> ().onClick.AddListener (() => EditorRoomManager.instance.CreateNewRoomFromSprite(sprite.name));
+		}
+	}
+
 
 	// CREATING FURNITURE //
 
-
-
 	public void CreateFurnitureSelect()
 	{
-
 		interactableSelect = Instantiate (interactableSelectPrefab);
 
-		GameObject content = interactableSelect.GetComponentInChildren<GridLayoutGroup> ().gameObject;
-				
+		GameObject content = interactableSelect.GetComponentInChildren<GridLayoutGroup> ().gameObject;				
 		Sprite[] furnitureSpriteList = Resources.LoadAll<Sprite> ("Sprites/Furniture/");
 
 		foreach (Sprite sprite in furnitureSpriteList) 
 		{
-
 			GameObject button = Instantiate (interactableButtonPrefab);
 			button.transform.SetParent (content.transform);
 
@@ -190,13 +195,31 @@ public class EditorUI : MonoBehaviour {
 			button.GetComponentInChildren<Text> ().text = sprite.name;
 
 			button.GetComponent<Button> ().onClick.AddListener (() => SetFurnitureBuildMode(sprite.name));
-
-
 		}
-
-
 	}
 
+
+	// CREATING CHARACTER //
+
+
+	public void CreateCharacterSelect()
+	{
+		interactableSelect = Instantiate (interactableSelectPrefab);
+
+		GameObject content = interactableSelect.GetComponentInChildren<GridLayoutGroup> ().gameObject;
+		GameObject[] characterGameObjectList = Resources.LoadAll<GameObject> ("Prefabs/Characters/");
+
+		foreach (GameObject gameObject in characterGameObjectList) 
+		{
+			GameObject button = Instantiate (interactableButtonPrefab);
+			button.transform.SetParent (content.transform);
+
+			button.GetComponent<Image> ().sprite = gameObject.GetComponentInChildren<SpriteRenderer>().sprite;
+			button.GetComponentInChildren<Text> ().text = gameObject.name;
+
+			button.GetComponent<Button> ().onClick.AddListener (() => SetCharacterBuildMode(gameObject.name));
+		}
+	}
 
 
 	public void SetFurnitureBuildMode(string furnitureName)
@@ -218,34 +241,6 @@ public class EditorUI : MonoBehaviour {
 
 
 
-	// CREATING CHARACTER //
-
-
-	public void CreateCharacterSelect()
-	{
-
-		interactableSelect = Instantiate (interactableSelectPrefab);
-
-		GameObject content = interactableSelect.GetComponentInChildren<GridLayoutGroup> ().gameObject;
-
-		GameObject[] characterGameObjectList = Resources.LoadAll<GameObject> ("Prefabs/Characters/");
-
-		foreach (GameObject gameObject in characterGameObjectList) 
-		{
-
-			GameObject button = Instantiate (interactableButtonPrefab);
-			button.transform.SetParent (content.transform);
-
-
-			button.GetComponent<Image> ().sprite = gameObject.GetComponentInChildren<SpriteRenderer>().sprite;
-			button.GetComponentInChildren<Text> ().text = gameObject.name;
-
-			button.GetComponent<Button> ().onClick.AddListener (() => SetCharacterBuildMode(gameObject.name));
-
-
-		}
-
-	}
 
 
 
@@ -336,36 +331,27 @@ public class EditorUI : MonoBehaviour {
 			
 			shadowToggle.interactable = true;
 
-		}
-			
-	
+		}		
 	}
-
-
 
 
 	public void SetShadowState(bool inShadow)
 	{
-
 		EditorRoomManager.instance.room.myMirrorRoom.inTheShadow = inShadow;
 		EditorRoomManager.roomToLoad = JsonUtility.ToJson (EditorRoomManager.instance.room);
 
-		Debug.Log (EditorRoomManager.roomToLoad);
+		//Debug.Log (EditorRoomManager.roomToLoad);
 
 		EditorRoomManager.loadRoomFromMemory = true;
 
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-
 	}
-
-
 
 
 
 
 
 	// ----- ALERT ----- //
-
 
 
 	public static void DisplayAlert(string textString, UnityEngine.Events.UnityAction action)

@@ -15,6 +15,7 @@ public class RoomMirror {
 	public bool inTheShadow;
 
 	public string bgName_Shadow;
+	public bool bgFlipped_Shadow = false;
 
 	public List<Furniture> myFurnitureList_Persistant;
 	public List<TileInteraction> myTileInteractionList_Persistant;

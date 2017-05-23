@@ -98,7 +98,14 @@ public class GameManager : MonoBehaviour
 
 		}
 
-			
+
+		if (Input.GetKeyDown (KeyCode.B)) 
+		{
+
+			RoomManager.instance.myRoom.myMirrorRoom.inTheShadow = !RoomManager.instance.myRoom.myMirrorRoom.inTheShadow;
+			RoomManager.instance.SwitchObjectByShadowState();
+
+		}
 
 	}
 
@@ -119,13 +126,8 @@ public class GameManager : MonoBehaviour
 
 			stringRoomMap.Add (myRoom.myName, myRoom);
 
-
-
-			
+					
 		}
-
-
-
 	}
 
 
