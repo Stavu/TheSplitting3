@@ -71,7 +71,7 @@ public class EditorFurnitureHandler : MonoBehaviour
 
 		// According to state, add to list
 
-		if (EditorRoomManager.instance.room.roomState == RoomState.Real) 
+		if (EditorRoomManager.instance.room.RoomState == RoomState.Real) 
 		{			
 			// Real
 
@@ -112,7 +112,7 @@ public class EditorFurnitureHandler : MonoBehaviour
 
 		//Debug.Log ("FurnitureFactory");
 
-		if (room.roomState == RoomState.Real) 
+		if (room.RoomState == RoomState.Real) 
 		{
 			
 			// -- REAL ROOM -- //

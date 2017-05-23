@@ -33,6 +33,7 @@ public class EditorTileManager : MonoBehaviour {
 	// Use this for initialization
 	public void Initialize () {
 
+		Debug.Log ("EditorTileManager");
 
 		EventsHandler.cb_editorNewRoomCreated += CreateTileObject;
 		EventsHandler.cb_tileLayoutChanged += ColorTiles;

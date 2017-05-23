@@ -55,31 +55,55 @@ public class RoomManager : MonoBehaviour {
 		CreateRoom ();
 		nameSpeakerMap = new Dictionary<string, ISpeaker> ();
 
-
-
-		foreach (Furniture furn in myRoom.myFurnitureList) 
+		if (myRoom.RoomState == RoomState.Real) 
 		{
 
-			EventsHandler.Invoke_cb_furnitureChanged (furn);
-			
+			// REAL ROOM
+
+			myRoom.myFurnitureList.ForEach (furn => EventsHandler.Invoke_cb_furnitureChanged (furn));
+
+			myRoom.myCharacterList.ForEach (character => {
+				EventsHandler.Invoke_cb_characterChanged (character);
+				nameSpeakerMap.Add (character.myName, character);
+			});
+
+			myRoom.myTileInteractionList.ForEach (tileInt => EventsHandler.Invoke_cb_tileInteractionChanged (tileInt));
+
+
+		} else {
+
+
+			if (myRoom.myMirrorRoom.inTheShadow == true) 
+			{
+				// SHADOW ROOM
+
+				myRoom.myMirrorRoom.myFurnitureList_Shadow.ForEach (furn => EventsHandler.Invoke_cb_furnitureChanged (furn));
+				myRoom.myMirrorRoom.myTileInteractionList_Shadow.ForEach (tileInt => EventsHandler.Invoke_cb_tileInteractionChanged (tileInt));
+
+
+			} else {
+
+				// MIRROR ROOM
+
+				myRoom.myFurnitureList.ForEach (furn => EventsHandler.Invoke_cb_furnitureChanged (furn));
+				myRoom.myTileInteractionList.ForEach (tileInt => EventsHandler.Invoke_cb_tileInteractionChanged (tileInt));
+			}
+
+
+			// PERSISTENT INTERACTABLES
+
+			myRoom.myMirrorRoom.myFurnitureList_Persistant.ForEach (furn => EventsHandler.Invoke_cb_furnitureChanged (furn));
+
+			myRoom.myCharacterList.ForEach (character => {
+				EventsHandler.Invoke_cb_characterChanged (character);
+				nameSpeakerMap.Add (character.myName, character);
+			});
+
+			myRoom.myMirrorRoom.myTileInteractionList_Persistant.ForEach (tileInt => EventsHandler.Invoke_cb_tileInteractionChanged (tileInt));
+
 		}
 
 
-		foreach (Character character in myRoom.myCharacterList) 
-		{
-
-			EventsHandler.Invoke_cb_characterChanged (character);
-			nameSpeakerMap.Add (character.myName, character);
-
-		}
-
-
-		foreach (TileInteraction tileInt in myRoom.myTileInteractionList) 
-		{
-
-			EventsHandler.Invoke_cb_tileInteractionChanged (tileInt);
-
-		}
 
 
 		// adding the player to the speaker map

@@ -143,7 +143,6 @@ public class SubInteraction : IConditionable {
 
 			case "showDialogue":
 
-
 				//Debug.Log ("SubInteract: Show dialogue");
 
 				DialogueOption dialogueOption = GameManager.gameData.nameDialogueOptionMap [this.dialogueOptionTitle];

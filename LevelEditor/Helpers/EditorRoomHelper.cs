@@ -16,7 +16,7 @@ public static class EditorRoomHelper {
 		Room newRoom = EditorRoomManager.instance.CreateEmptyRoom (room.myWidth, room.myHeight);
 		newRoom.bgName = room.bgName;
 		newRoom.bgFlipped = !room.bgFlipped;
-		newRoom.roomState = room.roomState;
+		newRoom.RoomState = room.RoomState;
 
 		newRoom.myGrid = new Grid (newRoom.myWidth, newRoom.myHeight);
 
@@ -52,7 +52,7 @@ public static class EditorRoomHelper {
 
 		// Also flip the interactables of the mirror room 
 
-		if (room.myMirrorRoom != null) 
+		if (room.RoomState == RoomState.Mirror) 
 		{
 
 			newRoom.myMirrorRoom = new RoomMirror ();
@@ -124,25 +124,19 @@ public static class EditorRoomHelper {
 
 
 
+	// -- PERSISTENCY -- //
+
 
 	public static void SetFurniturePersistency(bool isPersistent, Furniture furn)
 	{
+
+		DestroyAllInteractablesInPos (furn.x, furn.y);
+
 		if (isPersistent == true) 
 		{				
 			EditorRoomManager.instance.room.myMirrorRoom.myFurnitureList_Persistant.Add (furn);
 
-			if (EditorRoomManager.instance.room.myMirrorRoom.inTheShadow == true) 
-			{
-				EditorRoomManager.instance.room.myMirrorRoom.myFurnitureList_Shadow.Remove (furn);
-
-			} else {
-
-				EditorRoomManager.instance.room.myFurnitureList.Remove (furn);
-			}
-
 		} else {
-
-			EditorRoomManager.instance.room.myMirrorRoom.myFurnitureList_Persistant.Remove (furn);
 
 			if (EditorRoomManager.instance.room.myMirrorRoom.inTheShadow == true) 
 			{				
@@ -152,31 +146,21 @@ public static class EditorRoomHelper {
 
 				EditorRoomManager.instance.room.myFurnitureList.Add (furn);
 			}
-
 		}
-
 	}
 
 
 
 	public static void SetTileInteractionPersistency(bool isPersistent, TileInteraction tileInt)
 	{
+
+		DestroyAllInteractablesInPos (tileInt.x, tileInt.y);
+
 		if (isPersistent == true) 
-		{				
+		{	
 			EditorRoomManager.instance.room.myMirrorRoom.myTileInteractionList_Persistant.Add (tileInt);
 
-			if (EditorRoomManager.instance.room.myMirrorRoom.inTheShadow == true) 
-			{
-				EditorRoomManager.instance.room.myMirrorRoom.myTileInteractionList_Shadow.Remove (tileInt);
-
-			} else {
-
-				EditorRoomManager.instance.room.myTileInteractionList.Remove (tileInt);
-			}
-
 		} else {
-
-			EditorRoomManager.instance.room.myMirrorRoom.myTileInteractionList_Persistant.Remove (tileInt);
 
 			if (EditorRoomManager.instance.room.myMirrorRoom.inTheShadow == true) 
 			{				
@@ -186,7 +170,63 @@ public static class EditorRoomHelper {
 
 				EditorRoomManager.instance.room.myTileInteractionList.Add (tileInt);
 			}
+		}
+	}
 
+
+
+
+	public static void DestroyAllInteractablesInPos(int x ,int y)
+	{
+		
+		GetFurnitureFromList(EditorRoomManager.instance.room.myFurnitureList,x,y);
+		GetCharacterFromList(EditorRoomManager.instance.room.myCharacterList,x,y);
+		GetTileInteractionFromList(EditorRoomManager.instance.room.myTileInteractionList,x,y);
+
+		GetFurnitureFromList(EditorRoomManager.instance.room.myMirrorRoom.myFurnitureList_Shadow,x,y);
+		GetTileInteractionFromList(EditorRoomManager.instance.room.myMirrorRoom.myTileInteractionList_Shadow,x,y);
+
+		GetFurnitureFromList(EditorRoomManager.instance.room.myMirrorRoom.myFurnitureList_Persistant,x,y);
+		GetTileInteractionFromList(EditorRoomManager.instance.room.myMirrorRoom.myTileInteractionList_Persistant,x,y);
+
+
+	}
+
+
+
+	public static void GetFurnitureFromList(List<Furniture> originList, int x, int y)
+	{
+		for (int i = originList.Count - 1; i >= 0; i--) 
+		{
+			if ((x == originList[i].x) && (y == originList[i].y)) 
+			{
+				originList.RemoveAt (i);
+			}
+		}
+	}
+
+
+	public static void GetCharacterFromList(List<Character> originList, int x, int y)
+	{
+		for (int i = originList.Count - 1; i >= 0; i--) 
+		{
+			if ((x == originList[i].x) && (y == originList[i].y)) 
+			{
+				originList.RemoveAt (i);
+			}
+		}
+	}
+
+
+	public static void GetTileInteractionFromList(List<TileInteraction> originList, int x, int y)
+	{
+
+		for (int i = originList.Count - 1; i >= 0; i--) 
+		{
+			if ((x == originList[i].x) && (y == originList[i].y)) 
+			{
+				originList.RemoveAt (i);
+			}
 		}
 
 	}

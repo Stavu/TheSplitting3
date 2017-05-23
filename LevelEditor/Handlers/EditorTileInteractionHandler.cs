@@ -8,7 +8,7 @@ public class EditorTileInteractionHandler : MonoBehaviour {
 
 	public void Initialize ()
 	{
-
+		
 	}
 
 	
@@ -52,7 +52,7 @@ public class EditorTileInteractionHandler : MonoBehaviour {
 
 		// According to state, add to list
 
-		if (EditorRoomManager.instance.room.roomState == RoomState.Real) 
+		if (EditorRoomManager.instance.room.RoomState == RoomState.Real) 
 		{			
 			// Real
 
@@ -82,6 +82,14 @@ public class EditorTileInteractionHandler : MonoBehaviour {
 
 	
 	}
+
+
+
+
+
+
+
+
 
 
 

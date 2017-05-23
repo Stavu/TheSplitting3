@@ -179,7 +179,7 @@ public class TileInspector : MonoBehaviour {
 		// Persistent
 
 
-		if (EditorRoomManager.instance.room.roomState == RoomState.Real) 
+		if (EditorRoomManager.instance.room.RoomState == RoomState.Real) 
 		{
 			persistentToggle.interactable = false;
 
@@ -283,7 +283,7 @@ public class TileInspector : MonoBehaviour {
 		if (interactionTextInput.interactable == true) 		
 		{
 
-			SubInteraction subInteraction = new SubInteraction ("showDialogue");
+			SubInteraction subInteraction = new SubInteraction ("showMonologue");
 			subInteraction.RawText = interactionTextInput.text;
 			Debug.Log ("raw " + subInteraction.RawText);
 

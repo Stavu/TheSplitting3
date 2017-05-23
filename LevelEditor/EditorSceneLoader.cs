@@ -56,6 +56,8 @@ public class EditorSceneLoader : MonoBehaviour {
 
 		BuildController.instance.mode = BuildController.Mode.inspect;
 
+		EditorTileManager.instance.ColorTiles ();
+
 	}
 
 

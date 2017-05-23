@@ -114,7 +114,7 @@ public class EditorUI : MonoBehaviour {
 
 		flipRoomButton.onClick.AddListener (FlipRoom);
 		roomStateDropdown.onValueChanged.AddListener (SetRoomState);
-		roomStateDropdown.value = (int)EditorRoomManager.instance.room.roomState;
+		roomStateDropdown.value = (int)EditorRoomManager.instance.room.RoomState;
 
 		roomNameInput.onEndEdit.AddListener (RoomNameChanged);
 
@@ -130,7 +130,7 @@ public class EditorUI : MonoBehaviour {
 
 		// Shadow state 
 
-		if (EditorRoomManager.instance.room.roomState == RoomState.Real) 
+		if (EditorRoomManager.instance.room.RoomState == RoomState.Real) 
 		{
 			shadowToggle.interactable = false;
 		
@@ -325,9 +325,9 @@ public class EditorUI : MonoBehaviour {
 	public void SetRoomState(int i)
 	{
 
-		EditorRoomManager.instance.room.roomState = (RoomState)i;
+		EditorRoomManager.instance.room.RoomState = (RoomState)i;
 
-		if (EditorRoomManager.instance.room.roomState == RoomState.Real) 
+		if (EditorRoomManager.instance.room.RoomState == RoomState.Real) 
 		{
 
 			shadowToggle.interactable = false;

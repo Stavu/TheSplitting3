@@ -74,7 +74,46 @@ public class Testing : MonoBehaviour {
 			}
 		}
 
+		if(room.myMirrorRoom != null)
+		{
+
+			List<Vector2> existingPositions = new List<Vector2> ();
+
+
+			room.myMirrorRoom.myTileInteractionList_Persistant.ForEach (tileInt => {
+				if (tileInt.mySubInt == null) {
+					Debug.LogError ("TestRoom: tileInt_persistent has no subinteractions.");
+				}
+				Vector2 position = new Vector2(tileInt.x, tileInt.y);
+				if(existingPositions.Contains(position))
+				{
+					Debug.LogError("there is already a tile interaction at this position");
+				}
+				existingPositions.Add(position);
+			});
+
+
+
+
+
+
+		}
+
+
+
+
+
+
 	}
+
+
+
+
+
+
+
+
+
 
 
 

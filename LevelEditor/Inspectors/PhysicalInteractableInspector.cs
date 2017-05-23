@@ -173,7 +173,7 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 			Furniture furn = (Furniture)currentPhysicalInteractable;
 
-			if (EditorRoomManager.instance.room.roomState == RoomState.Real) 
+			if (EditorRoomManager.instance.room.RoomState == RoomState.Real) 
 			{
 				persistentToggle.interactable = false;
 

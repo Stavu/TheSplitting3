@@ -26,12 +26,11 @@ public class Room {
 	public int myHeight;
 
 	public Grid myGrid;
-
 	public Grid MyGrid
 	{
 		get
 		{ 
-			if (roomState == RoomState.Mirror) 
+			if (RoomState == RoomState.Mirror) 
 			{
 				if (myMirrorRoom.inTheShadow == true) 
 				{
@@ -46,7 +45,7 @@ public class Room {
 
 		set 
 		{
-			if (roomState == RoomState.Mirror) 
+			if (RoomState == RoomState.Mirror) 
 			{
 				if (myMirrorRoom.inTheShadow == true) 
 				{
@@ -73,6 +72,29 @@ public class Room {
 	public Dictionary<Furniture,Vector2> furniturePositionMap;
 
 	public RoomState roomState;
+	public RoomState RoomState
+	{
+		get 
+		{
+			return roomState;
+
+		}
+
+		set 
+		{
+			roomState = value;
+
+			if ((roomState == RoomState.Mirror) && (myMirrorRoom == null))
+			{
+				myMirrorRoom = new RoomMirror ();
+
+			}
+		}
+
+	}
+
+
+
 
 	public RoomMirror myMirrorRoom;
 
@@ -103,7 +125,7 @@ public class Room {
 		this.myWidth = myWidth;
 		this.myHeight = myHeight;
 
-		roomState = RoomState.Real;
+		RoomState = RoomState.Real;
 
 		//this.bgName = bgName;
 
@@ -138,8 +160,15 @@ public class Room {
 		this.myCharacterList = clone.myCharacterList;
 		this.myTileInteractionList = clone.myTileInteractionList;
 
+		this.myMirrorRoom = clone.myMirrorRoom;
+		this.RoomState = clone.RoomState;
+
 		myGrid = new Grid (myWidth,myHeight);
 
+		if (myMirrorRoom != null) 
+		{
+			myMirrorRoom.shadowGrid = new Grid (myWidth, myHeight);
+		}
 	
 		CreateRoomInteractables ();
 
@@ -149,54 +178,152 @@ public class Room {
 	public void CreateRoomInteractables()
 	{
 
-	
-		// Furniture
-
-		foreach (Furniture furn in myFurnitureList) 
+		if (RoomState == RoomState.Real) 
 		{
-			
-			List<Tile> FurnitureTiles = GetMyTiles(furn.mySize, furn.x, furn.y);
 
-			foreach (Tile tile in FurnitureTiles) 
+			// Furniture
+
+			foreach (Furniture furn in myFurnitureList) 
 			{
-				tile.PlaceFurniture(furn);
+				List<Tile> FurnitureTiles = GetMyTiles(furn.mySize, furn.x, furn.y);
 
-			}		
+				foreach (Tile tile in FurnitureTiles) 
+				{
+					tile.PlaceFurniture(furn);
+				}
+			}
+
+			// Character
+
+			foreach (Character character in myCharacterList) 
+			{
+				List<Tile> CharacterTiles = GetMyTiles(character.mySize, character.x, character.y);
+
+				foreach (Tile tile in CharacterTiles) 
+				{
+					tile.PlaceCharacter(character);
+				}	
+			}
+
+			// Tile interactions
+
+			foreach (TileInteraction tileInteraction in myTileInteractionList) 
+			{
+				List<Tile> tileInteractionTiles = GetMyTiles(tileInteraction.mySize, tileInteraction.x, tileInteraction.y);
+
+				foreach (Tile tile in tileInteractionTiles) 
+				{
+					tile.PlaceTileInteraction(tileInteraction);
+				}
+			}
+
+		} else {
+
+			if (myMirrorRoom.inTheShadow == true) 
+			{
+
+				// -- SHADOW ROOM -- //
+
+				// Furniture
+
+				foreach (Furniture furn in myMirrorRoom.myFurnitureList_Shadow) 
+				{
+					List<Tile> FurnitureTiles = GetMyTiles(furn.mySize, furn.x, furn.y);
+
+					foreach (Tile tile in FurnitureTiles) 
+					{
+						tile.PlaceFurniture(furn);
+					}
+				}
+
+				// Tile interactions
+
+				foreach (TileInteraction tileInteraction in myMirrorRoom.myTileInteractionList_Shadow)
+				{
+					List<Tile> tileInteractionTiles = GetMyTiles(tileInteraction.mySize, tileInteraction.x, tileInteraction.y);
+
+					foreach (Tile tile in tileInteractionTiles) 
+					{
+						tile.PlaceTileInteraction(tileInteraction);
+					}
+				}
+
+			} else {
+
+				// -- MIRROR ROOM -- // 
+
+				// Furniture
+
+				foreach (Furniture furn in myFurnitureList) 
+				{
+					List<Tile> FurnitureTiles = GetMyTiles(furn.mySize, furn.x, furn.y);
+
+					foreach (Tile tile in FurnitureTiles) 
+					{
+						tile.PlaceFurniture(furn);
+					}
+				}
+
+
+				// Tile interactions
+
+				foreach (TileInteraction tileInteraction in myTileInteractionList) 
+				{
+					List<Tile> tileInteractionTiles = GetMyTiles(tileInteraction.mySize, tileInteraction.x, tileInteraction.y);
+
+					foreach (Tile tile in tileInteractionTiles) 
+					{
+						tile.PlaceTileInteraction(tileInteraction);
+					}
+				}
+
+
+			}
+
+
+			// -- PERSISTENT -- //
+
+			// Furniture
+
+			foreach (Furniture furn in myMirrorRoom.myFurnitureList_Persistant) 
+			{
+				List<Tile> FurnitureTiles = GetMyTiles(furn.mySize, furn.x, furn.y);
+
+				foreach (Tile tile in FurnitureTiles) 
+				{
+					tile.PlaceFurniture(furn);
+				}
+			}
+
+			// Character
+
+			foreach (Character character in myCharacterList) 
+			{
+				List<Tile> CharacterTiles = GetMyTiles(character.mySize, character.x, character.y);
+
+				foreach (Tile tile in CharacterTiles) 
+				{
+					tile.PlaceCharacter(character);
+				}	
+			}
+
+
+			// Tile interactions
+
+			foreach (TileInteraction tileInteraction in myMirrorRoom.myTileInteractionList_Persistant)
+			{
+				List<Tile> tileInteractionTiles = GetMyTiles(tileInteraction.mySize, tileInteraction.x, tileInteraction.y);
+
+				foreach (Tile tile in tileInteractionTiles) 
+				{
+					tile.PlaceTileInteraction(tileInteraction);
+				}
+			}
 
 		}
 
 
-		// Character
 
-		foreach (Character character in myCharacterList) 
-		{
-
-			List<Tile> CharacterTiles = GetMyTiles(character.mySize, character.x, character.y);
-
-			foreach (Tile tile in CharacterTiles) 
-			{
-				tile.PlaceCharacter(character);
-
-			}		
-
-		}
-
-
-
-		// Tile interactions
-
-		foreach (TileInteraction tileInteraction in myTileInteractionList) 
-		{
-			
-			List<Tile> tileInteractionTiles = GetMyTiles(tileInteraction.mySize, tileInteraction.x, tileInteraction.y);
-
-			foreach (Tile tile in tileInteractionTiles) 
-			{
-				tile.PlaceTileInteraction(tileInteraction);
-
-			}		
-
-		}
 
 	}
 

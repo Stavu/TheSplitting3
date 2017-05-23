@@ -426,7 +426,7 @@ public class EditorRoomManager : MonoBehaviour {
 
 		// MIRROR ROOM
 
-		if (tempRoom.roomState == RoomState.Mirror)
+		if (tempRoom.RoomState == RoomState.Mirror)
 		{
 
 			tempRoom.myMirrorRoom.shadowGrid = new Grid (tempRoom.myWidth, tempRoom.myHeight);
