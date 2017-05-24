@@ -33,18 +33,13 @@ public class RoomManager : MonoBehaviour {
 
 
 	public void Initialize ()
-	{
-	
-		//EventsHandler.cb_furnitureChanged += OnFurnitureChanged;
-			
+	{	
+		//EventsHandler.cb_furnitureChanged += OnFurnitureChanged;			
 	}
 
 	public void OnDestroy()
-	{
-	
-		//EventsHandler.cb_furnitureChanged -= OnFurnitureChanged;
-
-	
+	{	
+		//EventsHandler.cb_furnitureChanged -= OnFurnitureChanged;	
 	}
 
 
@@ -97,7 +92,7 @@ public class RoomManager : MonoBehaviour {
 
 			myRoom.myMirrorRoom.myTileInteractionList_Persistant.ForEach (tileInt => EventsHandler.Invoke_cb_tileInteractionChanged (tileInt));
 
-			SwitchObjectByShadowState ();
+			SwitchObjectByShadowState (true);
 
 		}
 
@@ -141,6 +136,7 @@ public class RoomManager : MonoBehaviour {
 		bgObject.AddComponent<SpriteRenderer> ().sprite = Resources.Load <Sprite> ("Sprites/Rooms/" + room.bgName);
 		bgObject.transform.position = new Vector3 (room.myWidth/2f, 0, 0);
 
+		bgObject.GetComponent<SpriteRenderer> ().sortingOrder = -1;
 		bgObject.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.room_layer;
 		bgObject.transform.SetParent (this.transform);
 
@@ -155,6 +151,7 @@ public class RoomManager : MonoBehaviour {
 			bgObject_Shadow.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.room_layer;
 			bgObject_Shadow.transform.SetParent (this.transform);
 		}
+
 	}
 
 
@@ -162,7 +159,7 @@ public class RoomManager : MonoBehaviour {
 
 	// -- SWITCH BETWEEN SHADOW AND MIRROR -- //
 
-	public void SwitchObjectByShadowState()
+	public void SwitchObjectByShadowState(bool immediately)
 	{
 
 		List<SpriteRenderer> fadeInSprites = new List<SpriteRenderer> ();
@@ -172,42 +169,52 @@ public class RoomManager : MonoBehaviour {
 		if (myRoom.myMirrorRoom.inTheShadow == true) 
 		{
 
-			fadeOutSprites.Add (bgObject.GetComponent<SpriteRenderer>());
+			//fadeOutSprites.Add (bgObject.GetComponent<SpriteRenderer>());
 			fadeInSprites.Add (bgObject_Shadow.GetComponent<SpriteRenderer>());
 
 			foreach (Furniture furn in myRoom.myFurnitureList) 
 			{
-				SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [furn].GetComponent<SpriteRenderer>();
+				SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [furn].GetComponentInChildren<SpriteRenderer>();
 				fadeOutSprites.Add (sr);
 			}
 
-
 			foreach (Furniture furn in myRoom.myMirrorRoom.myFurnitureList_Shadow) 
 			{
-				SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [furn].GetComponent<SpriteRenderer>();
+				SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [furn].GetComponentInChildren<SpriteRenderer>();
 				fadeInSprites.Add (sr);
 			}
 
 		} else {
 
 			fadeOutSprites.Add (bgObject_Shadow.GetComponent<SpriteRenderer>());
-			fadeInSprites.Add (bgObject.GetComponent<SpriteRenderer>());
+			//fadeInSprites.Add (bgObject.GetComponent<SpriteRenderer>());
 
 			foreach (Furniture furn in myRoom.myMirrorRoom.myFurnitureList_Shadow) 
 			{
-				SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [furn].GetComponent<SpriteRenderer>();
+				SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [furn].GetComponentInChildren<SpriteRenderer>();
 				fadeOutSprites.Add (sr);
 			}
 
 			foreach (Furniture furn in myRoom.myFurnitureList) 
 			{
-				SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [furn].GetComponent<SpriteRenderer>();
+				SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [furn].GetComponentInChildren<SpriteRenderer>();
 				fadeInSprites.Add (sr);
 			}
 
 		}
 
-		StartCoroutine (Utilities.FadeBetweenSprites(fadeOutSprites,fadeInSprites));
+
+		// if switching immediatly or not
+
+		if (immediately == true) 
+		{			
+			Utilities.SwitchBetweenSprites (fadeOutSprites, fadeInSprites);
+		
+		} else {
+
+			StartCoroutine (Utilities.FadeBetweenSprites (fadeOutSprites, fadeInSprites));
+
+		}
 
 	}
 

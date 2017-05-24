@@ -43,7 +43,6 @@ public class PlayerManager : MonoBehaviour {
 		EventsHandler.cb_playerCreated += CreatePlayerObject;
 		EventsHandler.cb_keyPressed += MoveCharacter;
 		//EventsHandler.cb_characterMove += UpdatePlayerObjectPosition;
-		EventsHandler.cb_characterMove += FindPlayerTile;
 		EventsHandler.cb_noKeyPressed += StopPlayer;
 
 		playerGameObjectMap = new Dictionary<Player, GameObject> ();
@@ -71,7 +70,6 @@ public class PlayerManager : MonoBehaviour {
 		EventsHandler.cb_playerCreated -= CreatePlayerObject;
 		EventsHandler.cb_keyPressed -= MoveCharacter;
 		//EventsHandler.cb_characterMove -= UpdatePlayerObjectPosition;
-		EventsHandler.cb_characterMove -= FindPlayerTile;
 		EventsHandler.cb_noKeyPressed -= StopPlayer;
 	}
 
@@ -305,19 +303,6 @@ public class PlayerManager : MonoBehaviour {
 
 	}
 
-
-
-
-	public void FindPlayerTile(Player myPlayer)
-	{
-
-		Tile currentTile = RoomManager.instance.myRoom.MyGrid.GetTileAt(myPlayer.myPos);
-
-		// light the tile
-
-		TileManager.instance.GetTileObject(currentTile.x, currentTile.y).GetComponent<SpriteRenderer> ().color = new Color (0.1f,0.1f,0.1f,0.2f);
-
-	}
 
 
 

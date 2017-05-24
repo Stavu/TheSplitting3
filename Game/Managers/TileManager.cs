@@ -34,7 +34,7 @@ public class TileManager : MonoBehaviour {
 		EventsHandler.cb_furnitureChanged += ColorTiles;
 		EventsHandler.cb_characterChanged += ColorTiles;
 		EventsHandler.cb_tileInteractionChanged += ColorTiles;
-
+		EventsHandler.cb_characterMove += FindPlayerTile;
 		EventsHandler.cb_roomCreated += CreateTileObject;
 
 		tileGameObjectMap = new Dictionary<Tile, GameObject>();
@@ -47,7 +47,7 @@ public class TileManager : MonoBehaviour {
 		EventsHandler.cb_furnitureChanged -= ColorTiles;
 		EventsHandler.cb_characterChanged -= ColorTiles;
 		EventsHandler.cb_tileInteractionChanged -= ColorTiles;
-
+		EventsHandler.cb_characterMove -= FindPlayerTile;
 		EventsHandler.cb_roomCreated -= CreateTileObject;
 	
 	}
@@ -83,6 +83,20 @@ public class TileManager : MonoBehaviour {
 
 
 		}
+
+	}
+
+
+	// Coloring the tiles the player walks on
+
+	public void FindPlayerTile(Player myPlayer)
+	{
+
+		Tile currentTile = RoomManager.instance.myRoom.MyGrid.GetTileAt(PlayerManager.myPlayer.myPos);
+
+		// light the tile
+
+		TileManager.instance.GetTileObject(currentTile.x, currentTile.y).GetComponent<SpriteRenderer> ().color = new Color (0.1f,0.1f,0.1f,0.2f);
 
 	}
 

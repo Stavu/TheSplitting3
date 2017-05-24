@@ -19,6 +19,7 @@ public class SubinteractionInspector : MonoBehaviour {
 	Transform moveToRoom;
 	Transform recieveItem;
 	Transform playAnimation;
+	Transform playSound;
 
 	Button cancelButton;
 	Button submitButton;
@@ -33,16 +34,19 @@ public class SubinteractionInspector : MonoBehaviour {
 
 	void Start () 
 	{
-		subIntTypeList = new List<string> ();
-
-		subIntTypeList.Add ("showMonologue");
-		subIntTypeList.Add ("showDialogue");
-		subIntTypeList.Add ("showDialogueTree");
-		subIntTypeList.Add ("PlayAnimation");
-		subIntTypeList.Add ("moveToRoom");
-		subIntTypeList.Add ("pickUpItem");
-		subIntTypeList.Add ("useItem");
-		
+		subIntTypeList = new List<string> 
+		{
+			"showMonologue",
+			"showDialogue",
+			"showDialogueTree",
+			"PlayAnimation",
+			"PlaySound",
+			"moveToRoom",
+			"intoShadows",
+			"outOfShadows",
+			"pickUpItem",
+			"useItem"
+		};
 	}
 
 
@@ -79,7 +83,7 @@ public class SubinteractionInspector : MonoBehaviour {
 		recieveItem = panel.Find ("RecieveItem");
 		moveToRoom = panel.Find ("MoveToRoom");
 		playAnimation = panel.Find ("PlayAnimation");
-
+		playSound = panel.Find ("PlaySound");
 
 		cancelButton = panel.Find ("CancelButton").GetComponent<Button> ();
 		submitButton = panel.Find ("SubmitButton").GetComponent<Button> ();
@@ -140,6 +144,14 @@ public class SubinteractionInspector : MonoBehaviour {
 
 					break;
 
+
+				case "PlaySound":
+
+					playSound.Find("SoundNameInput").GetComponent<InputField>().text = subInt.soundToPlay;
+					playSound.Find("NumberOfPlaysInput").GetComponent<InputField>().text = subInt.numberOfPlays.ToString();
+
+					break;
+
 				
 				case "PlayAnimation":
 
@@ -154,6 +166,14 @@ public class SubinteractionInspector : MonoBehaviour {
 					moveToRoom.Find ("TextInputSmall1").GetComponent<InputField> ().text = subInt.destinationRoomName;
 					moveToRoom.Find ("InputX").GetComponent<InputField> ().text = subInt.entrancePoint.x.ToString();
 					moveToRoom.Find ("InputY").GetComponent<InputField> ().text = subInt.entrancePoint.y.ToString();
+
+					break;
+
+
+				case "intoShadows":		
+
+
+				case "outOfShadows":
 
 					break;
 
@@ -212,7 +232,7 @@ public class SubinteractionInspector : MonoBehaviour {
 		moveToRoom.gameObject.SetActive (false);
 		recieveItem.gameObject.SetActive (false);
 		playAnimation.gameObject.SetActive (false);
-
+		playSound.gameObject.SetActive (false);
 
 		string typeString = subIntTypeList [type];
 
@@ -230,9 +250,16 @@ public class SubinteractionInspector : MonoBehaviour {
 			case "showDialogue":
 
 			case "showDialogueTree":
-				
+
 				textInputSmall.gameObject.SetActive (true);
 
+				break;
+
+
+			case "PlaySound":
+				
+				playSound.gameObject.SetActive (true);
+			
 				break;
 
 
@@ -240,13 +267,19 @@ public class SubinteractionInspector : MonoBehaviour {
 
 				playAnimation.gameObject.SetActive (true);
 
-				break;
-
+				break;			
 
 
 			case "moveToRoom":
 
 				moveToRoom.gameObject.SetActive (true);
+
+				break;
+
+
+			case "intoShadows":
+
+			case "outOfShadows":
 
 				break;
 
@@ -268,7 +301,6 @@ public class SubinteractionInspector : MonoBehaviour {
 
 
 
-
 	// Cancel //
 
 	public void DestroySubinteractionInspector()
@@ -279,9 +311,7 @@ public class SubinteractionInspector : MonoBehaviour {
 
 		}
 	}
-
-
-	
+		
 
 
 	// Submit //
@@ -332,6 +362,23 @@ public class SubinteractionInspector : MonoBehaviour {
 				break;
 
 
+			case "PlaySound":
+				
+				currentSubint.soundToPlay = playSound.Find ("SoundNameInput").GetComponent<InputField> ().text;
+
+				string numberOfPlaysString = playSound.Find ("NumberOfPlaysInput").GetComponent<InputField> ().text;
+
+				if ((numberOfPlaysString == null) || (numberOfPlaysString == string.Empty))
+				{
+					currentSubint.numberOfPlays = 1;
+					break;
+				}
+
+				currentSubint.numberOfPlays = int.Parse(numberOfPlaysString);
+
+				break;
+
+
 			case "PlayAnimation":
 
 				currentSubint.animationToPlay = playAnimation.Find ("AnimationNameInput").GetComponent<InputField> ().text;
@@ -348,6 +395,13 @@ public class SubinteractionInspector : MonoBehaviour {
 					                      			 int.Parse (moveToRoom.Find ("InputY").GetComponent<InputField> ().text));
 
 				currentSubint.entrancePoint = entrancePoint;
+
+				break;
+
+
+			case "intoShadows":
+
+			case "outOfShadows":
 
 				break;
 

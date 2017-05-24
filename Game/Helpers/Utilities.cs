@@ -242,15 +242,25 @@ public class Utilities {
 		
 		}
 
-		foreach (SpriteRenderer sr in fadeOutSprites) 
+		SwitchBetweenSprites (fadeOutSprites, fadeInSprites);
+	}
+
+
+
+
+	public static void SwitchBetweenSprites(List<SpriteRenderer> outSprites, List<SpriteRenderer> inSprites)
+	{
+
+		foreach (SpriteRenderer sr in outSprites) 
 		{
 			sr.color = Color.clear;
 		}
 
-		foreach (SpriteRenderer sr in fadeInSprites) 
+		foreach (SpriteRenderer sr in inSprites) 
 		{
 			sr.color = Color.white;
 		}
+
 	}
 
 

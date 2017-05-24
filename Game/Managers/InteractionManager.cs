@@ -25,26 +25,20 @@ public class InteractionManager : MonoBehaviour {
 	// Singleton //
 
 
-
 	public GameObject TextBoxPrefab;
 	public GameObject currentTextBox;
 
 
 
-
-
 	// Use this for initialization
 
-	public void Initialize () {
-
-
-		
+	public void Initialize () 
+	{
+				
 	}
 
 	public void OnDestroy()
-	{
-
-	
+	{	
 
 	}
 
@@ -102,7 +96,6 @@ public class InteractionManager : MonoBehaviour {
 			return;
 		}
 
-
 		// open inventory text box
 
 		GameObject obj = Instantiate (Resources.Load<GameObject>("Prefabs/InventoryTextBox"));
@@ -144,52 +137,67 @@ public class InteractionManager : MonoBehaviour {
 			Debug.LogError ("destination tile is null");
 		}
 
-
 		PlayerManager.entrancePoint = entrancePoint;
 		NavigationManager.instance.NavigateToScene (SceneManager.GetActiveScene ().name, Color.black);
 
-		//SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-	
+		//SceneManager.LoadScene(SceneManager.GetActiveScene().name);	
 	}
 
+
+
+
+	// Shadows
+
+	public void ChangeShadowState(bool inTheShadow)
+	{
+
+		GameManager.instance.inputState = InputState.Character;
+
+		if (RoomManager.instance.myRoom.myMirrorRoom == null) 
+		{
+			Debug.LogError ("this really shouldn't be happening - mirrorRoom is null");
+			return;
+		}
+
+		if (RoomManager.instance.myRoom.myMirrorRoom.inTheShadow == inTheShadow) 
+		{
+			return;
+		}
+
+		RoomManager.instance.myRoom.myMirrorRoom.inTheShadow = inTheShadow;
+		RoomManager.instance.SwitchObjectByShadowState (false);
+
+		// SoundEventHandler.Invoke_cb_intoShadows;
+		// SoundEventHandler.Invoke_cb_outOfShadows;
+	}
 
 
 
 
 	// Pick up item
 
-
 	public void PickUpItem (InventoryItem inventoryItem)
-	{
-
-		//Debug.Log ("PickUpItem");
-
+	{		
 		GameManager.playerData.inventory.AddItem (inventoryItem);
-			
 
+		// SoundEventHandler.Invoke_cb_pickUpItem(inventoryItem.fileName);
 	}
 
 
 
 	// Use item (we still don't know what item it is)
 
-
 	public void OpenInventory_UseItem (PhysicalInteractable physicalInt)
 	{
-
 		InventoryUI.instance.OpenInventory (InventoryState.UseItem);
-
 	}
 
 
 	// Combine item (we have a current item, but need to chose an item to combine it with
 
-
 	public void OpenInventory_CombineItem ()
 	{
-
 		InventoryUI.instance.OpenInventory (InventoryState.Combine);
-
 	}
 
 

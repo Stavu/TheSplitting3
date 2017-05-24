@@ -32,7 +32,7 @@ public class FurnitureManager : MonoBehaviour {
 	public void Initialize () 
 	{		
 	
-		EventsHandler.cb_furnitureChanged += CreateFurnitureGameObject;
+		EventsHandler.cb_furnitureChanged += InitializeFurnitureGameObject;
 
 		furnitureGameObjectMap = new Dictionary<Furniture, GameObject> ();
 		nameFurnitureMap = new Dictionary<string, Furniture> ();
@@ -43,7 +43,7 @@ public class FurnitureManager : MonoBehaviour {
 	public void OnDestroy()
 	{	
 	
-		EventsHandler.cb_furnitureChanged -= CreateFurnitureGameObject;
+		EventsHandler.cb_furnitureChanged -= InitializeFurnitureGameObject;
 			
 	}
 
@@ -60,16 +60,15 @@ public class FurnitureManager : MonoBehaviour {
 
 
 
-	public void CreateFurnitureGameObject (Furniture myFurniture)
+	public void InitializeFurnitureGameObject (Furniture myFurniture)
 	{
 		
 		GameObject obj = CreateFurnitureGameObject (myFurniture, this.transform);
 		furnitureGameObjectMap.Add (myFurniture, obj);
 
-		if (myFurniture.identificationName != null) 
-		{			
-			nameFurnitureMap.Add (myFurniture.identificationName, myFurniture);
-		
+		if ((myFurniture.identificationName != null) && (myFurniture.identificationName != string.Empty))
+		{				
+			nameFurnitureMap.Add (myFurniture.identificationName, myFurniture);		
 		}
 	}
 
@@ -100,10 +99,12 @@ public class FurnitureManager : MonoBehaviour {
 		if (obj == null) 
 		{
 			obj = new GameObject (myFurniture.myName);
-			sr = obj.AddComponent<SpriteRenderer>();
+			GameObject childObj = new GameObject ("Image");
+			childObj.transform.SetParent (obj.transform);
+		
+			sr = childObj.AddComponent<SpriteRenderer>();
 			sr.sprite = Resources.Load<Sprite> ("Sprites/Furniture/" + myFurniture.myName); 
 		}
-
 
 		obj.transform.SetParent (parent);
 		obj.transform.position = new Vector3 (myFurniture.myPos.x + myFurniture.offsetX, myFurniture.myPos.y + 0.5f + myFurniture.offsetY, myFurniture.myPos.z);

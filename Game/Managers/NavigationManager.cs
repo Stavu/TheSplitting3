@@ -19,7 +19,6 @@ public enum FadeState
 
 
 
-
 public class NavigationManager : MonoBehaviour {
 
 
@@ -101,6 +100,7 @@ public class NavigationManager : MonoBehaviour {
 
 	IEnumerator FadeOut(string scene, Color color)
 	{
+		SoundManager.Invoke_cb_leftRoom_start (fadeSpeed);
 
 		fadeImage.color = color;
 		float i = 0;

@@ -36,6 +36,7 @@ public class DebugHelper : MonoBehaviour {
 
 
 
+
 	// Use this for initialization
 	public void Initialize () {
 		
@@ -45,6 +46,8 @@ public class DebugHelper : MonoBehaviour {
 		Button toEditorButton = gameObject.transform.Find ("ToEditorButton").GetComponent<Button> ();
 		toEditorButton.onClick.AddListener(() => SceneManager.LoadScene("LevelEditor"));
 
+		Button muteSoundButton = gameObject.transform.Find ("MuteSoundButton").GetComponent<Button> ();
+		muteSoundButton.onClick.AddListener(() => SoundManager.instance.SetSound(!SoundManager.soundIsOff));
 
 	}
 
@@ -111,6 +114,9 @@ public class DebugHelper : MonoBehaviour {
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
 	}
+
+
+
 
 
 

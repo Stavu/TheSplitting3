@@ -29,9 +29,12 @@ public class SubInteraction : IConditionable {
 	public string conversationName;
 	public string dialogueOptionTitle;
 	public string dialogueTreeName;
+
 	public string animationToPlay;
 	public string targetFurniture;
 
+	public string soundToPlay;
+	public int numberOfPlays;
 
 	public string rawText;
 	public string RawText 
@@ -136,7 +139,6 @@ public class SubInteraction : IConditionable {
 
 				InteractionManager.instance.DisplayText (Utilities.CreateSentenceList(PlayerManager.myPlayer, textList));
 
-
 				break;
 
 
@@ -178,12 +180,35 @@ public class SubInteraction : IConditionable {
 				break;
 
 
+
+			case "PlaySound":
+
+				SoundManager.Invoke_cb_playSound (soundToPlay, numberOfPlays);
+				GameManager.instance.inputState = InputState.Character;
+
+				break;
+				
+
+
 			case "moveToRoom":
 
 				InteractionManager.instance.MoveToRoom (destinationRoomName, entrancePoint);
 
 				break;
 
+
+			case "intoShadows":
+
+				InteractionManager.instance.ChangeShadowState (true);
+
+				break;
+
+
+			case "outOfShadows":
+
+				InteractionManager.instance.ChangeShadowState (false);
+
+				break;
 
 
 			case "pickUpItem":
@@ -236,8 +261,6 @@ public class SubInteraction : IConditionable {
 				//InteractionManager.instance.ChangeInventoryItemBigPicture (fileName);
 
 				break;
-
-			
 
 
 			case "combine":

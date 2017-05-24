@@ -196,6 +196,10 @@ public class EditorUI : MonoBehaviour {
 
 			button.GetComponent<Button> ().onClick.AddListener (() => SetFurnitureBuildMode(sprite.name));
 		}
+
+
+
+
 	}
 
 

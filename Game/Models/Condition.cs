@@ -15,11 +15,11 @@ public enum ConditionType
 	CharacterInRoom,
 	LacksItem,
 	EventDidntOccur,
-	CharacterNotInRoom
+	CharacterNotInRoom,
+	InTheShadow,
+	NotInTheShadow
 
 }
-
-
 
 
 
@@ -86,6 +86,17 @@ public class Condition {
 				characterNotInRoom = myString;
 
 				break;	
+
+
+			case ConditionType.InTheShadow:
+
+				break;	
+
+
+			case ConditionType.NotInTheShadow:
+
+				break;	
+
 		
 		}
 	}
@@ -98,11 +109,12 @@ public class Condition {
 
 		switch (myType)
 		{
+
+			// Positive Conditions
 			
 			case ConditionType.HasItem:
 				
 				return GameManager.playerData.CheckIfItemExists (hasItem);
-
 
 
 			case ConditionType.EventOccured:
@@ -110,34 +122,50 @@ public class Condition {
 				return GameManager.playerData.CheckIfEventExists (eventOccured);
 
 			
-
 			case ConditionType.CharacterInRoom:
 				
 				return GameManager.playerData.CheckIfCharacterExistsInRoom (characterInRoom);
+							
 
-			
+			case ConditionType.InTheShadow:
+
+				if (RoomManager.instance.myRoom.myMirrorRoom == null) 
+				{
+					Debug.LogError ("mirror room doesn't exist");
+					return false;
+				}
+
+				return RoomManager.instance.myRoom.myMirrorRoom.inTheShadow;					
+
+
+
+			// Negative Conditions
 
 			case ConditionType.LacksItem:
 
 				return !GameManager.playerData.CheckIfItemExists (lacksItem);
-
-				break;
 
 
 			case ConditionType.EventDidntOccur:
 
 				return !GameManager.playerData.CheckIfEventExists (eventDidntOccur);
 
-				break;
-
 
 			case ConditionType.CharacterNotInRoom:
 
 				return !GameManager.playerData.CheckIfCharacterExistsInRoom (characterNotInRoom);
 
-				break;	
 
+			case ConditionType.NotInTheShadow:
 
+				if (RoomManager.instance.myRoom.myMirrorRoom == null) 
+				{
+					Debug.LogError ("mirror room doesn't exist");
+					return false;
+				}
+
+				return !RoomManager.instance.myRoom.myMirrorRoom.inTheShadow;
+					
 		}
 
 		return false;

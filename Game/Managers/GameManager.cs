@@ -23,8 +23,6 @@ public enum InputState
 public class GameManager : MonoBehaviour
 {
 
-
-
 	// Singleton //
 
 	public static GameManager instance { get; protected set; }
@@ -103,7 +101,7 @@ public class GameManager : MonoBehaviour
 		{
 
 			RoomManager.instance.myRoom.myMirrorRoom.inTheShadow = !RoomManager.instance.myRoom.myMirrorRoom.inTheShadow;
-			RoomManager.instance.SwitchObjectByShadowState();
+			RoomManager.instance.SwitchObjectByShadowState(false);
 
 		}
 

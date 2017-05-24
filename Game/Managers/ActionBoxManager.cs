@@ -130,13 +130,8 @@ public class ActionBoxManager : MonoBehaviour {
 
 			Furniture myFurniture = (Furniture)myPhysicalInt;
 
-			SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [myFurniture].GetComponent<SpriteRenderer>();
+			SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [myFurniture].GetComponentInChildren<SpriteRenderer>();
 		
-			if (sr == null) 
-			{
-				sr = FurnitureManager.instance.furnitureGameObjectMap [myFurniture].GetComponentInChildren<SpriteRenderer>();
-			}
-
 			Vector3 center = sr.bounds.center;
 
 			currentPhysicalInteractableFrame.GetComponent<RectTransform> ().anchoredPosition = center;
@@ -164,15 +159,10 @@ public class ActionBoxManager : MonoBehaviour {
 
 		}
 
-
 		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_DL").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (-frameBounds.x, -frameBounds.y);
 		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_DR").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (frameBounds.x, -frameBounds.y);
 		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_UL").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (-frameBounds.x, frameBounds.y);
 		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_UR").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (frameBounds.x, frameBounds.y);
-
-
-
-
 
 	}
 
@@ -180,13 +170,11 @@ public class ActionBoxManager : MonoBehaviour {
 
 
 	public void CloseFurnitureFrame ()
-	{
-		
+	{	
 		if (currentPhysicalInteractableFrame != null) 
 		{
 			Destroy (currentPhysicalInteractableFrame.gameObject);
 			currentPhysicalInteractable = null;
-
 		}
 
 	}
@@ -273,9 +261,12 @@ public class ActionBoxManager : MonoBehaviour {
 
 
 
+
+	// --------- SET INTERACTION BUTTONS --------- // 
+
+
 	public void setInteractionButtons()
 	{
-
 
 		if (currentPhysicalInteractable.myInteractionList.Count == 0) 
 		{
@@ -299,8 +290,13 @@ public class ActionBoxManager : MonoBehaviour {
 			}
 
 
+			// y pos is -1 because there is an image among the parent's children
+
+			int yPos = currentActionBox.transform.childCount - 1;
+
 			GameObject obj = Instantiate (ActionPrefab, currentActionBox.transform);
-			obj.transform.localPosition = new Vector3 (0, 1 - i, 0);
+
+			obj.transform.localPosition = new Vector3 (0, 1 - yPos, 0);
 			obj.GetComponent<Text> ().text = currentPhysicalInteractable.myInteractionList[i].myVerb;
 
 			activeInteractionList.Add(currentPhysicalInteractable.myInteractionList[i]);
@@ -319,9 +315,7 @@ public class ActionBoxManager : MonoBehaviour {
 			{
 				currentInteraction = currentPhysicalInteractable.myInteractionList[i];
 			}
-
 		}
-
 	}
 
 
@@ -366,7 +360,6 @@ public class ActionBoxManager : MonoBehaviour {
 			break;
 
 
-
 		case Direction.up:
 
 			if (i > 0) 
@@ -390,7 +383,6 @@ public class ActionBoxManager : MonoBehaviour {
 
 	public void CloseActionBox ()
 	{
-
 
 		if (currentActionBox != null) 
 		{
