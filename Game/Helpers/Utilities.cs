@@ -137,16 +137,10 @@ public class Utilities {
 
 
 
-	public static Vector3 GetCharacterPosOnTile(Character character, Tile tile)
+	public static Vector2 GetCharacterPosOnTile(IWalker character, Vector2 myPos)
 	{	
 		
-		Vector3 pos = Vector3.zero;
-
-		if (tile != null) 
-		{			
-			pos = new Vector3 (tile.x + character.mySize.x / 2 + character.offsetX, tile.y + character.offsetY + 0.5f, character.myPos.z);
-
-		}
+		Vector2 pos = new Vector2 (myPos.x + character.speakerSize.x / 2 + character.walkerOffsetX, myPos.y + character.walkerOffsetY + 0.5f);
 
 		return pos;
 

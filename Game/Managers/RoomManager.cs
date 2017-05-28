@@ -102,7 +102,7 @@ public class RoomManager : MonoBehaviour {
 
 		nameSpeakerMap.Add (PlayerManager.myPlayer.myName, PlayerManager.myPlayer);
 
-		GameManager.instance.inputState = InputState.Character; //FIXME
+		EventsHandler.Invoke_cb_inputStateChanged ();
 
 	}
 

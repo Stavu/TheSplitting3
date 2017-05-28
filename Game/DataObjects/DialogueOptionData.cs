@@ -11,10 +11,4 @@ public class DialogueOptionData {
 	public string myName;
 	public List<DialogueOption> optionList;
 
-
-
-
-
-
-
 }

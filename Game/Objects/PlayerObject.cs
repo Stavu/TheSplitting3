@@ -31,7 +31,7 @@ public class PlayerObject : MonoBehaviour {
 	}
 
 
-	public void MoveCharacter(Player myPlayer, Direction myDirection)
+	public void MovePlayerObject(Player myPlayer, Direction myDirection)
 	{
 
 		// Updating the player's sorting layer
@@ -41,17 +41,26 @@ public class PlayerObject : MonoBehaviour {
 		mySpriteRenderer.sortingOrder = -currentTile.y;
 
 
-
 		// Change position
 
 		gameObject.transform.position = myPlayer.myPos;
 
 
+		// Set Animation
+
+		SetWalkingAnimation (myDirection);
+
+	}
 
 
+
+	// Set Animation
+
+	public void SetWalkingAnimation(Direction myDirection)
+	{
 		switch (myDirection) 
 		{
-		
+
 			case Direction.left:
 
 				PlayAnimation ("Walk_left");
@@ -77,16 +86,17 @@ public class PlayerObject : MonoBehaviour {
 
 
 			case Direction.up:
-			
+
 				PlayAnimation ("Walk_back");	
 
 				break;					
-		
+
 		}
 	}
 
 
 
+	// Stop Character
 
 	public void StopCharacter(Direction lastDirection)
 	{
@@ -98,8 +108,7 @@ public class PlayerObject : MonoBehaviour {
 		{
 			return;
 		}
-
-			
+					
 
 
 		switch (lastDirection) 

@@ -142,15 +142,15 @@ public class SubInteraction : IConditionable {
 				break;
 
 
-
 			case "showDialogue":
 
 				//Debug.Log ("SubInteract: Show dialogue");
 
-				DialogueOption dialogueOption = GameManager.gameData.nameDialogueOptionMap [this.dialogueOptionTitle];
-				InteractionManager.instance.DisplayText (dialogueOption.sentenceList);
-							
+				InteractionManager.instance.DisplayDialogueOption (this.dialogueOptionTitle);
+
 				break;
+
+
 
 
 			case "showDialogueTree":
@@ -175,7 +175,8 @@ public class SubInteraction : IConditionable {
 			case "PlayAnimation":
 
 				FurnitureManager.instance.SetFurnitureAnimationState (targetFurniture, animationToPlay);
-				GameManager.instance.inputState = InputState.Character;
+				EventsHandler.Invoke_cb_inputStateChanged ();
+				//GameManager.instance.inputState = InputState.Character;
 
 				break;
 
@@ -184,10 +185,17 @@ public class SubInteraction : IConditionable {
 			case "PlaySound":
 
 				SoundManager.Invoke_cb_playSound (soundToPlay, numberOfPlays);
-				GameManager.instance.inputState = InputState.Character;
+				EventsHandler.Invoke_cb_inputStateChanged ();
+				//GameManager.instance.inputState = InputState.Character;
 
 				break;
-				
+
+			
+			case "playCutscene":
+
+				//CutsceneManager.instance.c
+
+				break;				
 
 
 			case "moveToRoom":
@@ -216,17 +224,13 @@ public class SubInteraction : IConditionable {
 				InteractionManager.instance.PickUpItem (inventoryItem);
 				ActionBoxManager.instance.CloseFurnitureFrame ();			
 
-				if (GameManager.instance.inputState == InputState.ActionBox) 
-				{
-					GameManager.instance.inputState = InputState.Character;
-				}
+				EventsHandler.Invoke_cb_inputStateChanged ();
 
 				break;
 
 
 
 			case "useItem":
-
 
 				InteractionManager.instance.OpenInventory_UseItem (ActionBoxManager.instance.currentPhysicalInteractable);
 

@@ -24,7 +24,7 @@ public class InventoryUI : MonoBehaviour {
 
 
 
-	public bool inventoryOpen = false;
+
 
 	GameObject inventoryObject;
 	GameObject itemsContainer;
@@ -308,20 +308,19 @@ public class InventoryUI : MonoBehaviour {
 		}
 
 
-		if (inventoryOpen == false)
-		{
-		
+		if (GameManager.inventoryOpen == false)
+		{		
 			OpenInventory (InventoryState.Browse);
+
 		
 		} else {
 
 
 			CloseInventory ();
-			GameManager.instance.inputState = InputState.Character;
 
+			//GameManager.instance.inputState = InputState.Character;
 
 		}
-
 	}
 
 
@@ -361,8 +360,8 @@ public class InventoryUI : MonoBehaviour {
 		}
 
 
+		// --- INVENTORY STATE --- //
 
-		GameManager.instance.inputState = InputState.Inventory;
 		GameManager.playerData.inventory.myState = state;
 
 
@@ -413,8 +412,8 @@ public class InventoryUI : MonoBehaviour {
 		}
 
 
-		inventoryOpen = true;
-
+		GameManager.inventoryOpen = true;
+		EventsHandler.Invoke_cb_inputStateChanged ();
 
 	}
 
@@ -859,8 +858,8 @@ public class InventoryUI : MonoBehaviour {
 		}
 
 
-		inventoryOpen = false;
-
+		GameManager.inventoryOpen = false;
+		EventsHandler.Invoke_cb_inputStateChanged ();
 
 
 	}

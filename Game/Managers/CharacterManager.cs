@@ -48,27 +48,13 @@ public class CharacterManager : MonoBehaviour {
 	}
 
 
-	bool foo = true;
-
 
 	// Update is called once per frame
 
 	void Update () 
 	{
 
-		if (Input.GetKeyDown (KeyCode.E)) 
-		{
-			Tile tileA = RoomManager.instance.myRoom.MyGrid.GetTileAt (13, 7);
-			Tile tileB = RoomManager.instance.myRoom.MyGrid.GetTileAt (2, 7);
-			Tile tileC = foo ? tileA : tileB;
 
-			Character myCharacter = GetCharacterByName ("llehctiM");
-
-			MoveToTile (myCharacter, tileC);
-
-			foo = !foo;
-
-		}
 	}
 
 
@@ -83,41 +69,56 @@ public class CharacterManager : MonoBehaviour {
 	}
 
 
-
+	// character, path, targetPos, 
 
 	// ---- MOVE CHARACTER ---- //
 
 
-	public void MoveToTile(Character character, Tile myTargetTile)
+	public void MoveByPath (IWalker walker, List<Vector2> posList)
+	{
+		Queue<Vector2> path = new Queue<Vector2> ();
+
+		foreach (Vector2 pos in posList) 
+		{
+			path.Enqueue (pos);					
+		}
+
+		walker.walkerPath = path;
+		walker.walkerTargetPos = walker.walkerPath.Dequeue ();
+
+		MoveToTargetTile (walker, walker.walkerTargetPos);
+	}
+
+
+
+	public void MoveToTargetTile(IWalker walker, Vector2 myTargetPos)
 	{
 
-		Tile currentTile = RoomManager.instance.myRoom.MyGrid.GetTileAt (character.x, character.y);
+		Tile currentTile = RoomManager.instance.myRoom.MyGrid.GetTileAt ((int)walker.speakerPos.x, (int)walker.speakerPos.y);
 
-		if (currentTile.myCharacter == character) 
+		if (currentTile.myCharacter == walker) 
 		{
 			currentTile.myCharacter = null;
 		}
 
-		character.targetTile = myTargetTile;
+		walker.walkerTargetPos = myTargetPos;
 
-		StartCoroutine (MoveCoroutine (character, myTargetTile));
+		StartCoroutine (MoveCoroutine (walker));
 
 	}
 
 
 
-	public IEnumerator MoveCoroutine(Character character, Tile myTargetTile)
+	public IEnumerator MoveCoroutine(IWalker walker)
 	{
-
-		GameObject characterObject = characterGameObjectMap [character];
-
-		Vector3 startPos = characterObject.transform.position;
-		Vector3 endPos = Utilities.GetCharacterPosOnTile (character, myTargetTile);
+		
+		Vector3 startPos = walker.walkerGameObject.transform.position;
+		Vector3 endPos = Utilities.GetCharacterPosOnTile (walker, walker.walkerTargetPos);
 
 		float distance = Vector3.Distance (startPos, endPos);
 		Debug.Log ("distance " + distance);
 
-		float tempSpeed = character.speed / distance;
+		float tempSpeed = walker.walkerSpeed / distance;
 		Debug.Log ("tempSpeed " + tempSpeed);
 
 		// interpolation
@@ -126,7 +127,7 @@ public class CharacterManager : MonoBehaviour {
 
 		// Animations
 
-		Animator myAnimator = characterObject.GetComponent<Animator> ();
+		Animator myAnimator = walker.walkerGameObject.GetComponent<Animator>();
 		Direction lastDirection = Direction.left;
 
 
@@ -135,7 +136,7 @@ public class CharacterManager : MonoBehaviour {
 
 		// Walk left
 
-		if (character.x > myTargetTile.x) 
+		if (walker.speakerPos.x > walker.walkerTargetPos.x) 
 		{
 			myAnimator.PlayInFixedTime ("Walk_left");
 			lastDirection = Direction.left;
@@ -145,7 +146,7 @@ public class CharacterManager : MonoBehaviour {
 
 		// Walk right
 
-		if (character.x < myTargetTile.x) 
+		if (walker.speakerPos.x < walker.walkerTargetPos.x) 
 		{
 			myAnimator.PlayInFixedTime ("Walk_right");
 			lastDirection = Direction.right;
@@ -154,7 +155,7 @@ public class CharacterManager : MonoBehaviour {
 
 		// Walk down
 
-		if (character.y > myTargetTile.y) 
+		if (walker.speakerPos.y > walker.walkerTargetPos.y) 
 		{
 			myAnimator.PlayInFixedTime ("Walk_front");
 			lastDirection = Direction.down;
@@ -163,12 +164,11 @@ public class CharacterManager : MonoBehaviour {
 
 		// Walk up
 
-		if (character.y < myTargetTile.y) 
+		if (walker.speakerPos.y < walker.walkerTargetPos.y) 
 		{
 			myAnimator.PlayInFixedTime ("Walk_back");
 			lastDirection = Direction.up;
 		}
-
 
 
 
@@ -181,14 +181,14 @@ public class CharacterManager : MonoBehaviour {
 
 			if (inter >= 1) 
 			{				
-				Debug.Log ("I arrived " + character.myName);
+				Debug.Log ("I arrived " + walker.speakerName);
 
-				characterGameObjectMap [character].transform.position = startPos = endPos;
+				walker.walkerGameObject.transform.position = startPos = endPos;
 				break;
 
 			} else {
 
-				characterGameObjectMap [character].transform.position = Vector3.Lerp (startPos, endPos, inter);
+				walker.walkerGameObject.transform.position = Vector3.Lerp (startPos, endPos, inter);
 
 			}
 
@@ -199,7 +199,7 @@ public class CharacterManager : MonoBehaviour {
 
 		// After while loop is done, change the character tile
 
-		character.ChangeTile (myTargetTile);
+		//walker.ChangeTile (walker.targetTile);
 
 
 		switch (lastDirection) 
@@ -236,8 +236,26 @@ public class CharacterManager : MonoBehaviour {
 
 
 
+		// Check if I need to continue walking 
+
+		if (walker.walkerPath != null) 
+		{
+			if (walker.walkerPath.Count > 0) 
+			{
+				walker.walkerTargetPos = walker.walkerPath.Dequeue ();
+				MoveToTargetTile (walker, walker.walkerTargetPos);
+			
+			} else {
+
+				EventsHandler.Invoke_cb_characterFinishedPath ();
+			}
+		}
+
 
 	}
+
+
+
 
 
 

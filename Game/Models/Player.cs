@@ -33,6 +33,7 @@ public class Player : ISpeaker{
 
 	[NonSerialized]
 	public Direction myDirection;
+	public float speed;
 
 
 

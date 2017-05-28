@@ -12,6 +12,18 @@ public static class EventsHandler
 	// Input Manager 
 
 
+	public static Action cb_inputStateChanged; 
+
+	public static void Invoke_cb_inputStateChanged()
+	{
+		if(cb_inputStateChanged != null)
+		{
+			cb_inputStateChanged ();
+		}
+	}
+
+
+
 	public static Action<Direction> cb_keyPressed; 
 
 	public static void Invoke_cb_keyPressed(Direction direction)
@@ -20,7 +32,6 @@ public static class EventsHandler
 		{
 			cb_keyPressed (direction);
 		}
-
 	}
 
 
@@ -32,7 +43,6 @@ public static class EventsHandler
 		{
 			cb_keyPressedDown (direction);
 		}
-
 	}
 
 
@@ -208,10 +218,31 @@ public static class EventsHandler
 
 
 
+	// Cutscene events
 
 
 
+	public static Action cb_dialogueEnded; 
 
+	public static void Invoke_cb_dialogueEnded()
+	{
+		if(cb_dialogueEnded != null)
+		{
+			cb_dialogueEnded ();
+		}
+	}
+
+
+
+	public static Action cb_characterFinishedPath; 
+
+	public static void Invoke_cb_characterFinishedPath()
+	{
+		if(cb_characterFinishedPath != null)
+		{
+			cb_characterFinishedPath ();
+		}
+	}
 
 
 

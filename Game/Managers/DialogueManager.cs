@@ -158,10 +158,7 @@ public class DialogueManager : MonoBehaviour {
 
 		myOptionObjectDictionary = new Dictionary<DialogueOption, GameObject> ();
 
-
-
-		GameManager.instance.inputState = InputState.DialogueBox;
-
+	
 		dialogueTreeObject = Instantiate (dialogueTreeBoxPrefab);
 
 		for (int i = 0; i < currentDialogueTree.currentConversation.optionList.Count; i++) 
@@ -184,7 +181,8 @@ public class DialogueManager : MonoBehaviour {
 			currentDialogueOption = currentDialogueTree.currentConversation.optionList[0];
 		}
 
-
+		GameManager.dialogueTreeBoxActive = true;
+		EventsHandler.Invoke_cb_inputStateChanged ();
 	}
 
 
@@ -288,14 +286,7 @@ public class DialogueManager : MonoBehaviour {
 
 		}
 
-		if (isActive == true) 
-		{
-			GameManager.instance.inputState = InputState.DialogueBox;
-
-		} else {
-			
-			GameManager.instance.inputState = InputState.Dialogue;
-		}
+		EventsHandler.Invoke_cb_inputStateChanged ();
 
 	}
 
@@ -316,7 +307,8 @@ public class DialogueManager : MonoBehaviour {
 			currentDialogueOption = null;
 			dialogueTreeObject = null;
 
-			GameManager.instance.inputState = InputState.Character;
+			GameManager.dialogueTreeBoxActive = false;
+			EventsHandler.Invoke_cb_inputStateChanged ();
 		
 		}
 

@@ -34,7 +34,7 @@ public class DialogueTextObject : MonoBehaviour {
 	{
 		if (Input.GetKeyDown(KeyCode.Space)) 
 		{
-			Debug.Log ("Update: sentenceList count" + sentenceList.Count);
+			//Debug.Log ("Update: sentenceList count" + sentenceList.Count);
 
 			if ((sentenceList [currentEntry].mySubIntList != null) && (sentenceList[currentEntry].subinteractImmediately == false))
 			{
@@ -65,7 +65,6 @@ public class DialogueTextObject : MonoBehaviour {
 				{					
 					subInt.SubInteract ();
 				}
-
 			}
 
 			PopulateTextBox (sentenceList [currentEntry]);
@@ -80,22 +79,22 @@ public class DialogueTextObject : MonoBehaviour {
 
 
 	public void CloseTextBox ()
-	{			
-
-		GameManager.textBoxActive = false;
+	{		
 		InteractionManager.instance.currentTextBox = null;
 
 		if (DialogueManager.instance.dialogueTreeObject != null) 
 		{
-			//Debug.Log ("close text box");
-			DialogueManager.instance.SetDialogueTreeActive (true);
+			DialogueManager.instance.SetDialogueTreeActive (true);		
 			//GameManager.instance.inputState = InputState.DialogueBox;
 
 		} else {
 
-			GameManager.instance.inputState = InputState.Character;	
-
+			EventsHandler.Invoke_cb_dialogueEnded ();
+			//GameManager.instance.inputState = InputState.Character;	
 		}
+
+		GameManager.textBoxActive = false;
+		EventsHandler.Invoke_cb_inputStateChanged ();
 
 		Destroy (gameObject);
 	

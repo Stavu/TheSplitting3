@@ -56,19 +56,27 @@ public class InteractionManager : MonoBehaviour {
 
 	public void DisplayText(List<DialogueSentence> sentenceList)
 	{
-
 		if (currentTextBox != null) 		
 		{			
 			return;
 		}
 
-		currentTextBox = Instantiate (TextBoxPrefab);
+		currentTextBox = Instantiate (TextBoxPrefab);	
 		DialogueTextObject textObject = currentTextBox.AddComponent<DialogueTextObject> ();
 		textObject.AddTextList (sentenceList);
 
-		GameManager.instance.inputState = InputState.Dialogue;
-	
+		GameManager.textBoxActive = true;
+		EventsHandler.Invoke_cb_inputStateChanged ();
 	}
+
+
+	public void DisplayDialogueOption(string optionTitle)
+	{
+		DialogueOption dialogueOption = GameManager.gameData.nameDialogueOptionMap [optionTitle];
+		DisplayText (dialogueOption.sentenceList);
+	}
+
+
 
 	/*
 	// Change conversation
@@ -150,8 +158,9 @@ public class InteractionManager : MonoBehaviour {
 
 	public void ChangeShadowState(bool inTheShadow)
 	{
-
-		GameManager.instance.inputState = InputState.Character;
+		
+		EventsHandler.Invoke_cb_inputStateChanged ();
+		//GameManager.instance.inputState = InputState.Character;
 
 		if (RoomManager.instance.myRoom.myMirrorRoom == null) 
 		{

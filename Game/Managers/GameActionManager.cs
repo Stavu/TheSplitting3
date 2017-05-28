@@ -33,6 +33,8 @@ public class GameActionManager : MonoBehaviour {
 		EventsHandler.cb_playerHitTileInteraction += OnHitTileInteraction;
 		EventsHandler.cb_playerLeaveTileInteraction += OnLeaveTileInteraction;
 
+		EventsHandler.cb_inputStateChanged += ManageInputState;
+
 	}
 
 
@@ -43,6 +45,8 @@ public class GameActionManager : MonoBehaviour {
 
 		EventsHandler.cb_playerHitTileInteraction -= OnHitTileInteraction;
 		EventsHandler.cb_playerLeaveTileInteraction -= OnLeaveTileInteraction;
+
+		EventsHandler.cb_inputStateChanged -= ManageInputState;
 
 	}
 
@@ -113,7 +117,7 @@ public class GameActionManager : MonoBehaviour {
 
 
 
-
+			//case InputState.Cutscene:
 			case InputState.DialogueBox:
 				
 				
@@ -163,18 +167,74 @@ public class GameActionManager : MonoBehaviour {
 		if (GameManager.instance.inputState == InputState.DialogueBox) 
 		{
 
-
 		}
 		*/
 
-		// setting the input state back to character when closing the action box
-
-		GameManager.instance.inputState = InputState.Character;
-
+	
 	}
 
 
 
+
+	// manage input stat
+
+
+	public void ManageInputState()
+	{
+
+
+		if (NavigationManager.navigationInProcess == true) 
+		{
+			GameManager.instance.inputState = InputState.NoInput;
+			return;
+		}
+
+
+		if (CutsceneManager.inCutscene == true) 
+		{
+			GameManager.instance.inputState = InputState.Cutscene;
+			return;
+		}
+
+
+		if (GameManager.actionBoxActive == true) 
+		{
+			GameManager.instance.inputState = InputState.ActionBox;
+			return;
+		}
+
+
+		if (GameManager.dialogueTreeBoxActive == true) 
+		{
+			if (DialogueManager.instance.dialogueTreeObject.gameObject.active == true) 
+			{
+				GameManager.instance.inputState = InputState.DialogueBox;
+
+			} else {
+				
+				GameManager.instance.inputState = InputState.Dialogue;
+			}
+
+			return;
+		}
+
+
+		if (GameManager.textBoxActive == true) 
+		{
+			GameManager.instance.inputState = InputState.Dialogue;
+			return;
+		}
+
+		if (GameManager.inventoryOpen == true) 
+		{
+			GameManager.instance.inputState = InputState.Inventory;
+			return;
+		}
+
+
+		GameManager.instance.inputState = InputState.Character;
+
+	}
 
 
 	// Tile Interaction //

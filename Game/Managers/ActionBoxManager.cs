@@ -191,7 +191,9 @@ public class ActionBoxManager : MonoBehaviour {
 		setInteractionButtons ();
 
 		GameManager.actionBoxActive = true;
-		GameManager.instance.inputState = InputState.ActionBox;
+		//GameManager.instance.inputState = InputState.ActionBox;
+
+		EventsHandler.Invoke_cb_inputStateChanged ();
 
 	}
 
@@ -375,32 +377,26 @@ public class ActionBoxManager : MonoBehaviour {
 			break;
 
 		}
-
 	}
-
 
 
 
 	public void CloseActionBox ()
 	{
-
 		if (currentActionBox != null) 
 		{
-
 			Destroy (currentActionBox.gameObject);
 
 			GameManager.actionBoxActive = false;
 			currentInteraction = null;
 
+			EventsHandler.Invoke_cb_inputStateChanged ();
 		}
-
 	}
 
 
 
-
 	// Activate interaction
-
 
 
 	public void ActivateInteraction ()
@@ -415,14 +411,12 @@ public class ActionBoxManager : MonoBehaviour {
 		if (currentInteraction.subInteractionList.Count == 0) 
 		{
 			Debug.LogError ("SubInteract: There are no subinteractions.");
-			GameManager.instance.inputState = InputState.Character;
-		
+
 			CloseFurnitureFrame ();
 			CloseActionBox ();
 
 			return;
 		}
-
 
 
 		foreach (SubInteraction subInt in currentInteraction.subInteractionList) 

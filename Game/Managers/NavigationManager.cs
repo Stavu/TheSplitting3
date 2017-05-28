@@ -46,6 +46,7 @@ public class NavigationManager : MonoBehaviour {
 	float fadeSpeed = 0.5f;
 	static Color lastColor;
 
+	public static bool navigationInProcess;
 
 
 	// Use this for initialization
@@ -82,8 +83,8 @@ public class NavigationManager : MonoBehaviour {
 
 	public void NavigateToScene(string scene, Color color)
 	{
-
-		GameManager.instance.inputState = InputState.NoInput;
+		navigationInProcess = true;
+		EventsHandler.Invoke_cb_inputStateChanged ();
 
 		lastColor = color;
 		StartCoroutine(FadeOut (scene, color));	
@@ -117,7 +118,9 @@ public class NavigationManager : MonoBehaviour {
 
 		// While screen is black, reload the scene
 
-		GameManager.instance.inputState = InputState.Character;
+		navigationInProcess = false;
+		EventsHandler.Invoke_cb_inputStateChanged ();
+
 		SceneManager.LoadScene (scene);
 
 	}

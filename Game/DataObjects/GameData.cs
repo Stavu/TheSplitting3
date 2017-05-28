@@ -73,22 +73,21 @@ public class GameData {
 
 		nameDialogueOptionMap = new Dictionary<string, DialogueOption> ();
 
-		UnityEngine.Object obj = Resources.Load<UnityEngine.Object> ("Jsons/DialogueOptions/dialogue_options");
-		TextAsset textAsset = (TextAsset)obj;
+		UnityEngine.Object[] objs = Resources.LoadAll<UnityEngine.Object> ("Jsons/DialogueOptions");
 
-		DialogueOptionData dialogueOptionData = JsonUtility.FromJson<DialogueOptionData> (textAsset.text);
+		foreach (TextAsset textAsset in objs) 
+		{	
+			DialogueOptionData dialogueOptionData = JsonUtility.FromJson<DialogueOptionData> (textAsset.text);
+					
+			// populating the map 
 
-		//Debug.Log ("dialogueOptionData option list count" + dialogueOptionData.optionList.Count);
-
-		// populating the map 
-
-		foreach (DialogueOption dialogueOption in dialogueOptionData.optionList) 
-		{
-
-			nameDialogueOptionMap.Add (dialogueOption.myTitle, dialogueOption);
-			
+			foreach (DialogueOption dialogueOption in dialogueOptionData.optionList) 
+			{
+				nameDialogueOptionMap.Add (dialogueOption.myTitle, dialogueOption);
+			}
 		}
 
+		Debug.Log (nameDialogueOptionMap.Count);
 
 	}
 

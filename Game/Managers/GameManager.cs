@@ -14,6 +14,7 @@ public enum InputState
 	DialogueBox,
 	Settings,
 	Map,
+	Cutscene,
 	NoInput
 
 }
@@ -42,6 +43,8 @@ public class GameManager : MonoBehaviour
 
 	public static bool actionBoxActive = false;
 	public static bool textBoxActive = false;
+	public static bool inventoryOpen = false;
+	public static bool dialogueTreeBoxActive = false;
 
 
 	public static Dictionary<string,Color> speakerColorMap;

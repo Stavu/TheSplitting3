@@ -25,6 +25,7 @@ public class PlayerManager : MonoBehaviour {
 
 	public GameObject CharacterPrefab;
 	public static Player myPlayer;
+	PlayerObject playerObject;
 
 	public Dictionary<Player,GameObject> playerGameObjectMap;
 	public static Vector2 entrancePoint = new Vector2(15,6);
@@ -41,7 +42,7 @@ public class PlayerManager : MonoBehaviour {
 
 		EventsHandler.cb_roomCreated += CreatePlayer;
 		EventsHandler.cb_playerCreated += CreatePlayerObject;
-		EventsHandler.cb_keyPressed += MoveCharacter;
+		EventsHandler.cb_keyPressed += MovePlayer;
 		//EventsHandler.cb_characterMove += UpdatePlayerObjectPosition;
 		EventsHandler.cb_noKeyPressed += StopPlayer;
 
@@ -68,7 +69,7 @@ public class PlayerManager : MonoBehaviour {
 	{	
 		EventsHandler.cb_roomCreated -= CreatePlayer;
 		EventsHandler.cb_playerCreated -= CreatePlayerObject;
-		EventsHandler.cb_keyPressed -= MoveCharacter;
+		EventsHandler.cb_keyPressed -= MovePlayer;
 		//EventsHandler.cb_characterMove -= UpdatePlayerObjectPosition;
 		EventsHandler.cb_noKeyPressed -= StopPlayer;
 	}
@@ -106,35 +107,29 @@ public class PlayerManager : MonoBehaviour {
 	public void CreatePlayerObject(Player myPlayer)
 	{
 
-		//Debug.Log ("created character object");	
+		//Debug.Log ("created character object");
 
-		GameObject obj = Instantiate (Resources.Load<GameObject>("Prefabs/Characters/" + myPlayer.myName));
+		playerObject = (Instantiate (Resources.Load<GameObject>("Prefabs/Characters/" + myPlayer.myName))).GetComponent<PlayerObject>();
 
-		obj.name = myPlayer.myName;
-		obj.transform.position = myPlayer.myPos;
+		playerObject.gameObject.name = myPlayer.myName;
+		playerObject.transform.position = myPlayer.myPos;
 
 		//obj.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.furniture_character_layer;
-
 	
-		playerGameObjectMap.Add (myPlayer,obj);
-
+		playerGameObjectMap.Add (myPlayer,playerObject.gameObject);
 
 	}
 
 
 
 
-
-	public void MoveCharacter(Direction myDirection)
+	public void MovePlayer(Direction myDirection)
 	{
-
 
 		if (GameManager.instance.inputState != InputState.Character) 
 		{
-			return;	
-		
+			return;			
 		}
-
 
 		// 4 tiles in one second
 
@@ -143,8 +138,6 @@ public class PlayerManager : MonoBehaviour {
 		float offsetY = 0;
 
 		Vector3 newPos = new Vector3 (-1000, -1000, -1000); 
-
-
 
 
 		// check the new position according to the diretion 
@@ -184,7 +177,6 @@ public class PlayerManager : MonoBehaviour {
 
 			break;
 
-
 		}
 
 
@@ -195,7 +187,6 @@ public class PlayerManager : MonoBehaviour {
 			StopPlayer (InputManager.instance.lastDirection);
 			return;
 		}
-
 
 
 		if (tile != null)
@@ -211,7 +202,6 @@ public class PlayerManager : MonoBehaviour {
 
 					return;
 				}
-
 			}				
 
 
@@ -226,7 +216,6 @@ public class PlayerManager : MonoBehaviour {
 
 					return;
 				}
-
 			}				
 
 
@@ -236,10 +225,6 @@ public class PlayerManager : MonoBehaviour {
 			{
 				EventsHandler.Invoke_cb_playerLeavePhysicalInteractable ();
 			}	
-
-
-
-
 
 
 			// TILE INTERACTION - If the next tile is interactable
@@ -257,7 +242,6 @@ public class PlayerManager : MonoBehaviour {
 				{							
 					return;
 				}
-
 			}
 
 
@@ -274,7 +258,6 @@ public class PlayerManager : MonoBehaviour {
 			myPlayer.myDirection = myDirection;
 			UpdatePlayerObjectPosition (myPlayer, myDirection);
 
-
 		}
 
 	}
@@ -283,12 +266,8 @@ public class PlayerManager : MonoBehaviour {
 	// When character has stopped 
 
 	public void StopPlayer(Direction lastDirection)
-	{
-		
-		GameObject obj = playerGameObjectMap [myPlayer];
-
-		obj.GetComponent<PlayerObject> ().StopCharacter (lastDirection);
-
+	{		
+		playerObject.StopCharacter (lastDirection);
 	}
 
 
@@ -296,14 +275,9 @@ public class PlayerManager : MonoBehaviour {
 
 
 	public void UpdatePlayerObjectPosition(Player myPlayer, Direction myDirection)
-	{
-
-		GameObject obj = playerGameObjectMap [myPlayer];
-		obj.GetComponent<PlayerObject> ().MoveCharacter (myPlayer, myDirection);
-
+	{		
+		playerObject.MovePlayerObject (myPlayer, myDirection);
 	}
-
-
 
 
 
