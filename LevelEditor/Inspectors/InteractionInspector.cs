@@ -87,7 +87,7 @@ public class InteractionInspector : MonoBehaviour {
 
 		interactionPanelObject = Instantiate (InspectorManager.instance.interactionPanelObjectPrefab);
 
-		panel = interactionPanelObject.transform.Find ("Panel");
+		panel = interactionPanelObject.transform.Find ("ScrollView").Find ("Viewport").Find ("Content");
 
 		titleRow = panel.Find ("Row_Title");
 		interactionTitleInput = titleRow.Find ("InputTitle").GetComponent<InputField> ();
@@ -122,7 +122,7 @@ public class InteractionInspector : MonoBehaviour {
 		{
 
 
-			Debug.Log ("list count" + loadedInteraction.subInteractionList.Count);
+		//	Debug.Log ("list count" + loadedInteraction.subInteractionList.Count);
 
 
 			// interaction title input field

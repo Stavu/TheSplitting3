@@ -89,7 +89,6 @@ public class NavigationManager : MonoBehaviour {
 		lastColor = color;
 		StartCoroutine(FadeOut (scene, color));	
 
-
 	}
 
 
@@ -146,6 +145,8 @@ public class NavigationManager : MonoBehaviour {
 		}
 
 		fadeImage.material.SetFloat ("_Fade", 0);
+
+		EventsHandler.Invoke_cb_entered_room (RoomManager.instance.myRoom);
 
 	}
 

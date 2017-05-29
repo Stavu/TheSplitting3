@@ -88,12 +88,7 @@ public class PlayerManager : MonoBehaviour {
 
 	public void CreatePlayer(Room myRoom)	
 	{
-
-		if (entrancePoint == null) 
-		{		
-			entrancePoint = new Vector2 (15f, 10f);
-		}
-
+		
 		//myPlayer = new Player("Daniel", new Vector2(1,1), new Vector3(entrancePoint.x,entrancePoint.y,0));
 
 		myPlayer.myPos = entrancePoint;

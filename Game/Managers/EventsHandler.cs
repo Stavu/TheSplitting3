@@ -167,6 +167,7 @@ public static class EventsHandler
 
 
 
+
 	public static Action<Room> cb_roomCreated; 
 
 	public static void Invoke_cb_roomCreated(Room room)
@@ -176,6 +177,18 @@ public static class EventsHandler
 			cb_roomCreated (room);
 		}
 
+	}
+
+
+
+	public static Action<Room> cb_entered_room; 
+
+	public static void Invoke_cb_entered_room(Room room)
+	{
+		if(cb_entered_room != null)
+		{
+			cb_entered_room (room);
+		}
 	}
 
 
@@ -456,7 +469,7 @@ public static class EventsHandler
 		if(cb_subinteractionChanged != null)
 		{
 			Delegate[] delegateList = cb_subinteractionChanged.GetInvocationList();
-			Debug.Log (delegateList.Length);
+			//Debug.Log (delegateList.Length);
 
 			cb_subinteractionChanged ();
 		}

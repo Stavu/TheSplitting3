@@ -21,58 +21,33 @@ public class Character : PhysicalInteractable, ISpeaker, IWalker {
 
 	public string speakerName 
 	{
-		get
-		{ 
-			return myName;
-		}
+		get	{ return myName; }
 
-		set 
-		{
-			myName = value;
-		}
+		set { myName = value; }
 	}
-
 
 
 	public Vector2 speakerSize 
 	{
-		get
-		{ 
-			return mySize;
-		}
+		get { return mySize; }
 
-		set 
-		{
-			mySize = value;
-		}
+		set { mySize = value; }
 	}
 
 
 	public Vector3 speakerPos
 	{
-		get
-		{ 
-			return myPos;
-		}
+		get	{ return myPos; }
 
-		set 
-		{
-			myPos = value;
-		}
+		set { myPos = value; }
 	}
 
 
 	public Color speakerTextColor
 	{
-		get
-		{ 
-			return GameManager.speakerColorMap [speakerName];
-		}
+		get	{ return GameManager.speakerColorMap [speakerName]; }
 
-		set 
-		{
-			myTextColor = value;
-		}
+		set { myTextColor = value; }
 	}
 
 
@@ -82,85 +57,45 @@ public class Character : PhysicalInteractable, ISpeaker, IWalker {
 
 	public float walkerSpeed
 	{
-		get
-		{ 
-			return speed;
-		}
+		get	{ return speed; }
 
-		set 
-		{
-			speed = value;
-		}
+		set { speed = value; }
 	}
 
 
 	public Vector2 walkerTargetPos
 	{
-		get
-		{ 
-			return targetPos;
-		}
+		get { return targetPos;	}
 
-		set 
-		{
-			targetPos = value;
-		}
+		set { targetPos = value; }
 	}
 
 
 	public float walkerOffsetX
 	{
-		get
-		{ 
-			return offsetX;
-		}
-
-		set 
-		{
-			offsetX = value;
-		}
+		get	{ return offsetX; }
 	}
 
 
 	public float walkerOffsetY
 	{
-		get
-		{ 
-			return offsetY;
-		}
-
-		set 
-		{
-			offsetY = value;
-		}
+		get	{ return offsetY; }
 	}
 
 
 	public GameObject walkerGameObject
 	{
-		get
-		{ 
-			return CharacterManager.instance.characterGameObjectMap[this];
-		}
+		get	{ return CharacterManager.instance.characterGameObjectMap[this]; }
 
-		set 
-		{
-			CharacterManager.instance.characterGameObjectMap[this] = value;
-		}
+		set { CharacterManager.instance.characterGameObjectMap[this] = value; }
 	}
 
 
 	public Queue<Vector2> walkerPath
 	{
-		get
-		{ 
-			return path;
-		}
+		get	{ return path; }
 
-		set 
-		{
-			path = value;
-		}
+		set	{ path = value; }
 	}
 
 
@@ -191,15 +126,16 @@ public class Character : PhysicalInteractable, ISpeaker, IWalker {
 
 
 
-	public void ChangeTile(Tile newTile)
+	public void ChangePos(Vector2 newPos)
 	{
 
+		this.x = (int)newPos.x;
+		this.y = (int)newPos.y;
 
-		this.x = newTile.x;
-		this.y = newTile.y;
+		this.myPos = new Vector3 (newPos.x, newPos.y, 0);
 
-		this.myPos = new Vector3 (newTile.x, newTile.y, 0);
-
+		Tile newTile = RoomManager.instance.myRoom.MyGrid.GetTileAt((int)newPos.x, (int)newPos.y);
+			
 		newTile.myCharacter = this;
 
 	}
@@ -231,16 +167,17 @@ public interface IWalker
 	Vector2 speakerSize {get; set;}
 	Vector3 speakerPos {get; set;}
 
-	float walkerOffsetX {get; set;}
-	float walkerOffsetY {get; set;}
+	float walkerOffsetX {get;}
+	float walkerOffsetY {get;}
 
 	float walkerSpeed{get; set;}
-
 	Vector2 walkerTargetPos {get; set;}
+	Queue<Vector2> walkerPath {get; set;}
 
 	GameObject walkerGameObject {get; set;}
 
-	Queue<Vector2> walkerPath {get; set;}
+	// functions
+	void ChangePos (Vector2 newPos);
 
 
 }

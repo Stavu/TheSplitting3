@@ -102,7 +102,7 @@ public class SubinteractionInspector : MonoBehaviour {
 	public void OpenSubinteractionPanel(SubInteraction subInt)
 	{		
 
-
+		Debug.Log ("open sub interaction panel");
 		// SubInteraction type dropdown
 
 		subIntTypeDropdown.AddOptions (subIntTypeList);
@@ -155,7 +155,38 @@ public class SubinteractionInspector : MonoBehaviour {
 				
 				case "PlayAnimation":
 
-					playAnimation.Find("AnimationNameInput").GetComponent<InputField>().text = subInt.animationToPlay;
+					Debug.Log("play animation");
+					// populating the animation dropdown according to the object's animations 
+
+					List<string> animationList = new List<string> ();
+					Furniture furn = InspectorManager.instance.chosenFurniture;
+
+					GameObject prefab = Resources.Load<GameObject> ("Prefabs/Furniture/" + furn.myName);
+					Debug.Log ("create prefab");
+
+					if (prefab != null) 
+					{		
+						Debug.Log ("prefab isn't null");
+						Animator animator = prefab.GetComponent<Animator> ();
+
+						if (animator != null) 
+						{	
+							Debug.Log ("animator isn't null");
+							foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips) 
+							{
+								animationList.Add (clip.name);
+								Debug.Log ("animation list " + animationList.Count);
+							}
+						}
+					}	
+
+					playAnimation.Find ("AnimationDropdown").GetComponent<Dropdown> ().AddOptions (animationList);
+
+					if ((currentSubint.animationToPlay != string.Empty) && (animationList.Contains(currentSubint.animationToPlay)))
+					{
+						playAnimation.Find ("AnimationDropdown").GetComponent<Dropdown> ().value = animationList.IndexOf (currentSubint.animationToPlay);
+					}
+
 					playAnimation.Find("FurnitureNameInput").GetComponent<InputField>().text = subInt.targetFurniture;
 
 					break;
@@ -266,6 +297,33 @@ public class SubinteractionInspector : MonoBehaviour {
 			case "PlayAnimation":
 
 				playAnimation.gameObject.SetActive (true);
+
+				Debug.Log("play animation");
+				// populating the animation dropdown according to the object's animations 
+
+				List<string> animationList = new List<string> ();
+				Furniture furn = InspectorManager.instance.chosenFurniture;
+
+				GameObject prefab = Resources.Load<GameObject> ("Prefabs/Furniture/" + furn.myName);
+				Debug.Log ("create prefab");
+
+				if (prefab != null) 
+				{		
+					Debug.Log ("prefab isn't null");
+					Animator animator = prefab.GetComponent<Animator> ();
+
+					if (animator != null) 
+					{	
+						Debug.Log ("animator isn't null");
+						foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips) 
+						{
+							animationList.Add (clip.name);
+							Debug.Log ("animation list " + animationList.Count);
+						}
+					}
+				}	
+
+				playAnimation.Find ("AnimationDropdown").GetComponent<Dropdown> ().AddOptions (animationList);
 
 				break;			
 
@@ -381,7 +439,8 @@ public class SubinteractionInspector : MonoBehaviour {
 
 			case "PlayAnimation":
 
-				currentSubint.animationToPlay = playAnimation.Find ("AnimationNameInput").GetComponent<InputField> ().text;
+				int i = playAnimation.Find ("AnimationDropdown").GetComponent<Dropdown> ().value;
+				currentSubint.animationToPlay = playAnimation.Find ("AnimationDropdown").GetComponent<Dropdown> ().options [i].text;
 				currentSubint.targetFurniture = playAnimation.Find ("FurnitureNameInput").GetComponent<InputField> ().text;
 					
 				break;

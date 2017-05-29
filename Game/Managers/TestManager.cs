@@ -8,6 +8,8 @@ using UnityEngine;
 public class TestManager : MonoBehaviour {
 
 
+	/*
+	 
 	TestModel model;
 
 
@@ -88,4 +90,5 @@ public class TestManager : MonoBehaviour {
 	}
 
 
+*/
 }

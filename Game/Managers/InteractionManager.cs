@@ -113,6 +113,125 @@ public class InteractionManager : MonoBehaviour {
 	}
 
 
+	public void DisplayInfoText(string textString)
+	{
+		GameObject obj = Instantiate(Resources.Load<GameObject>("Prefabs/InfoText"));
+
+		Text objText = obj.transform.Find("Text").GetComponent<Text> ();
+		objText.text = textString;		
+
+		StartCoroutine (TextFade (objText));
+	}
+
+
+	IEnumerator TextFade(Text text)
+	{
+
+		float a = 0;
+		float speed = 3;
+
+		text.color = new Color (1f, 1f, 1f, a);
+
+		while (a < 1f) 
+		{			
+			a += Time.deltaTime * speed;
+			text.color = new Color (1f, 1f, 1f, a);
+			yield return new WaitForFixedUpdate ();
+		}
+
+
+		a = 1f;
+		text.color = Color.white;
+
+		yield return new WaitForSeconds (3);
+
+
+		while(a > 0)
+		{
+			a -= Time.deltaTime * speed;
+			text.color = new Color (1f, 1f, 1f, a);
+			yield return new WaitForFixedUpdate ();
+
+		}
+
+		a = 0;
+		text.color = new Color (1f, 1f, 1f, a);
+
+		Destroy (text.transform.parent.gameObject);
+
+	}
+
+
+	// black screen info
+
+	public void DisplayInfoBlackScreen(string textString)
+	{			
+		StartCoroutine (BlackScreenFade (textString));
+	}
+
+
+	IEnumerator BlackScreenFade(string textString)
+	{
+		
+		GameObject obj = Instantiate(Resources.Load<GameObject>("Prefabs/InfoBlackScreen"));
+
+		Text objText = obj.transform.Find("Text").GetComponent<Text> ();
+		objText.text = textString;		
+
+		Image objImage = obj.transform.Find("Image").GetComponent<Image> ();
+
+
+		// coroutine
+
+		float a = 0;
+		float speed = 5;
+
+		objText.color = new Color (1f, 1f, 1f, a);
+		objImage.color = new Color (0f, 0f, 0f, a);
+
+
+		while (a < 1f) 
+		{			
+			a += Time.deltaTime * speed;
+			objText.color = new Color (1f, 1f, 1f, a);
+			objImage.color = new Color (0f, 0f, 0f, a);
+
+			yield return new WaitForFixedUpdate ();
+		}
+
+
+		a = 1f;
+
+		objText.color = Color.white;
+		objImage.color = Color.black;
+
+		yield return new WaitForSeconds (3);
+
+
+		while(a > 0)
+		{
+			a -= Time.deltaTime * speed;
+			objText.color = new Color (1f, 1f, 1f, a);
+			objImage.color = new Color (0f, 0f, 0f, a);
+
+			yield return new WaitForFixedUpdate ();
+
+		}
+
+		a = 0;
+		objText.color = new Color (1f, 1f, 1f, a);
+		objImage.color = new Color (0f, 0f, 0f, a);
+
+		Destroy (obj);
+
+	}
+
+
+
+
+
+
+
 
 	// move to room
 
@@ -121,11 +240,6 @@ public class InteractionManager : MonoBehaviour {
 	{
 
 		GameManager.roomToLoad = GameManager.instance.stringRoomMap [roomName];
-
-		if (entrancePoint == null) 
-		{
-			Debug.LogError ("entrance point is null");
-		}
 
 		Tile tempTile = RoomManager.instance.myRoom.MyGrid.GetTileAt ((int)entrancePoint.x, (int)entrancePoint.y);
 

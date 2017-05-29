@@ -40,7 +40,8 @@ public class DanielScene : Cutscene
 
 		// Declerations
 
-		Character llehctiM = CharacterManager.instance.GetCharacterByName ("llehctiM");
+		//Character llehctiM = CharacterManager.instance.GetCharacterByName ("llehctiM");
+		Player Daniel = PlayerManager.myPlayer;
 
 		// dialogue between daniel and llehctiM
 
@@ -63,12 +64,12 @@ public class DanielScene : Cutscene
 
 		List<Vector2> llehctiMPosList = new List<Vector2> 
 		{
-			new Vector2 (5, 12),
-			new Vector2 (5, 13),
-			new Vector2 (5, 10)
+			new Vector2 (18, 9),
+			//new Vector2 (5, 13),
+			//new Vector2 (5, 10)
 		};
 
-		CharacterManager.instance.MoveByPath (llehctiM, llehctiMPosList);
+		CharacterManager.instance.MoveByPath (Daniel, llehctiMPosList);
 
 		/////////// 
 
@@ -89,7 +90,15 @@ public class DanielScene : Cutscene
 		yield return new WaitForSeconds (2);
 		///////////
 
-		FurnitureManager.instance.SetFurnitureAnimationState ("asylumGate", "Opening");
+		//FurnitureManager.instance.SetFurnitureAnimationState ("asylumGate", "Opening");
+
+		//InteractionManager.instance.MoveToRoom ("abandoned_lobby_mirror", new Vector2 (10, 10));
+
+		//InteractionManager.instance.DisplayInfoText ("5 Minutes Later");
+
+		InteractionManager.instance.DisplayInfoBlackScreen ("5 Minutes Later");
+
+
 
 		///////////
 		yield return new WaitForSeconds (2);

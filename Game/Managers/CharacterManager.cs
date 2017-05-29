@@ -199,7 +199,7 @@ public class CharacterManager : MonoBehaviour {
 
 		// After while loop is done, change the character tile
 
-		//walker.ChangeTile (walker.targetTile);
+		walker.ChangePos (walker.walkerTargetPos);
 
 
 		switch (lastDirection) 

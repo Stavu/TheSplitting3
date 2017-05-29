@@ -137,8 +137,7 @@ public class BuildController : MonoBehaviour {
 	public void InspectTiles(Tile tile)
 	{
 
-		Debug.Log ("Inspect tiles");
-	
+		//Debug.Log ("Inspect tiles");	
 
 		InspectorManager.instance.chosenFurniture = tile.myFurniture;
 		InspectorManager.instance.chosenCharacter = tile.myCharacter;

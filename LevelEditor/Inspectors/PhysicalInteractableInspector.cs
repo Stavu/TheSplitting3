@@ -246,7 +246,7 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 	public void DestroyInspector()
 	{
 
-		Debug.Log ("destroy inspector");
+	//	Debug.Log ("destroy inspector");
 		if (inspectorObject != null) 
 		{
 

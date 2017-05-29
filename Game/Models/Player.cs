@@ -5,7 +5,7 @@ using System;
 
 
 
-public class Player : ISpeaker{
+public class Player : ISpeaker, IWalker {
 
 
 
@@ -33,64 +33,92 @@ public class Player : ISpeaker{
 
 	[NonSerialized]
 	public Direction myDirection;
-	public float speed;
+	public float speed = 4f;
+
+	public Queue<Vector2> path;
+	public Vector2 targetPos;
+
 
 
 
 	public string speakerName 
 	{
-		get
-		{ 
-			return myName;
-		}
+		get { return myName; }
 
-		set 
-		{
-			myName = value;
-		}
+		set { myName = value; }
 	}
 
 
 	public Vector2 speakerSize 
 	{
-		get
-		{ 
-			return mySize;
-		}
+		get	{ return mySize; }
 
-		set 
-		{
-			mySize = value;
-		}
+		set { mySize = value; }
 	}
 
 
 	public Vector3 speakerPos
 	{
-		get
-		{ 
-			return myPos;
-		}
+		get { return myPos; }
 
-		set 
-		{
-			myPos = value;
-		}
+		set { myPos = value; }
 	}
 
 
 	public Color speakerTextColor
 	{
-		get
-		{ 
-			return GameManager.speakerColorMap [speakerName];
-		}
+		get { return GameManager.speakerColorMap [speakerName]; }
 
-		set 
-		{
-			myTextColor = value;
-		}
+		set { myTextColor = value; }
 	}
+
+
+
+	public float walkerSpeed
+	{
+		get	{ return speed; }
+
+		set { speed = value; }
+	}
+
+
+	public Vector2 walkerTargetPos
+	{
+		get { return targetPos;	}
+
+		set { targetPos = value; }
+	}
+
+
+	public float walkerOffsetX
+	{
+		get	{ return 0; }
+	}
+
+
+	public float walkerOffsetY
+	{
+		get	{ return 0; }
+	}
+
+
+	public GameObject walkerGameObject
+	{
+		get	{ return PlayerManager.instance.playerGameObjectMap[this]; }
+
+		set { PlayerManager.instance.playerGameObjectMap[this] = value; }
+	}
+
+
+	public Queue<Vector2> walkerPath
+	{
+		get	{ return path; }
+
+		set	{ path = value; }
+	}
+
+
+
 
 
 	public Player(string myName, Vector2 mySize, Vector3 myPos)
@@ -126,6 +154,12 @@ public class Player : ISpeaker{
 	}
 
 
+
+
+	public void ChangePos(Vector2 newPos)
+	{		
+		this.myPos = Utilities.GetCharacterPosOnTile (this, newPos);
+	}
 
 
 }

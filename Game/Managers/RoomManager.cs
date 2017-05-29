@@ -30,12 +30,17 @@ public class RoomManager : MonoBehaviour {
 	public GameObject bgObject;
 	public GameObject bgObject_Shadow;
 
+	public GameObject roomStarter;
+
+
 
 
 	public void Initialize ()
 	{	
-		//EventsHandler.cb_furnitureChanged += OnFurnitureChanged;			
+		//EventsHandler.cb_furnitureChanged += OnFurnitureChanged;	
+
 	}
+	
 
 	public void OnDestroy()
 	{	
@@ -97,10 +102,11 @@ public class RoomManager : MonoBehaviour {
 		}
 
 
-
 		// adding the player to the speaker map
 
 		nameSpeakerMap.Add (PlayerManager.myPlayer.myName, PlayerManager.myPlayer);
+
+
 
 		EventsHandler.Invoke_cb_inputStateChanged ();
 
