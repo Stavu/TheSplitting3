@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
 
 		if (roomToLoad == null) 
 		{
-			roomToLoad = stringRoomMap ["abandoned_wing_outside_shadow"];
+			roomToLoad = stringRoomMap ["test1"];
 
 		}
 
@@ -114,8 +114,6 @@ public class GameManager : MonoBehaviour
 
 	public void CreateRooms ()
 	{
-		
-
 		Object[] myTextAssets = Resources.LoadAll ("Jsons/Rooms");
 
 		foreach (TextAsset txt in myTextAssets) 
@@ -125,9 +123,7 @@ public class GameManager : MonoBehaviour
 
 			// Adding room to dictionary
 
-			stringRoomMap.Add (myRoom.myName, myRoom);
-
-					
+			stringRoomMap.Add (myRoom.myName, myRoom);					
 		}
 	}
 
@@ -135,15 +131,12 @@ public class GameManager : MonoBehaviour
 
 	public void CreateInventoryItemData()
 	{
-
 		if (gameData != null) 
 		{
 			return;
 		}
 
 		gameData = new GameData ();
-
-
 	}
 
 
@@ -156,13 +149,11 @@ public class GameManager : MonoBehaviour
 
 	public void CreatePlayerData ()
 	{
-
 		if (playerData != null) 
 		{
 			//Debug.Log ("playerData is not null");
 			return;
 		}
-
 
 		if (PlayerPrefs.HasKey ("PlayerData")) 
 		{
@@ -176,11 +167,9 @@ public class GameManager : MonoBehaviour
 				item.Initialize ();
 			}
 
-
 		} else {
 			
 			CreateNewData ();
-
 		}
 	}
 
@@ -206,12 +195,10 @@ public class GameManager : MonoBehaviour
 
 		if (playerData != null) 
 		{
-
 			string data = JsonUtility.ToJson (playerData);
 			PlayerPrefs.SetString ("PlayerData", data);
 
 			Debug.Log ("data " + data);
-
 		}
 
 	}

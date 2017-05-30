@@ -60,19 +60,26 @@ public class FurnitureManager : MonoBehaviour {
 
 
 
+	 
 	public void InitializeFurnitureGameObject (Furniture myFurniture)
 	{
 		
+		if ((myFurniture.identificationName != null) && (myFurniture.identificationName != string.Empty)) 
+		{				
+			nameFurnitureMap.Add (myFurniture.identificationName, myFurniture);		
+
+		} else {
+
+			nameFurnitureMap.Add (myFurniture.myName, myFurniture);	
+		}
+
 		GameObject obj = CreateFurnitureGameObject (myFurniture, this.transform);
 		furnitureGameObjectMap.Add (myFurniture, obj);
 
-		if ((myFurniture.identificationName != null) && (myFurniture.identificationName != string.Empty))
-		{				
-			nameFurnitureMap.Add (myFurniture.identificationName, myFurniture);		
-		}
+
 	}
 
-
+	
 
 
 
@@ -92,6 +99,14 @@ public class FurnitureManager : MonoBehaviour {
 			{
 				obj = Instantiate (gameObj);
 				sr = obj.GetComponentInChildren<SpriteRenderer>();
+
+				string state = GameManager.playerData.GetAnimationState (myFurniture.identificationName);
+
+				if (state != string.Empty) 
+				{
+					SetFurnitureAnimationState (myFurniture.identificationName, obj, state);
+				} 
+
 				break;
 			}	
 		}
@@ -109,14 +124,14 @@ public class FurnitureManager : MonoBehaviour {
 		obj.transform.SetParent (parent);
 		obj.transform.position = new Vector3 (myFurniture.myPos.x + myFurniture.offsetX, myFurniture.myPos.y + 0.5f + myFurniture.offsetY, myFurniture.myPos.z);
 
-	
-		// sorting order 
 
-		sr.sortingOrder = -myFurniture.y;
+		// sorting order 
+		Utilities.SetPISortingOrder (myFurniture, obj);
+
 
 		if (myFurniture.walkable == true) 
 		{
-			sr.sortingOrder = (int) -(myFurniture.y + myFurniture.mySize.y);
+			sr.sortingOrder = (int) -(myFurniture.y + myFurniture.mySize.y) * 10;
 
 		}
 
@@ -132,14 +147,11 @@ public class FurnitureManager : MonoBehaviour {
 
 
 
-
-
-
 	// Setting furniture animation state
 
 	public void SetFurnitureAnimationState(string furnitureName, string state)
 	{
-
+		
 		if (nameFurnitureMap.ContainsKey (furnitureName)) 
 		{
 			Furniture furn = nameFurnitureMap [furnitureName];
@@ -147,12 +159,38 @@ public class FurnitureManager : MonoBehaviour {
 			Animator animator = obj.GetComponent<Animator> ();
 
 			animator.PlayInFixedTime (state);
+			Utilities.SetPISortingOrder (furn, obj);
+			GameManager.playerData.AddAnimationState (furnitureName, state);
 	
 		} else {
 
-			Debug.LogError ("I don't have this title name");
+			Debug.LogError ("I don't have this title name " + furnitureName);
+
+ 		}
+	}
+
+
+
+	public void SetFurnitureAnimationState(string furnitureName, GameObject obj, string state)
+	{
+
+		if (nameFurnitureMap.ContainsKey (furnitureName)) 
+		{
+			Furniture furn = nameFurnitureMap [furnitureName];
+			Animator animator = obj.GetComponent<Animator> ();
+
+			animator.PlayInFixedTime (state);
+			Utilities.SetPISortingOrder (furn, obj);
+			GameManager.playerData.AddAnimationState (furnitureName, state);
+
+		} else {
+
+			Debug.LogError ("I don't have this title name " + furnitureName);
 
 		}
 	}
+
+
+
 
 }

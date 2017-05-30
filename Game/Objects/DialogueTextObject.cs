@@ -38,10 +38,12 @@ public class DialogueTextObject : MonoBehaviour {
 
 			if ((sentenceList [currentEntry].mySubIntList != null) && (sentenceList[currentEntry].subinteractImmediately == false))
 			{
-				foreach (SubInteraction subInt in sentenceList [currentEntry].mySubIntList) 
-				{					
-					subInt.SubInteract ();
-				}
+
+				// check if subinteractions passed the conditions
+
+				List<SubInteraction> subinteractionsToDo = Utilities.GetPassedSubinteractions (sentenceList [currentEntry].mySubIntList);
+
+				subinteractionsToDo.ForEach (subInt => subInt.SubInteract ());	
 
 			}
 
@@ -61,10 +63,13 @@ public class DialogueTextObject : MonoBehaviour {
 		{
 			if ((sentenceList [currentEntry].mySubIntList != null) && (sentenceList[currentEntry].subinteractImmediately == true))
 			{
-				foreach (SubInteraction subInt in sentenceList [currentEntry].mySubIntList) 
-				{					
-					subInt.SubInteract ();
-				}
+
+				// check if subinteractions passed the conditions
+
+				List<SubInteraction> subinteractionsToDo = Utilities.GetPassedSubinteractions (sentenceList [currentEntry].mySubIntList);
+
+				subinteractionsToDo.ForEach (subInt => subInt.SubInteract ());	
+
 			}
 
 			PopulateTextBox (sentenceList [currentEntry]);
@@ -103,9 +108,7 @@ public class DialogueTextObject : MonoBehaviour {
 
 
 	public Vector3 PositionTextBox(ISpeaker speaker)
-	{		
-
-
+	{
 		if (speaker == null) 
 		{
 			Debug.Log("speaker is null");
@@ -117,27 +120,21 @@ public class DialogueTextObject : MonoBehaviour {
 
 		Vector3 newPos = new Vector3 (speaker.speakerPos.x + offsetX, speaker.speakerPos.y + offsetY,0);
 
-
 		//now you can set the position of the ui element
-
 		return newPos;
-
 	}
-
 
 
 
 	public void PopulateTextBox(DialogueSentence sentence)
 	{
-
 		textComponent.text = sentence.myText;
 
 		ISpeaker speaker = RoomManager.instance.nameSpeakerMap [sentence.speakerName];
 		textComponent.color = speaker.speakerTextColor;
 		transform.position = PositionTextBox (speaker);
-
-
-
 	}
+
+
 
 }

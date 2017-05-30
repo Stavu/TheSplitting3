@@ -122,6 +122,7 @@ public class ActionBoxManager : MonoBehaviour {
 
 		// declerations 
 
+		/*
 		Vector3 frameBounds = Vector3.zero;
 
 
@@ -159,10 +160,18 @@ public class ActionBoxManager : MonoBehaviour {
 
 		}
 
-		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_DL").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (-frameBounds.x, -frameBounds.y);
-		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_DR").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (frameBounds.x, -frameBounds.y);
-		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_UL").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (-frameBounds.x, frameBounds.y);
-		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_UR").GetComponent<RectTransform> ().anchoredPosition = new Vector2 (frameBounds.x, frameBounds.y);
+		*/
+
+
+		List<Vector3> positionsList = Utilities.GetPhysicalInteractableFrameBounds (myPhysicalInt);
+
+		currentPhysicalInteractableFrame.GetComponent<RectTransform> ().anchoredPosition = positionsList [0];
+
+
+		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_DL").GetComponent<RectTransform> ().anchoredPosition = positionsList [1];
+		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_DR").GetComponent<RectTransform> ().anchoredPosition = positionsList [2];
+		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_UL").GetComponent<RectTransform> ().anchoredPosition = positionsList [3];
+		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_UR").GetComponent<RectTransform> ().anchoredPosition = positionsList [4];
 
 	}
 
@@ -419,16 +428,15 @@ public class ActionBoxManager : MonoBehaviour {
 		}
 
 
-		foreach (SubInteraction subInt in currentInteraction.subInteractionList) 
-		{
+		// check if subinteractions passed the conditions
 
-			subInt.SubInteract ();
-			
-		}
-
+		List<SubInteraction> subinteractionsToDo = Utilities.GetPassedSubinteractions (currentInteraction.subInteractionList);
 	
-		CloseActionBox ();
+		subinteractionsToDo.ForEach (subInt => subInt.SubInteract ());			
 
+
+
+		CloseActionBox ();
 
 	}
 

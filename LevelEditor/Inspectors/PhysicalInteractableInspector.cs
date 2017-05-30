@@ -28,6 +28,14 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 	InputField offsetXInput;
 	InputField offsetYInput;
 
+	InputField frameXInput;
+	InputField frameYInput;
+
+	InputField frameOffsetXInput;
+	InputField frameOffsetYInput;
+
+
+
 	// placeholders
 
 	Text sizeXPlaceholder;
@@ -38,6 +46,12 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 	Text offsetXPlaceholder;
 	Text offsetYPlaceholder;
+
+	Text frameXPlaceholder;
+	Text frameYPlaceholder;
+
+	Text frameOffsetXPlaceholder;
+	Text frameOffsetYPlaceholder;
 
 
 	// delete button
@@ -105,6 +119,12 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 		offsetXInput = panel.FindChild ("OffsetX").GetComponent<InputField> ();
 		offsetYInput = panel.FindChild ("OffsetY").GetComponent<InputField> ();
 
+		frameXInput = panel.FindChild ("FrameX").GetComponent<InputField> ();
+		frameYInput = panel.FindChild ("FrameY").GetComponent<InputField> ();
+
+		frameOffsetXInput = panel.FindChild ("FrameOffsetX").GetComponent<InputField> ();
+		frameOffsetYInput = panel.FindChild ("FrameOffsetY").GetComponent<InputField> ();
+
 
 		// placeholders 
 
@@ -116,6 +136,13 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 		offsetXPlaceholder = panel.FindChild ("OffsetX").FindChild ("Placeholder").GetComponent<Text> ();
 		offsetYPlaceholder = panel.FindChild ("OffsetY").FindChild ("Placeholder").GetComponent<Text> ();
+
+		frameXPlaceholder = panel.FindChild ("FrameX").FindChild ("Placeholder").GetComponent<Text> ();
+		frameYPlaceholder = panel.FindChild ("FrameY").FindChild ("Placeholder").GetComponent<Text> ();
+
+		frameOffsetXPlaceholder = panel.FindChild ("FrameOffsetX").FindChild ("Placeholder").GetComponent<Text> ();
+		frameOffsetYPlaceholder = panel.FindChild ("FrameOffsetY").FindChild ("Placeholder").GetComponent<Text> ();
+
 
 
 		// Text
@@ -132,6 +159,13 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 		offsetXPlaceholder.text = currentPhysicalInteractable.offsetX.ToString();
 		offsetYPlaceholder.text = currentPhysicalInteractable.offsetY.ToString();
 
+		frameXPlaceholder.text = currentPhysicalInteractable.frameExtents.x.ToString();
+		frameYPlaceholder.text = currentPhysicalInteractable.frameExtents.y.ToString();
+
+		frameOffsetXPlaceholder.text = currentPhysicalInteractable.frameOffsetX.ToString();
+		frameOffsetYPlaceholder.text = currentPhysicalInteractable.frameOffsetY.ToString();
+
+
 
 		// Listeners
 
@@ -145,6 +179,13 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 		offsetXInput.onEndEdit.AddListener (changeOffsetX);
 		offsetYInput.onEndEdit.AddListener (changeOffsetY);
+
+		frameXInput.onEndEdit.AddListener (ChangeFrameWidth);
+		frameYInput.onEndEdit.AddListener (ChangeFrameHeight);
+
+		frameOffsetXInput.onEndEdit.AddListener (ChangeFrameOffsetX);
+		frameOffsetYInput.onEndEdit.AddListener (ChangeFrameOffsetY);
+
 
 		deleteButton.onClick.AddListener (() => EditorUI.DisplayAlert("Are you sure?", DeletePhysicalInteractable));
 
@@ -203,12 +244,9 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 
 
-
-
-
 		// create existing interactions
 
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 6; i++) {
 
 			Button button = panel.FindChild ("AddInteraction" + i.ToString ()).GetComponent<Button> ();
 
@@ -219,9 +257,7 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 				Interaction interaction = currentPhysicalInteractable.myInteractionList [i];
 				button.onClick.AddListener (() => LoadInteractionAndOpenPanel (interaction));	
 
-
 			} else {
-
 
 				button.onClick.AddListener (() => LoadInteractionAndOpenPanel (null));
 
@@ -453,7 +489,99 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 	}
 
 
+	// frame size
 
+	public void ChangeFrameWidth(string width)
+	{
+
+		float newWidth = float.Parse (width);
+
+		if (InspectorManager.instance.chosenFurniture != null) 
+		{
+			EditorRoomManager.instance.ChangeInteractableFrameWidth (newWidth, InspectorManager.instance.chosenFurniture);
+
+		} else if (InspectorManager.instance.chosenCharacter != null) 
+		{			
+			EditorRoomManager.instance.ChangeInteractableFrameWidth (newWidth, InspectorManager.instance.chosenCharacter);
+		}	
+
+		frameXInput.text = width;
+
+	}
+
+
+
+
+	public void ChangeFrameHeight(string height)
+	{
+
+		float newHeight = float.Parse (height);
+
+		if (InspectorManager.instance.chosenFurniture != null) 
+		{
+			EditorRoomManager.instance.ChangeInteractableFrameHeight (newHeight, InspectorManager.instance.chosenFurniture);
+
+		} else if (InspectorManager.instance.chosenCharacter != null) 
+		{			
+			EditorRoomManager.instance.ChangeInteractableFrameHeight (newHeight, InspectorManager.instance.chosenCharacter);
+		}	
+
+		frameXInput.text = height;
+
+
+	}
+
+
+
+	// change offset
+
+
+	public void ChangeFrameOffsetX(string x)
+	{
+
+		float newX = float.Parse (x);
+
+		if (InspectorManager.instance.chosenFurniture != null) 
+		{
+			EditorRoomManager.instance.ChangeInteractableFrameOffsetX (newX, InspectorManager.instance.chosenFurniture);
+
+		} else if (InspectorManager.instance.chosenCharacter != null) 
+		{			
+			EditorRoomManager.instance.ChangeInteractableFrameOffsetX (newX, InspectorManager.instance.chosenCharacter);
+		}
+
+		frameOffsetXInput.text = x;
+	}
+
+
+
+
+
+	public void ChangeFrameOffsetY(string y)
+	{
+		float newY = float.Parse (y);
+
+		if (InspectorManager.instance.chosenFurniture != null) 
+		{
+			EditorRoomManager.instance.ChangeInteractableFrameOffsetY (newY, InspectorManager.instance.chosenFurniture);
+
+		} else if (InspectorManager.instance.chosenCharacter != null) 
+		{			
+			EditorRoomManager.instance.ChangeInteractableFrameOffsetY (newY, InspectorManager.instance.chosenCharacter);
+		}	
+
+		frameOffsetYInput.text = y;
+	}
+
+
+
+
+
+
+
+
+
+	// ----- DELETE ----- //
 
 	public void DeletePhysicalInteractable()
 	{

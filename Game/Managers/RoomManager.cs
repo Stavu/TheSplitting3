@@ -24,6 +24,8 @@ public class RoomManager : MonoBehaviour {
 	// Singleton //
 
 
+
+
 	public Room myRoom;
 	public Dictionary <string,ISpeaker> nameSpeakerMap;
 
@@ -106,8 +108,6 @@ public class RoomManager : MonoBehaviour {
 
 		nameSpeakerMap.Add (PlayerManager.myPlayer.myName, PlayerManager.myPlayer);
 
-
-
 		EventsHandler.Invoke_cb_inputStateChanged ();
 
 	}
@@ -142,7 +142,7 @@ public class RoomManager : MonoBehaviour {
 		bgObject.AddComponent<SpriteRenderer> ().sprite = Resources.Load <Sprite> ("Sprites/Rooms/" + room.bgName);
 		bgObject.transform.position = new Vector3 (room.myWidth/2f, 0, 0);
 
-		bgObject.GetComponent<SpriteRenderer> ().sortingOrder = -1;
+		bgObject.GetComponent<SpriteRenderer> ().sortingOrder = -10;
 		bgObject.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.room_layer;
 		bgObject.transform.SetParent (this.transform);
 

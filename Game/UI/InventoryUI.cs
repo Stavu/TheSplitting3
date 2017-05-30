@@ -736,10 +736,12 @@ public class InventoryUI : MonoBehaviour {
 			return;
 		}
 			
-		foreach (SubInteraction subInt in currentInteraction.subInteractionList) 
-		{
-			subInt.SubInteract ();
-		}
+
+		// check if subinteractions passed the conditions
+
+		List<SubInteraction> subinteractionsToDo = Utilities.GetPassedSubinteractions (currentInteraction.subInteractionList);
+
+		subinteractionsToDo.ForEach (subInt => subInt.SubInteract ());	
 
 	}
 
@@ -810,10 +812,12 @@ public class InventoryUI : MonoBehaviour {
 
 		if (subInteractionList != null) 
 		{
-			foreach (SubInteraction subInt in subInteractionList) 
-			{
-				subInt.SubInteract ();
-			}
+
+			// check if subinteractions passed the conditions
+
+			List<SubInteraction> subinteractionsToDo = Utilities.GetPassedSubinteractions (subInteractionList);
+
+			subinteractionsToDo.ForEach (subInt => subInt.SubInteract ());	
 
 		} else {
 

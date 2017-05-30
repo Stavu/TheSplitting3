@@ -37,14 +37,17 @@ public class RoomStarter : MonoBehaviour {
 	}
 
 
-
 	// Update is called once per frame
 
 	void Update () 
 	{
 
-
 	}
+
+
+
+
+	// -------- START ROOM -------- // 
 
 
 	public void StartRoom(Room room)
@@ -54,16 +57,13 @@ public class RoomStarter : MonoBehaviour {
 
 		bool firstTimeinRoom = GameManager.playerData.AddToRoomsVisited (room.myName);
 
-
 		switch (room.myName) 
 		{
-
 			case "abandoned_lobby":
 
 				InteractionManager.instance.DisplayDialogueOption("enter_room_abandoned_lobby");
 
 				break;
-
 
 
 			case "abandoned_lobby_mirror":
@@ -76,24 +76,17 @@ public class RoomStarter : MonoBehaviour {
 				break;
 
 
-
 			case "abandoned_wing_outside_shadow":
-
 
 				break;
 
 
 			case "abandoned_wing_outside":
 
-
 				break;
 
-
-
 		}
-
 	}
-
 
 
 }

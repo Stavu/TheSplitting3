@@ -470,6 +470,39 @@ public class EditorRoomManager : MonoBehaviour {
 
 
 
+	// ------ FRAME SIZE ------ //
+
+
+
+	public void ChangeInteractableFrameWidth(float width, PhysicalInteractable interactable)
+	{
+		width = Mathf.Abs (width);
+		interactable.frameExtents.x = width;
+	}
+
+
+	public void ChangeInteractableFrameHeight(float height, PhysicalInteractable interactable)
+	{
+		height = Mathf.Abs (height);
+		interactable.frameExtents.y = height;
+	}
+
+
+	// FRAME OFFSETS //
+
+	public void ChangeInteractableFrameOffsetX(float offsetX, PhysicalInteractable interactable)
+	{
+		interactable.frameOffsetX = offsetX;			
+	}
+
+
+
+	public void ChangeInteractableFrameOffsetY(float offsetY, PhysicalInteractable interactable)
+	{
+		interactable.frameOffsetY = offsetY;			
+	}
+
+
 
 
 
@@ -483,6 +516,8 @@ public class EditorRoomManager : MonoBehaviour {
 
 		Room tempRoom = JsonUtility.FromJson<Room> (roomString);
 		tempRoom.myGrid = new Grid (tempRoom.myWidth, tempRoom.myHeight);
+
+		gameObject.AddComponent<FrameLineHandler> ();
 
 
 		// MIRROR ROOM

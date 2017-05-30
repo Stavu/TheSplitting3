@@ -84,18 +84,28 @@ public class Utilities {
 		sr.sprite = Resources.Load<Sprite> ("Sprites/Furniture/" + myFurniture.myName);
 		sr.flipX = myFurniture.imageFlipped;
 
+	
+
+		if (myFurniture.frameExtents == Vector2.zero) 
+		{
+			Debug.Log ("frameExtents " + myFurniture.frameExtents);
+			myFurniture.frameExtents = sr.sprite.bounds.extents;
+		}
+			
 		obj.transform.position = new Vector3 (myFurniture.myPos.x + myFurniture.offsetX, myFurniture.myPos.y + 0.5f + myFurniture.offsetY, myFurniture.myPos.z);
+
+
 
 		//Debug.Log ("object position" + myFurniture.myName + obj.transform.position + sr.sprite.bounds);
 
 
 		// sorting order 
 
-		sr.sortingOrder = -myFurniture.y;
+		sr.sortingOrder = -myFurniture.y * 10;
 
 		if (myFurniture.walkable == true) 
 		{
-			sr.sortingOrder = (int) -(myFurniture.y + myFurniture.mySize.y);
+			sr.sortingOrder = (int) -(myFurniture.y + myFurniture.mySize.y) * 10;
 
 		}
 
@@ -103,8 +113,28 @@ public class Utilities {
 
 		return obj;
 
+	}
+
+
+
+
+
+	public static void SetPISortingOrder(PhysicalInteractable myPI, GameObject obj)
+	{
+
+		// sorting order 
+
+		SpriteRenderer[] sr_list = obj.GetComponentsInChildren<SpriteRenderer> ();
+		Debug.Log ("length" + obj.transform.childCount);
+
+
+		for (int i = 0; i < obj.transform.childCount; i++)
+		{
+			obj.transform.GetChild (i).GetComponent<SpriteRenderer> ().sortingOrder = i + (-myPI.y * 10);			
+		}
 
 	}
+
 
 
 
@@ -127,7 +157,7 @@ public class Utilities {
 
 		// sorting order 
 
-		obj.GetComponentInChildren<SpriteRenderer>().sortingOrder  = -myCharacter.y;
+		obj.GetComponentInChildren<SpriteRenderer>().sortingOrder  = -myCharacter.y * 10;
 		obj.GetComponentInChildren<SpriteRenderer>().sortingLayerName = Constants.furniture_character_layer;
 
 		return obj;
@@ -258,6 +288,100 @@ public class Utilities {
 	}
 
 
+	/// <summary>
+	/// Gets the passed subinteractions.
+	/// Returns a list of the subinteractions that passed the conditions
+	/// </summary>
+	/// <returns>The passed subinteractions.</returns>
+	/// <param name="subIntList">Sub int list.</param>
+
+	public static List<SubInteraction> GetPassedSubinteractions (List<SubInteraction> subIntList)
+	{		
+		// check if subinteractions passed the conditions
+
+		List<SubInteraction> subinteractionsToDo = new List<SubInteraction> ();
+
+		foreach (SubInteraction subInt in subIntList) 
+		{
+			bool passedConditions = Utilities.EvaluateConditions (subInt.conditionList);
+
+			if (passedConditions == true) 
+			{
+				subinteractionsToDo.Add (subInt);
+			}
+		}
+
+		return subinteractionsToDo;
+	}
+
+
+
+
+	public static List<Vector3> GetPhysicalInteractableFrameBounds(PhysicalInteractable myPhysicalInt)
+	{
+		// declerations 
+
+		Vector2 frameBounds = myPhysicalInt.frameExtents;
+
+		List<Vector3> positions = new List<Vector3> ();
+
+		if (myPhysicalInt is Furniture) 		
+		{
+
+			Furniture myFurniture = (Furniture)myPhysicalInt;
+
+			SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [myFurniture].GetComponentInChildren<SpriteRenderer>();
+
+			Vector3 center = sr.bounds.center + new Vector3 (myFurniture.frameOffsetX, myFurniture.frameOffsetY, 0);
+
+			// center 
+
+			positions.Add(center);
+
+			// positioning frame pieces
+
+			if (frameBounds == Vector2.zero) 
+			{
+				frameBounds = sr.bounds.extents;
+			}
+		}
+
+
+		if (myPhysicalInt is Character) 		
+		{
+			Character myCharacter = (Character)myPhysicalInt;
+
+			GameObject myObject = CharacterManager.instance.characterGameObjectMap [myCharacter];
+			Vector3 center = myObject.GetComponentInChildren<SpriteRenderer> ().bounds.center  + new Vector3 (myCharacter.frameOffsetX, myCharacter.frameOffsetY, 0);
+
+			// center 
+			positions.Add(center);
+
+			// positioning frame pieces
+
+			if (frameBounds == Vector2.zero) 
+			{
+				frameBounds = myObject.GetComponentInChildren<SpriteRenderer> ().bounds.extents;
+			}
+		}
+
+
+		//down left
+		positions.Add(new Vector3 (-frameBounds.x, -frameBounds.y,0));
+
+		//down right
+		positions.Add(new Vector3 (frameBounds.x, -frameBounds.y,0));
+
+		//up left
+		positions.Add(new Vector3 (-frameBounds.x, frameBounds.y,0));
+
+		//up right
+		positions.Add(new Vector3 (frameBounds.x, frameBounds.y,0));
+
+
+
+		return positions;
+	}
 
 
 

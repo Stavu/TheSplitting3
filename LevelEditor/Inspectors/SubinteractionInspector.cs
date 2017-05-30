@@ -45,7 +45,9 @@ public class SubinteractionInspector : MonoBehaviour {
 			"intoShadows",
 			"outOfShadows",
 			"pickUpItem",
-			"useItem"
+			"useItem",
+			"addEvent",
+			"removeEvent"
 		};
 	}
 
@@ -221,6 +223,22 @@ public class SubinteractionInspector : MonoBehaviour {
 					
 					break;
 
+
+				case "addEvent":
+
+					textInputSmall.text = subInt.eventToAdd;
+
+					break;
+
+
+				case "removeEvent":
+
+					textInputSmall.text = subInt.eventToRemove;
+
+					break;
+
+
+
 			}
 
 		} else {
@@ -352,6 +370,20 @@ public class SubinteractionInspector : MonoBehaviour {
 
 				break;
 
+
+			case "addEvent":
+
+				textInputSmall.gameObject.SetActive (true);
+
+				break;
+
+
+			case "removeEvent":
+
+				textInputSmall.gameObject.SetActive (true);
+
+				break;
+
 		}
 
 	}
@@ -478,6 +510,22 @@ public class SubinteractionInspector : MonoBehaviour {
 			case "useItem":
 
 				break;
+
+
+
+			case "addEvent":
+
+				currentSubint.eventToAdd = textInputSmall.text;
+
+				break;
+
+
+			case "removeEvent":
+
+				currentSubint.eventToRemove = textInputSmall.text;
+
+				break;
+
 
 		}
 

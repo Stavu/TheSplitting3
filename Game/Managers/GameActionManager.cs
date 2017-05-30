@@ -255,11 +255,14 @@ public class GameActionManager : MonoBehaviour {
 			{				
 				Debug.Log ("Sub Interact");
 
-				tileInt.mySubInt.SubInteract ();
+				// Check if passed the conditions
+			
+				if (Utilities.EvaluateConditions (tileInt.mySubInt.ConditionList))
+				{
+					tileInt.mySubInt.SubInteract ();
+				}
 			}
-
 		}
-
 	}
 
 

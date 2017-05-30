@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-[Serializable]
 
+
+[Serializable]
 public class PlayerData {
 
 
@@ -14,6 +15,7 @@ public class PlayerData {
 
 	List<string> gameEventsList;
 	public List<string> roomsVisitedList;
+	public List<PI_AnimationState> animationStateList;
 
 
 	public PlayerData()
@@ -21,6 +23,7 @@ public class PlayerData {
 		inventory = new Inventory ();
 		gameEventsList = new List<string> ();
 		roomsVisitedList = new List<string> ();
+		animationStateList = new List<PI_AnimationState> ();
 	}
 
 
@@ -90,8 +93,94 @@ public class PlayerData {
 
 
 
+	// Add Event
+
+	public void AddEventToList(string eventName)
+	{
+		if (gameEventsList.Contains (eventName) == false) 
+		{
+			gameEventsList.Add (eventName);
+			GameManager.instance.SaveData ();
+		}
+	}
 
 
 
+	// Remove Event
+
+	public void RemoveEventFromList(string eventName)
+	{
+		if (gameEventsList.Contains (eventName) == true) 
+		{
+			gameEventsList.Remove (eventName);
+			GameManager.instance.SaveData ();
+		}
+	}
+
+
+
+	// Add animation state
+
+
+	public void AddAnimationState(string physicalInateractable,string animationState)
+	{		
+
+		Debug.Log ("add animation state");
+
+		foreach (PI_AnimationState state in animationStateList) 
+		{
+			if (physicalInateractable == state.myName) 
+			{
+				state.animationState = animationState;
+				return;
+			}
+		}
+
+		PI_AnimationState pi_animationState = new PI_AnimationState();
+
+		pi_animationState.myName = physicalInateractable;
+		pi_animationState.animationState = animationState;
+
+		animationStateList.Add (pi_animationState);
+
+		GameManager.instance.SaveData ();
+
+	}
+
+
+
+
+	public string GetAnimationState(string physicalInateractable)
+	{
+		Debug.Log ("get animation state");
+
+		string animationState;
+
+		foreach (PI_AnimationState state in animationStateList) 
+		{
+			if (physicalInateractable == state.myName) 
+			{
+				animationState = state.animationState;
+				Debug.Log ("return animation state " + animationState);
+				return animationState;
+			}
+		}
+
+		return string.Empty;
+	}
+
+
+
+
+}
+
+
+
+[Serializable]
+public class PI_AnimationState
+{
+
+	public string myName;
+	public string animationState;
 
 }

@@ -45,6 +45,8 @@ public class Furniture : PhysicalInteractable {
 		this.offsetX = -furn.offsetX;
 		this.offsetY = furn.offsetY;
 		this.mySize = furn.mySize;
+		this.frameExtents = furn.frameExtents;
+
 		this.walkable = furn.walkable;
 
 	}

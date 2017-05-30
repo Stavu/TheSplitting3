@@ -36,6 +36,10 @@ public class SubInteraction : IConditionable {
 	public string soundToPlay;
 	public int numberOfPlays;
 
+	public string eventToAdd;
+	public string eventToRemove;
+
+
 	public string rawText;
 	public string RawText 
 	{
@@ -115,7 +119,7 @@ public class SubInteraction : IConditionable {
 	public void SubInteract ()
 	{
 
-
+		/*
 		// Check if passed the conditions, if not, return
 
 		bool passedConditions = Utilities.EvaluateConditions (conditionList);
@@ -125,15 +129,14 @@ public class SubInteraction : IConditionable {
 			//Debug.Log ("Did not pass conditions");
 			return;
 		}
+		*/
 
 
-
-		switch (interactionType) {
-
+		switch (interactionType) 
+		{
 
 
 			case "showMonologue":
-
 
 				//Debug.Log ("SubInteract: Show monologue");
 
@@ -149,8 +152,6 @@ public class SubInteraction : IConditionable {
 				InteractionManager.instance.DisplayDialogueOption (this.dialogueOptionTitle);
 
 				break;
-
-
 
 
 			case "showDialogueTree":
@@ -179,7 +180,6 @@ public class SubInteraction : IConditionable {
 				//GameManager.instance.inputState = InputState.Character;
 
 				break;
-
 
 
 			case "PlaySound":
@@ -229,13 +229,11 @@ public class SubInteraction : IConditionable {
 				break;
 
 
-
 			case "useItem":
 
 				InteractionManager.instance.OpenInventory_UseItem (ActionBoxManager.instance.currentPhysicalInteractable);
 
 				break;
-
 
 
 			case "changeConversation":
@@ -270,6 +268,21 @@ public class SubInteraction : IConditionable {
 			case "combine":
 				
 				InteractionManager.instance.OpenInventory_CombineItem ();
+
+				break;
+
+			
+
+			case "addEvent":
+
+				GameManager.playerData.AddEventToList (eventToAdd);
+
+				break;
+
+
+			case "removeEvent":
+
+				GameManager.playerData.RemoveEventFromList (eventToRemove);
 
 				break;
 
