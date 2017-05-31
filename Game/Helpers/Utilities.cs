@@ -108,13 +108,13 @@ public class Utilities {
 		}
 
 
-
-		if (myFurniture.frameExtents == Vector2.zero) 
+		/*
+		if (myFurniture.currentGraphicState.frameExtents == Vector2.zero) 
 		{
-			Debug.Log ("frameExtents " + myFurniture.frameExtents);
-			myFurniture.frameExtents = sr.sprite.bounds.extents;
+			Debug.Log ("frameExtents " + myFurniture.currentGraphicState.frameExtents);
+			myFurniture.currentGraphicState.frameExtents = sr.sprite.bounds.extents;
 		}
-			
+		*/	
 
 		obj.transform.position = new Vector3 (myFurniture.myPos.x + myFurniture.offsetX, myFurniture.myPos.y + 0.5f + myFurniture.offsetY, myFurniture.myPos.z);
 		Debug.Log (obj.transform.position);
@@ -343,9 +343,10 @@ public class Utilities {
 
 	public static List<Vector3> GetPhysicalInteractableFrameBounds(PhysicalInteractable myPhysicalInt)
 	{
+		
 		// declerations 
 
-		Vector2 frameBounds = myPhysicalInt.frameExtents;
+		Vector2 frameBounds = myPhysicalInt.CurrentGraphicState().frameExtents;
 
 		List<Vector3> positions = new List<Vector3> ();
 
@@ -355,7 +356,7 @@ public class Utilities {
 			Furniture myFurniture = (Furniture)myPhysicalInt;
 
 			SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [myFurniture].GetComponentInChildren<SpriteRenderer>();
-			Vector3 center = sr.bounds.center + new Vector3 (myFurniture.frameOffsetX, myFurniture.frameOffsetY, 0);
+			Vector3 center = sr.bounds.center + new Vector3 (myFurniture.currentGraphicState.frameOffsetX, myFurniture.currentGraphicState.frameOffsetY, 0);
 
 			// center 
 
@@ -376,7 +377,7 @@ public class Utilities {
 			Character myCharacter = (Character)myPhysicalInt;
 
 			GameObject myObject = CharacterManager.instance.characterGameObjectMap [myCharacter];
-			Vector3 center = myObject.GetComponentInChildren<SpriteRenderer> ().bounds.center  + new Vector3 (myCharacter.frameOffsetX, myCharacter.frameOffsetY, 0);
+			Vector3 center = myObject.GetComponentInChildren<SpriteRenderer> ().bounds.center  + new Vector3 (myCharacter.currentGraphicState.frameOffsetX, myCharacter.currentGraphicState.frameOffsetY, 0);
 
 			// center 
 			positions.Add(center);
@@ -415,7 +416,7 @@ public class Utilities {
 	{
 		// declerations 
 
-		Vector2 frameBounds = myPhysicalInt.frameExtents;
+		Vector2 frameBounds = myPhysicalInt.currentGraphicState.frameExtents;
 
 		List<Vector3> positions = new List<Vector3> ();
 
@@ -485,6 +486,116 @@ public class Utilities {
 
 		return positions;
 	}
+
+
+
+
+
+
+
+	public static List<GraphicState> GetGraphicStateList (PhysicalInteractable physicalInteractable)
+	{
+
+
+		GameObject obj = null;
+		List<GraphicState> graphicStateList = new List<GraphicState> ();
+
+
+		if (physicalInteractable is Furniture) 
+		{
+			Furniture furn = (Furniture)physicalInteractable;
+
+			obj = EditorRoomManager.instance.furnitureGameObjectMap [furn];
+		}
+
+
+		if (physicalInteractable is Character) 
+		{
+			Character character = (Character)physicalInteractable;
+
+			obj = EditorRoomManager.instance.characterGameObjectMap [character];
+		}
+
+
+		Animator animator = obj.GetComponent<Animator> ();
+
+		if (animator != null) 
+		{
+			if (animator.runtimeAnimatorController.animationClips.Length == 0) 
+			{
+				Debug.LogError ("the animator has no clips");
+			}
+
+			foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips) 
+			{
+				GraphicState graphicState = new GraphicState ();
+				graphicState.graphicStateName = clip.name;
+
+				graphicState.frameExtents = obj.GetComponentInChildren<SpriteRenderer>().bounds.extents; // FIXME
+				graphicState.frameOffsetX = 0;
+				graphicState.frameOffsetY = 0;
+
+				graphicState.coordsList = new List<Coords> ();
+
+				graphicStateList.Add (graphicState);
+
+				Debug.Log ("animation list " + graphicStateList.Count);
+			}
+
+		} else {
+
+			// If there's no animator
+
+			GraphicState defaultGraphicState = new GraphicState ();
+
+			defaultGraphicState.graphicStateName = "default";
+
+			defaultGraphicState.frameExtents = obj.GetComponentInChildren<SpriteRenderer>().bounds.extents;
+			defaultGraphicState.frameOffsetX = 0;
+			defaultGraphicState.frameOffsetY = 0;
+
+			defaultGraphicState.coordsList = new List<Coords> ();
+
+			graphicStateList.Add (defaultGraphicState);
+
+		}
+
+		return graphicStateList;
+
+
+	}
+
+
+
+
+
+	public static List<string> GetAnimationClipNames(GameObject obj)
+	{
+		
+		List<string> animationList = new List<string> ();
+
+		if (obj != null) 
+		{			
+	
+			Animator animator = obj.GetComponent<Animator> ();
+
+			if (animator == null) 
+			{
+				return animationList;
+			}
+
+			foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips) 
+			{
+				animationList.Add (clip.name);
+				//Debug.Log ("animation list " + animationList.Count);
+			}
+
+		}
+
+		return animationList;
+	}
+
+
 
 
 }

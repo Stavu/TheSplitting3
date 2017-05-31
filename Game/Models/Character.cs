@@ -115,7 +115,7 @@ public class Character : PhysicalInteractable, ISpeaker, IWalker {
 
 
 		myInteractionList = new List<Interaction> ();
-
+		graphicStates = new List<GraphicState> ();
 
 		myTextColor = Color.cyan;
 

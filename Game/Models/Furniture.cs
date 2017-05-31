@@ -27,6 +27,7 @@ public class Furniture : PhysicalInteractable {
 	
 
 		myInteractionList = new List<Interaction> ();
+		graphicStates = new List<GraphicState> ();
 			
 	}
 
@@ -45,7 +46,7 @@ public class Furniture : PhysicalInteractable {
 		this.offsetX = -furn.offsetX;
 		this.offsetY = furn.offsetY;
 		this.mySize = furn.mySize;
-		this.frameExtents = furn.frameExtents;
+		this.graphicStates = furn.graphicStates;
 
 		this.walkable = furn.walkable;
 

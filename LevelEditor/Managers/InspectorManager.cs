@@ -40,7 +40,7 @@ public class InspectorManager : MonoBehaviour {
 	public static ConditionInspector conditionInspector;
 	public static SubinteractionInspector subinteractionInspector;
 	public static TileInspector tileInspector;
-
+	public static GraphicStateInspector graphicStateInspector;
 
 	// public Interaction loadedInteraction;
 
@@ -160,6 +160,11 @@ public class InspectorManager : MonoBehaviour {
 		if (tileInspector == null) 
 		{
 			tileInspector = gameObject.AddComponent<TileInspector> ();
+		}
+
+		if (graphicStateInspector == null) 
+		{
+			graphicStateInspector = gameObject.AddComponent<GraphicStateInspector> ();
 		}
 
 	}

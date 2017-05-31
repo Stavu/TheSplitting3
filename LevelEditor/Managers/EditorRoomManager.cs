@@ -469,6 +469,27 @@ public class EditorRoomManager : MonoBehaviour {
 
 
 
+
+	// ------- GRAPHIC STATE ------- //
+
+
+	public void ChangeInteractableCurrentGraphicState(string state, PhysicalInteractable interactable)
+	{
+		foreach (GraphicState graphicState in interactable.graphicStates) 
+		{
+			if (graphicState.graphicStateName == state) 
+			{
+				interactable.currentGraphicState = graphicState;
+				EventsHandler.Invoke_cb_tileLayoutChanged ();
+				return;
+			}
+		}
+
+		Debug.LogError ("I shouldn't be here.");
+	}
+
+
+
 	// ------ FRAME SIZE ------ //
 
 
@@ -476,7 +497,7 @@ public class EditorRoomManager : MonoBehaviour {
 	public void ChangeInteractableFrameWidth(float width, PhysicalInteractable interactable)
 	{
 		width = Mathf.Abs (width);
-		interactable.frameExtents.x = width;
+		interactable.currentGraphicState.frameExtents.x = width;
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
 	}
@@ -485,7 +506,7 @@ public class EditorRoomManager : MonoBehaviour {
 	public void ChangeInteractableFrameHeight(float height, PhysicalInteractable interactable)
 	{
 		height = Mathf.Abs (height);
-		interactable.frameExtents.y = height;
+		interactable.currentGraphicState.frameExtents.y = height;
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
 	}
@@ -495,7 +516,7 @@ public class EditorRoomManager : MonoBehaviour {
 
 	public void ChangeInteractableFrameOffsetX(float offsetX, PhysicalInteractable interactable)
 	{
-		interactable.frameOffsetX = offsetX;
+		interactable.currentGraphicState.frameOffsetX = offsetX;
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
 	}
@@ -504,10 +525,23 @@ public class EditorRoomManager : MonoBehaviour {
 
 	public void ChangeInteractableFrameOffsetY(float offsetY, PhysicalInteractable interactable)
 	{
-		interactable.frameOffsetY = offsetY;
+		interactable.currentGraphicState.frameOffsetY = offsetY;
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -632,6 +666,27 @@ public class EditorRoomManager : MonoBehaviour {
 
 		return tempRoom;
 
+	}
+
+
+
+	public GameObject GetPhysicalInteractableGameObject(PhysicalInteractable physicalInteractable)
+	{
+		GameObject obj = null;
+
+		if (physicalInteractable is Furniture) 
+		{
+			Furniture furn = (Furniture)physicalInteractable;
+			obj = furnitureGameObjectMap [furn];
+		}
+
+		if (physicalInteractable is Character) 
+		{
+			Character character = (Character)physicalInteractable;
+			obj = characterGameObjectMap [character];
+		}
+
+		return obj;
 	}
 
 

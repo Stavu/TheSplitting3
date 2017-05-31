@@ -102,7 +102,7 @@ public class FrameLineHandler : MonoBehaviour {
 
 			for (int i = 1; i < positionList.Count; i++) 
 			{
-				posArray [i - 1] = positionList [i] + positionList [0] + new Vector3 (furn.frameOffsetX, furn.frameOffsetY,-5);
+				posArray [i - 1] = positionList [i] + positionList [0] + new Vector3 (furn.currentGraphicState.frameOffsetX, furn.currentGraphicState.frameOffsetY,-5);
 			}
 
 

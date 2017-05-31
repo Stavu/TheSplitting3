@@ -168,6 +168,13 @@ public class EditorFurnitureHandler : MonoBehaviour
 
 		EditorRoomManager.instance.furnitureGameObjectMap.Add (furn, obj);	
 
+
+		// populate list of graphic states
+
+		furn.graphicStates = Utilities.GetGraphicStateList (furn);
+		furn.currentGraphicState = furn.graphicStates [0];
+
+
 	}
 
 }

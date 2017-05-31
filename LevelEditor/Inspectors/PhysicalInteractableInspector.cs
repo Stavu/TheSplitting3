@@ -28,13 +28,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 	InputField offsetXInput;
 	InputField offsetYInput;
 
-	InputField frameXInput;
-	InputField frameYInput;
-
-	InputField frameOffsetXInput;
-	InputField frameOffsetYInput;
-
-
 
 	// placeholders
 
@@ -47,19 +40,14 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 	Text offsetXPlaceholder;
 	Text offsetYPlaceholder;
 
-	Text frameXPlaceholder;
-	Text frameYPlaceholder;
 
-	Text frameOffsetXPlaceholder;
-	Text frameOffsetYPlaceholder;
+	// grpahic state panel button
 
+	Button graphicStatePanelButton;
 
 	// delete button
 
 	Button deleteButton;
-
-
-
 
 
 
@@ -81,17 +69,13 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 
 
-
-
 	// INSPECTOR //
 
 
 	public void CreateInspector(PhysicalInteractable currentPhysicalInteractable)
 	{
 
-
 		Debug.Log ("createInspector");
-
 
 		DestroyInspector ();
 
@@ -108,6 +92,7 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 		imageFlippedToggle = panel.Find ("ImageFlippedToggle").GetComponent<Toggle> ();
 		persistentToggle = panel.Find ("PersistentToggle").GetComponent<Toggle> ();
 
+		graphicStatePanelButton = panel.Find ("OpenGraphicStatePanelButton").GetComponent<Button> ();
 		deleteButton = panel.Find ("DeleteButton").GetComponent<Button> ();
 
 		sizeXInput = panel.FindChild ("SizeX").GetComponent<InputField> ();
@@ -118,12 +103,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 		offsetXInput = panel.FindChild ("OffsetX").GetComponent<InputField> ();
 		offsetYInput = panel.FindChild ("OffsetY").GetComponent<InputField> ();
-
-		frameXInput = panel.FindChild ("FrameX").GetComponent<InputField> ();
-		frameYInput = panel.FindChild ("FrameY").GetComponent<InputField> ();
-
-		frameOffsetXInput = panel.FindChild ("FrameOffsetX").GetComponent<InputField> ();
-		frameOffsetYInput = panel.FindChild ("FrameOffsetY").GetComponent<InputField> ();
 
 
 		// placeholders 
@@ -136,12 +115,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 		offsetXPlaceholder = panel.FindChild ("OffsetX").FindChild ("Placeholder").GetComponent<Text> ();
 		offsetYPlaceholder = panel.FindChild ("OffsetY").FindChild ("Placeholder").GetComponent<Text> ();
-
-		frameXPlaceholder = panel.FindChild ("FrameX").FindChild ("Placeholder").GetComponent<Text> ();
-		frameYPlaceholder = panel.FindChild ("FrameY").FindChild ("Placeholder").GetComponent<Text> ();
-
-		frameOffsetXPlaceholder = panel.FindChild ("FrameOffsetX").FindChild ("Placeholder").GetComponent<Text> ();
-		frameOffsetYPlaceholder = panel.FindChild ("FrameOffsetY").FindChild ("Placeholder").GetComponent<Text> ();
 
 
 
@@ -159,13 +132,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 		offsetXPlaceholder.text = currentPhysicalInteractable.offsetX.ToString();
 		offsetYPlaceholder.text = currentPhysicalInteractable.offsetY.ToString();
 
-		frameXPlaceholder.text = currentPhysicalInteractable.frameExtents.x.ToString();
-		frameYPlaceholder.text = currentPhysicalInteractable.frameExtents.y.ToString();
-
-		frameOffsetXPlaceholder.text = currentPhysicalInteractable.frameOffsetX.ToString();
-		frameOffsetYPlaceholder.text = currentPhysicalInteractable.frameOffsetY.ToString();
-
-
 
 		// Listeners
 
@@ -180,13 +146,9 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 		offsetXInput.onEndEdit.AddListener (changeOffsetX);
 		offsetYInput.onEndEdit.AddListener (changeOffsetY);
 
-		frameXInput.onEndEdit.AddListener (ChangeFrameWidth);
-		frameYInput.onEndEdit.AddListener (ChangeFrameHeight);
+		//int graphicState_i = currentPhysicalInteractable.graphicStates.IndexOf (currentPhysicalInteractable.currentGraphicState);
 
-		frameOffsetXInput.onEndEdit.AddListener (ChangeFrameOffsetX);
-		frameOffsetYInput.onEndEdit.AddListener (ChangeFrameOffsetY);
-
-
+		graphicStatePanelButton.onClick.AddListener (() => InspectorManager.graphicStateInspector.CreateGraphicStatePanel (currentPhysicalInteractable, currentPhysicalInteractable.graphicStates.IndexOf (currentPhysicalInteractable.currentGraphicState)));
 		deleteButton.onClick.AddListener (() => EditorUI.DisplayAlert("Are you sure?", DeletePhysicalInteractable));
 
 
@@ -235,13 +197,10 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 			persistentToggle.onValueChanged.AddListener (FurniturePersistantToggleClicked);
 
-
 		} else {
 			
 			persistentToggle.interactable = false;
 		}
-
-
 
 
 		// create existing interactions
@@ -252,7 +211,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 			if (currentPhysicalInteractable.myInteractionList.Count > i) 
 			{
-
 				button.transform.FindChild ("Text").GetComponent<Text> ().text = currentPhysicalInteractable.myInteractionList [i].myVerb;
 				Interaction interaction = currentPhysicalInteractable.myInteractionList [i];
 				button.onClick.AddListener (() => LoadInteractionAndOpenPanel (interaction));	
@@ -260,7 +218,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 			} else {
 
 				button.onClick.AddListener (() => LoadInteractionAndOpenPanel (null));
-
 			}
 		}
 	}
@@ -269,14 +226,10 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 	public void LoadInteractionAndOpenPanel(Interaction interaction)
 	{
-
 		InspectorManager.interactionInspector.loadedInteraction = interaction;
 
 		InspectorManager.interactionInspector.CreateInteractionPanel ();
-
 	}
-
-
 
 
 	public void DestroyInspector()
@@ -285,12 +238,10 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 	//	Debug.Log ("destroy inspector");
 		if (inspectorObject != null) 
 		{
-
 			Destroy (inspectorObject);
 		}
 
 		InspectorManager.interactionInspector.DestroyInteractionPanel ();
-
 	}
 
 
@@ -298,8 +249,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 
 	// --------- EDITING --------- // 
-
-
 
 
 
@@ -339,14 +288,12 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 	public void SetImageFlipped(bool isFlipped)
 	{
-
 		Furniture furn = InspectorManager.instance.chosenFurniture;
 
 		furn.imageFlipped = isFlipped;
 		EditorRoomManager.instance.furnitureGameObjectMap [furn].GetComponent<SpriteRenderer> ().flipX = isFlipped;
 
 		changeOffsetX ((-furn.offsetX).ToString ());
-
 	}
 
 
@@ -357,24 +304,16 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 	public void FurniturePersistantToggleClicked(bool isPersistent)
 	{
-
 		Furniture furn = InspectorManager.instance.chosenFurniture;
 
 		EditorRoomHelper.SetFurniturePersistency (isPersistent,furn);
-
 	}
-
-
-
-
 
 
 	// change size
 
-
 	public void changeWidth(string x)
 	{
-
 		int newX = int.Parse (x);
 
 		if (InspectorManager.instance.chosenFurniture != null) 
@@ -385,8 +324,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 		{			
 			EditorRoomManager.instance.ChangeInteractableWidth (newX, InspectorManager.instance.chosenCharacter);
 		}
-
-
 	}
 
 
@@ -403,7 +340,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 		{			
 			EditorRoomManager.instance.ChangeInteractableHeight (newY, InspectorManager.instance.chosenCharacter);
 		}
-
 	}
 
 
@@ -413,7 +349,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 	public void changeX(string x)
 	{
-
 		int newX = int.Parse (x);
 
 		if (InspectorManager.instance.chosenFurniture != null) 
@@ -424,16 +359,12 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 		{			
 			EditorRoomManager.instance.ChangeInteractableTileX (newX, InspectorManager.instance.chosenCharacter);
 		}
-
 	}
-
-
 
 
 	public void changeY(string y)
 	{
 		int newY = int.Parse (y);
-
 
 		if (InspectorManager.instance.chosenFurniture != null) 
 		{			
@@ -447,13 +378,11 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 
 
-
 	// change offset
 
 
 	public void changeOffsetX(string x)
 	{
-
 		float newX = float.Parse (x);
 
 		if (InspectorManager.instance.chosenFurniture != null) 
@@ -467,9 +396,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 		offsetXInput.text = x;
 	}
-
-
-
 
 
 	public void changeOffsetY(string y)
@@ -489,94 +415,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 	}
 
 
-	// frame size
-
-	public void ChangeFrameWidth(string width)
-	{
-
-		float newWidth = float.Parse (width);
-
-		if (InspectorManager.instance.chosenFurniture != null) 
-		{
-			EditorRoomManager.instance.ChangeInteractableFrameWidth (newWidth, InspectorManager.instance.chosenFurniture);
-
-		} else if (InspectorManager.instance.chosenCharacter != null) 
-		{			
-			EditorRoomManager.instance.ChangeInteractableFrameWidth (newWidth, InspectorManager.instance.chosenCharacter);
-		}	
-
-		frameXInput.text = width;
-
-	}
-
-
-
-
-	public void ChangeFrameHeight(string height)
-	{
-
-		float newHeight = float.Parse (height);
-
-		if (InspectorManager.instance.chosenFurniture != null) 
-		{
-			EditorRoomManager.instance.ChangeInteractableFrameHeight (newHeight, InspectorManager.instance.chosenFurniture);
-
-		} else if (InspectorManager.instance.chosenCharacter != null) 
-		{			
-			EditorRoomManager.instance.ChangeInteractableFrameHeight (newHeight, InspectorManager.instance.chosenCharacter);
-		}	
-
-		frameXInput.text = height;
-
-
-	}
-
-
-
-	// change offset
-
-
-	public void ChangeFrameOffsetX(string x)
-	{
-
-		float newX = float.Parse (x);
-
-		if (InspectorManager.instance.chosenFurniture != null) 
-		{
-			EditorRoomManager.instance.ChangeInteractableFrameOffsetX (newX, InspectorManager.instance.chosenFurniture);
-
-		} else if (InspectorManager.instance.chosenCharacter != null) 
-		{			
-			EditorRoomManager.instance.ChangeInteractableFrameOffsetX (newX, InspectorManager.instance.chosenCharacter);
-		}
-
-		frameOffsetXInput.text = x;
-	}
-
-
-
-
-
-	public void ChangeFrameOffsetY(string y)
-	{
-		float newY = float.Parse (y);
-
-		if (InspectorManager.instance.chosenFurniture != null) 
-		{
-			EditorRoomManager.instance.ChangeInteractableFrameOffsetY (newY, InspectorManager.instance.chosenFurniture);
-
-		} else if (InspectorManager.instance.chosenCharacter != null) 
-		{			
-			EditorRoomManager.instance.ChangeInteractableFrameOffsetY (newY, InspectorManager.instance.chosenCharacter);
-		}	
-
-		frameOffsetYInput.text = y;
-	}
-
-
-
-
-
 
 
 
@@ -590,7 +428,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 		if (InspectorManager.instance.chosenFurniture != null) 
 		{
-
 			Furniture furn = InspectorManager.instance.chosenFurniture;
 			GameObject obj = EditorRoomManager.instance.furnitureGameObjectMap[furn];
 			Tile tile = EditorRoomManager.instance.room.MyGrid.GetTileAt (furn.x, furn.y);
@@ -602,14 +439,12 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 			tile.myFurniture = null;
 
 			InspectorManager.instance.chosenFurniture = null;
-
 		}
 
 		// Character 
 
 		if (InspectorManager.instance.chosenCharacter != null) 
 		{
-
 			Character character = InspectorManager.instance.chosenCharacter;
 			GameObject obj = EditorRoomManager.instance.characterGameObjectMap[character];
 			Tile tile = EditorRoomManager.instance.room.MyGrid.GetTileAt (character.x, character.y);
@@ -624,10 +459,8 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 		}
 
 
-
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
 		//DestroyInspector ();
-
 
 	}
 

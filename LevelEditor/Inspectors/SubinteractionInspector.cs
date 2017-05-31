@@ -157,7 +157,7 @@ public class SubinteractionInspector : MonoBehaviour {
 				
 				case "PlayAnimation":
 
-					Debug.Log("play animation");
+					Debug.Log ("play animation");
 					// populating the animation dropdown according to the object's animations 
 
 					List<string> animationList = new List<string> ();
@@ -166,6 +166,10 @@ public class SubinteractionInspector : MonoBehaviour {
 					GameObject prefab = Resources.Load<GameObject> ("Prefabs/Furniture/" + furn.myName);
 					Debug.Log ("create prefab");
 
+					animationList = Utilities.GetAnimationClipNames (prefab);
+
+
+					/*
 					if (prefab != null) 
 					{		
 						Debug.Log ("prefab isn't null");
@@ -181,6 +185,9 @@ public class SubinteractionInspector : MonoBehaviour {
 							}
 						}
 					}	
+
+					*/
+
 
 					playAnimation.Find ("AnimationDropdown").GetComponent<Dropdown> ().AddOptions (animationList);
 
@@ -324,22 +331,9 @@ public class SubinteractionInspector : MonoBehaviour {
 
 				GameObject prefab = Resources.Load<GameObject> ("Prefabs/Furniture/" + furn.myName);
 				Debug.Log ("create prefab");
-
-				if (prefab != null) 
-				{		
-					Debug.Log ("prefab isn't null");
-					Animator animator = prefab.GetComponent<Animator> ();
-
-					if (animator != null) 
-					{	
-						Debug.Log ("animator isn't null");
-						foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips) 
-						{
-							animationList.Add (clip.name);
-							Debug.Log ("animation list " + animationList.Count);
-						}
-					}
-				}	
+			
+				animationList = Utilities.GetAnimationClipNames (prefab);
+							
 
 				playAnimation.Find ("AnimationDropdown").GetComponent<Dropdown> ().AddOptions (animationList);
 
