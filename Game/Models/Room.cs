@@ -178,15 +178,12 @@ public class Room {
 	public void CreateRoomInteractables()
 	{
 
-
-
-
 		// Furniture
 
 		foreach (Furniture furn in myFurnitureList) 
 		{
 			List<Tile> FurnitureTiles = GetMyTiles(myGrid,furn.mySize, furn.x, furn.y);
-			FurnitureTiles.ForEach (tile => tile.PlaceFurniture (furn));
+			FurnitureTiles.ForEach (tile => tile.PlaceFurnitureInTile (furn));
 
 		}
 
@@ -195,7 +192,7 @@ public class Room {
 		foreach (Character character in myCharacterList) 
 		{
 			List<Tile> CharacterTiles = GetMyTiles(myGrid,character.mySize, character.x, character.y);
-			CharacterTiles.ForEach (tile => tile.PlaceCharacter (character));
+			CharacterTiles.ForEach (tile => tile.PlaceCharacterInTile (character));
 
 		}
 
@@ -222,7 +219,7 @@ public class Room {
 				foreach (Furniture furn in myMirrorRoom.myFurnitureList_Shadow) 
 				{
 					List<Tile> FurnitureTiles = GetMyTiles(myMirrorRoom.shadowGrid, furn.mySize, furn.x, furn.y);
-					FurnitureTiles.ForEach (tile => tile.PlaceFurniture (furn));
+					FurnitureTiles.ForEach (tile => tile.PlaceFurnitureInTile (furn));
 				}
 
 				// Tile interactions
@@ -244,10 +241,10 @@ public class Room {
 			foreach (Furniture furn in myMirrorRoom.myFurnitureList_Persistant) 
 			{
 				List<Tile> FurnitureTiles = GetMyTiles(myGrid, furn.mySize, furn.x, furn.y);
-				FurnitureTiles.ForEach (tile => tile.PlaceFurniture (furn));
+				FurnitureTiles.ForEach (tile => tile.PlaceFurnitureInTile (furn));
 
 				List<Tile> FurnitureTiles_Shadow = GetMyTiles(myMirrorRoom.shadowGrid, furn.mySize, furn.x, furn.y);
-				FurnitureTiles_Shadow.ForEach (tile => tile.PlaceFurniture (furn));
+				FurnitureTiles_Shadow.ForEach (tile => tile.PlaceFurnitureInTile (furn));
 
 
 			}

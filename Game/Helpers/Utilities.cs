@@ -73,18 +73,41 @@ public class Utilities {
 
 		//Debug.Log ("Assign Furniture Image");
 
+		GameObject[] animatedObjects = Resources.LoadAll<GameObject> ("Prefabs/Furniture");
+
+
 		myFurniture.myPos = new Vector3 (myFurniture.x + myFurniture.mySize.x/2, myFurniture.y, 0);
 
-		GameObject obj = new GameObject (myFurniture.myName);
-		obj.transform.SetParent (parent);
+		GameObject obj = null;
+		SpriteRenderer sr = null;
+
+		foreach (GameObject gameObj in animatedObjects) 
+		{
+			if (gameObj.name == myFurniture.myName) 
+			{
+				obj = GameObject.Instantiate (gameObj);
+				obj.transform.SetParent (parent);
+
+				sr = obj.GetComponentInChildren<SpriteRenderer>();
+
+				break;
+			}	
+		}
+
+		if (obj == null) 
+		{
+			obj = new GameObject (myFurniture.myName);
+			obj.transform.SetParent (parent);
+
+			GameObject childObj = new GameObject ("Image");
+			childObj.transform.SetParent (obj.transform);
+
+			sr = childObj.AddComponent<SpriteRenderer>();
+			sr.sprite = Resources.Load<Sprite> ("Sprites/Furniture/" + myFurniture.myName); 
+			sr.flipX = myFurniture.imageFlipped;
+		}
 
 
-		SpriteRenderer sr = obj.AddComponent<SpriteRenderer>();
-
-		sr.sprite = Resources.Load<Sprite> ("Sprites/Furniture/" + myFurniture.myName);
-		sr.flipX = myFurniture.imageFlipped;
-
-	
 
 		if (myFurniture.frameExtents == Vector2.zero) 
 		{
@@ -92,8 +115,9 @@ public class Utilities {
 			myFurniture.frameExtents = sr.sprite.bounds.extents;
 		}
 			
-		obj.transform.position = new Vector3 (myFurniture.myPos.x + myFurniture.offsetX, myFurniture.myPos.y + 0.5f + myFurniture.offsetY, myFurniture.myPos.z);
 
+		obj.transform.position = new Vector3 (myFurniture.myPos.x + myFurniture.offsetX, myFurniture.myPos.y + 0.5f + myFurniture.offsetY, myFurniture.myPos.z);
+		Debug.Log (obj.transform.position);
 
 
 		//Debug.Log ("object position" + myFurniture.myName + obj.transform.position + sr.sprite.bounds);
@@ -331,7 +355,6 @@ public class Utilities {
 			Furniture myFurniture = (Furniture)myPhysicalInt;
 
 			SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [myFurniture].GetComponentInChildren<SpriteRenderer>();
-
 			Vector3 center = sr.bounds.center + new Vector3 (myFurniture.frameOffsetX, myFurniture.frameOffsetY, 0);
 
 			// center 
@@ -343,7 +366,8 @@ public class Utilities {
 			if (frameBounds == Vector2.zero) 
 			{
 				frameBounds = sr.bounds.extents;
-			}
+			}			
+
 		}
 
 
@@ -384,6 +408,83 @@ public class Utilities {
 	}
 
 
+
+
+
+	public static List<Vector3> EditorGetPhysicalInteractableFrameBounds(PhysicalInteractable myPhysicalInt)
+	{
+		// declerations 
+
+		Vector2 frameBounds = myPhysicalInt.frameExtents;
+
+		List<Vector3> positions = new List<Vector3> ();
+
+		if (myPhysicalInt is Furniture) 		
+		{
+
+			Furniture myFurniture = (Furniture)myPhysicalInt;
+
+
+			SpriteRenderer sr = EditorRoomManager.instance.furnitureGameObjectMap[myFurniture].GetComponentInChildren<SpriteRenderer>();
+
+			if (sr == null) 
+			{
+				Debug.Log ("sr is null");
+			}
+
+
+
+			Vector3 center = sr.bounds.center;
+
+			// center 
+
+			positions.Add(center);
+
+			// positioning frame pieces
+
+			if (frameBounds == Vector2.zero) 
+			{
+				frameBounds = sr.bounds.extents;
+			}			
+
+		}
+
+
+		if (myPhysicalInt is Character) 		
+		{
+			Character myCharacter = (Character)myPhysicalInt;
+
+			GameObject myObject = EditorRoomManager.instance.characterGameObjectMap [myCharacter];
+			Vector3 center = myObject.GetComponentInChildren<SpriteRenderer> ().bounds.center;
+
+			// center 
+			positions.Add(center);
+
+			// positioning frame pieces
+
+			if (frameBounds == Vector2.zero) 
+			{
+				frameBounds = myObject.GetComponentInChildren<SpriteRenderer> ().bounds.extents;
+			}
+		}
+
+
+		//down left
+		positions.Add(new Vector3 (-frameBounds.x, -frameBounds.y,0));
+
+		//down right
+		positions.Add(new Vector3 (frameBounds.x, -frameBounds.y,0));
+
+		//up right
+		positions.Add(new Vector3 (frameBounds.x, frameBounds.y,0));
+
+		//up left
+		positions.Add(new Vector3 (-frameBounds.x, frameBounds.y,0));
+
+
+
+		return positions;
+	}
 
 
 }

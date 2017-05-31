@@ -438,14 +438,13 @@ public class EditorRoomManager : MonoBehaviour {
 
 		} 
 
-		//EventsHandler.Invoke_cb_tileLayoutChanged ();
+		EventsHandler.Invoke_cb_tileLayoutChanged ();
 	}
 
 
 
 	public void ChangeInteractableOffsetY(float offsetY, Interactable interactable)
 	{
-
 
 		if (interactable is Furniture) 
 		{
@@ -463,7 +462,7 @@ public class EditorRoomManager : MonoBehaviour {
 
 		} 
 
-		//EventsHandler.Invoke_cb_tileLayoutChanged ();
+		EventsHandler.Invoke_cb_tileLayoutChanged ();
 
 	}
 
@@ -478,6 +477,8 @@ public class EditorRoomManager : MonoBehaviour {
 	{
 		width = Mathf.Abs (width);
 		interactable.frameExtents.x = width;
+
+		EventsHandler.Invoke_cb_tileLayoutChanged ();
 	}
 
 
@@ -485,6 +486,8 @@ public class EditorRoomManager : MonoBehaviour {
 	{
 		height = Mathf.Abs (height);
 		interactable.frameExtents.y = height;
+
+		EventsHandler.Invoke_cb_tileLayoutChanged ();
 	}
 
 
@@ -492,14 +495,18 @@ public class EditorRoomManager : MonoBehaviour {
 
 	public void ChangeInteractableFrameOffsetX(float offsetX, PhysicalInteractable interactable)
 	{
-		interactable.frameOffsetX = offsetX;			
+		interactable.frameOffsetX = offsetX;
+
+		EventsHandler.Invoke_cb_tileLayoutChanged ();
 	}
 
 
 
 	public void ChangeInteractableFrameOffsetY(float offsetY, PhysicalInteractable interactable)
 	{
-		interactable.frameOffsetY = offsetY;			
+		interactable.frameOffsetY = offsetY;
+
+		EventsHandler.Invoke_cb_tileLayoutChanged ();
 	}
 
 
@@ -516,8 +523,6 @@ public class EditorRoomManager : MonoBehaviour {
 
 		Room tempRoom = JsonUtility.FromJson<Room> (roomString);
 		tempRoom.myGrid = new Grid (tempRoom.myWidth, tempRoom.myHeight);
-
-		gameObject.AddComponent<FrameLineHandler> ();
 
 
 		// MIRROR ROOM

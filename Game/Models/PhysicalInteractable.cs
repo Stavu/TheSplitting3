@@ -23,6 +23,29 @@ public class PhysicalInteractable : Interactable {
 
 	public List<Interaction> myInteractionList;
 
+	public List<GraphicState> graphicStates;
+
+}
+
+
+
+
+
+public class GraphicState
+{
+
+	string graphicStateName;
+
+	public Vector2 frameExtents;
+
+	public float frameOffsetX;
+	public float frameOffsetY;
+
+
+
+
+
+
 
 
 }

@@ -167,11 +167,14 @@ public class ActionBoxManager : MonoBehaviour {
 
 		currentPhysicalInteractableFrame.GetComponent<RectTransform> ().anchoredPosition = positionsList [0];
 
-
 		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_DL").GetComponent<RectTransform> ().anchoredPosition = positionsList [1];
 		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_DR").GetComponent<RectTransform> ().anchoredPosition = positionsList [2];
 		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_UL").GetComponent<RectTransform> ().anchoredPosition = positionsList [3];
 		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_UR").GetComponent<RectTransform> ().anchoredPosition = positionsList [4];
+
+
+
+
 
 	}
 

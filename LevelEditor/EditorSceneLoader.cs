@@ -58,6 +58,12 @@ public class EditorSceneLoader : MonoBehaviour {
 
 		EditorTileManager.instance.ColorTiles ();
 
+		gameObject.AddComponent<FrameLineHandler> ();
+	
+	
+	
+	
+	
 	}
 
 

@@ -32,7 +32,7 @@ public class Tile {
 	}
 
 
-	public void PlaceFurniture(Furniture furniture)
+	public void PlaceFurnitureInTile(Furniture furniture)
 	{
 		
 		if (furniture == null) 
@@ -62,7 +62,7 @@ public class Tile {
 	}
 
 
-	public void PlaceCharacter(Character character)
+	public void PlaceCharacterInTile(Character character)
 	{
 
 		if (character == null) 
