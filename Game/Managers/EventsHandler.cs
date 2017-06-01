@@ -234,7 +234,6 @@ public static class EventsHandler
 	// Cutscene events
 
 
-
 	public static Action cb_dialogueEnded; 
 
 	public static void Invoke_cb_dialogueEnded()
@@ -254,6 +253,21 @@ public static class EventsHandler
 		if(cb_characterFinishedPath != null)
 		{
 			cb_characterFinishedPath ();
+		}
+	}
+
+
+
+	// Animation Events
+
+
+	public static Action<PhysicalInteractable, string> cb_newAnimationState; 
+
+	public static void Invoke_cb_newAnimationState(PhysicalInteractable physicalInteractable, string state)
+	{
+		if(cb_newAnimationState != null)
+		{
+			cb_newAnimationState (physicalInteractable, state);
 		}
 	}
 

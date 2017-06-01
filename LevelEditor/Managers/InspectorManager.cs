@@ -63,6 +63,7 @@ public class InspectorManager : MonoBehaviour {
 			if ((_chosenFurniture == null) && (chosenCharacter == null))
 			{
 				physicalInteractableInspector.DestroyInspector ();
+				graphicStateInspector.DestroyGraphicStatePanel ();
 
 			} else if (_chosenFurniture != null)
 			{
@@ -90,6 +91,7 @@ public class InspectorManager : MonoBehaviour {
 			if ((_chosenCharacter == null) && (chosenFurniture == null))
 			{
 				physicalInteractableInspector.DestroyInspector ();
+				graphicStateInspector.DestroyGraphicStatePanel ();
 
 			} else if (_chosenCharacter != null)
 			{

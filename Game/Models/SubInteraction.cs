@@ -175,7 +175,7 @@ public class SubInteraction : IConditionable {
 			
 			case "PlayAnimation":
 
-				FurnitureManager.instance.SetFurnitureAnimationState (targetFurniture, animationToPlay);
+				PI_Handler.instance.SetPIAnimationState (targetFurniture, animationToPlay);
 				EventsHandler.Invoke_cb_inputStateChanged ();
 				//GameManager.instance.inputState = InputState.Character;
 

@@ -480,6 +480,12 @@ public class EditorRoomManager : MonoBehaviour {
 			if (graphicState.graphicStateName == state) 
 			{
 				interactable.currentGraphicState = graphicState;
+
+				// go to animation state
+				GameObject obj = GetPhysicalInteractableGameObject (interactable);
+				Animator animator = obj.GetComponent<Animator> ();
+				animator.PlayInFixedTime (state);
+
 				EventsHandler.Invoke_cb_tileLayoutChanged ();
 				return;
 			}

@@ -120,49 +120,6 @@ public class ActionBoxManager : MonoBehaviour {
 		currentPhysicalInteractableFrame = Instantiate (FurnitureFramePrefab);
 
 
-		// declerations 
-
-		/*
-		Vector3 frameBounds = Vector3.zero;
-
-
-		if (myPhysicalInt is Furniture) 		
-		{
-
-			Furniture myFurniture = (Furniture)myPhysicalInt;
-
-			SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [myFurniture].GetComponentInChildren<SpriteRenderer>();
-		
-			Vector3 center = sr.bounds.center;
-
-			currentPhysicalInteractableFrame.GetComponent<RectTransform> ().anchoredPosition = center;
-
-			// positioning frame pieces
-
-			frameBounds = sr.bounds.extents;
-
-		}
-
-
-		if (myPhysicalInt is Character) 		
-		{
-
-			Character myCharacter = (Character)myPhysicalInt;
-
-			GameObject myObject = CharacterManager.instance.characterGameObjectMap [myCharacter];
-			Vector3 center = myObject.GetComponentInChildren<SpriteRenderer> ().bounds.center;
-
-			currentPhysicalInteractableFrame.GetComponent<RectTransform> ().anchoredPosition = center;
-
-			// positioning frame pieces
-
-			frameBounds = myObject.GetComponentInChildren<SpriteRenderer> ().bounds.extents;
-
-		}
-
-		*/
-
-
 		List<Vector3> positionsList = Utilities.GetPhysicalInteractableFrameBounds (myPhysicalInt);
 
 		currentPhysicalInteractableFrame.GetComponent<RectTransform> ().anchoredPosition = positionsList [0];

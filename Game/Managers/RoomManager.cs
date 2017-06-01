@@ -180,13 +180,13 @@ public class RoomManager : MonoBehaviour {
 
 			foreach (Furniture furn in myRoom.myFurnitureList) 
 			{
-				SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [furn].GetComponentInChildren<SpriteRenderer>();
+				SpriteRenderer sr = PI_Handler.instance.PI_gameObjectMap [furn].GetComponentInChildren<SpriteRenderer>();
 				fadeOutSprites.Add (sr);
 			}
 
 			foreach (Furniture furn in myRoom.myMirrorRoom.myFurnitureList_Shadow) 
 			{
-				SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [furn].GetComponentInChildren<SpriteRenderer>();
+				SpriteRenderer sr = PI_Handler.instance.PI_gameObjectMap [furn].GetComponentInChildren<SpriteRenderer>();
 				fadeInSprites.Add (sr);
 			}
 
@@ -197,13 +197,13 @@ public class RoomManager : MonoBehaviour {
 
 			foreach (Furniture furn in myRoom.myMirrorRoom.myFurnitureList_Shadow) 
 			{
-				SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [furn].GetComponentInChildren<SpriteRenderer>();
+				SpriteRenderer sr = PI_Handler.instance.PI_gameObjectMap [furn].GetComponentInChildren<SpriteRenderer>();
 				fadeOutSprites.Add (sr);
 			}
 
 			foreach (Furniture furn in myRoom.myFurnitureList) 
 			{
-				SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [furn].GetComponentInChildren<SpriteRenderer>();
+				SpriteRenderer sr = PI_Handler.instance.PI_gameObjectMap [furn].GetComponentInChildren<SpriteRenderer>();
 				fadeInSprites.Add (sr);
 			}
 

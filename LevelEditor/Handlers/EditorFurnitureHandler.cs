@@ -171,7 +171,11 @@ public class EditorFurnitureHandler : MonoBehaviour
 
 		// populate list of graphic states
 
-		furn.graphicStates = Utilities.GetGraphicStateList (furn);
+		if (furn.graphicStates.Count == 0) 
+		{
+			furn.graphicStates = Utilities.GetGraphicStateList (furn);
+		}
+
 		furn.currentGraphicState = furn.graphicStates [0];
 
 

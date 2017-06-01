@@ -22,7 +22,7 @@ public class CharacterManager : MonoBehaviour {
 
 
 
-	public Dictionary<Character,GameObject> characterGameObjectMap;
+	//public Dictionary<Character,GameObject> characterGameObjectMap;
 
 
 
@@ -34,7 +34,7 @@ public class CharacterManager : MonoBehaviour {
 	{
 		EventsHandler.cb_characterChanged += CreateCharacterGameObject;
 
-		characterGameObjectMap = new Dictionary<Character, GameObject> ();
+		//characterGameObjectMap = new Dictionary<Character, GameObject> ();
 
 	}
 
@@ -64,12 +64,15 @@ public class CharacterManager : MonoBehaviour {
 
 		GameObject obj = Utilities.CreateCharacterGameObject (myCharacter, this.transform);
 
-		characterGameObjectMap.Add (myCharacter, obj);
+		PI_Handler.instance.AddPIToMap (myCharacter, obj, myCharacter.myName);
 
 	}
 
 
-	// character, path, targetPos, 
+
+
+
+
 
 	// ---- MOVE CHARACTER ---- //
 
@@ -254,24 +257,6 @@ public class CharacterManager : MonoBehaviour {
 
 	}
 
-
-
-
-
-
-	public Character GetCharacterByName(string characterName)
-	{
-
-		foreach (Character character in characterGameObjectMap.Keys) 
-		{
-			if (character.myName == characterName) 
-			{
-				return character;
-			}			
-		}
-
-		return null;
-	}
 
 
 

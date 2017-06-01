@@ -44,8 +44,11 @@ public class SceneLoader : MonoBehaviour {
 
 		GameManager.instance.Initialize ();
 		RoomManager.instance.Initialize ();
+
+		PI_Handler.instance.Initialize ();
 		FurnitureManager.instance.Initialize ();
 		CharacterManager.instance.Initialize ();
+
 		InputManager.instance.Initialize ();
 		//TileManager.instance.Initialize ();
 		PlayerManager.instance.Initialize ();

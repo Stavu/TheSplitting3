@@ -85,9 +85,9 @@ public class Character : PhysicalInteractable, ISpeaker, IWalker {
 
 	public GameObject walkerGameObject
 	{
-		get	{ return CharacterManager.instance.characterGameObjectMap[this]; }
+		get	{ return PI_Handler.instance.PI_gameObjectMap[this]; }
 
-		set { CharacterManager.instance.characterGameObjectMap[this] = value; }
+		set { PI_Handler.instance.PI_gameObjectMap[this] = value; }
 	}
 
 

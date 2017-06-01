@@ -40,7 +40,7 @@ public class DanielScene : Cutscene
 
 		// Declerations
 
-		//Character llehctiM = CharacterManager.instance.GetCharacterByName ("llehctiM");
+		Character llehctiM = (Character)PI_Handler.instance.PI_nameMap ["llehctiM"];
 		Player Daniel = PlayerManager.myPlayer;
 
 		// dialogue between daniel and llehctiM

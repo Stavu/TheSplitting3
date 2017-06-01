@@ -350,46 +350,20 @@ public class Utilities {
 
 		List<Vector3> positions = new List<Vector3> ();
 
-		if (myPhysicalInt is Furniture) 		
+		SpriteRenderer sr = PI_Handler.instance.PI_gameObjectMap [myPhysicalInt].GetComponentInChildren<SpriteRenderer>();
+
+		Vector3 center = sr.bounds.center + new Vector3 (myPhysicalInt.currentGraphicState.frameOffsetX, myPhysicalInt.currentGraphicState.frameOffsetY, 0);
+
+		// center 
+
+		positions.Add(center);
+
+		// positioning frame pieces
+
+		if (frameBounds == Vector2.zero) 
 		{
-
-			Furniture myFurniture = (Furniture)myPhysicalInt;
-
-			SpriteRenderer sr = FurnitureManager.instance.furnitureGameObjectMap [myFurniture].GetComponentInChildren<SpriteRenderer>();
-			Vector3 center = sr.bounds.center + new Vector3 (myFurniture.currentGraphicState.frameOffsetX, myFurniture.currentGraphicState.frameOffsetY, 0);
-
-			// center 
-
-			positions.Add(center);
-
-			// positioning frame pieces
-
-			if (frameBounds == Vector2.zero) 
-			{
-				frameBounds = sr.bounds.extents;
-			}			
-
+			frameBounds = sr.bounds.extents;
 		}
-
-
-		if (myPhysicalInt is Character) 		
-		{
-			Character myCharacter = (Character)myPhysicalInt;
-
-			GameObject myObject = CharacterManager.instance.characterGameObjectMap [myCharacter];
-			Vector3 center = myObject.GetComponentInChildren<SpriteRenderer> ().bounds.center  + new Vector3 (myCharacter.currentGraphicState.frameOffsetX, myCharacter.currentGraphicState.frameOffsetY, 0);
-
-			// center 
-			positions.Add(center);
-
-			// positioning frame pieces
-
-			if (frameBounds == Vector2.zero) 
-			{
-				frameBounds = myObject.GetComponentInChildren<SpriteRenderer> ().bounds.extents;
-			}
-		}
-
 
 		//down left
 		positions.Add(new Vector3 (-frameBounds.x, -frameBounds.y,0));
