@@ -24,6 +24,7 @@ public class GraphicStateInspector : MonoBehaviour {
 	Text frameOffsetXPlaceholder;
 	Text frameOffsetYPlaceholder;
 
+	Toggle changeCoordsToggle;
 	Button closeButton;
 
 
@@ -69,6 +70,7 @@ public class GraphicStateInspector : MonoBehaviour {
 		frameOffsetXPlaceholder = panel.Find ("FrameOffsetXInput").Find("Placeholder").GetComponent<Text> ();
 		frameOffsetYPlaceholder = panel.Find ("FrameOffsetYInput").Find("Placeholder").GetComponent<Text> ();
 
+		changeCoordsToggle = panel.Find ("ChangeCoordsToggle").GetComponent<Toggle> ();
 		closeButton = panel.Find ("CloseButton").GetComponent<Button> ();
 	
 
@@ -104,7 +106,7 @@ public class GraphicStateInspector : MonoBehaviour {
 		frameOffsetXInput.onEndEdit.AddListener (ChangeFrameOffsetX);
 		frameOffsetYInput.onEndEdit.AddListener (ChangeFrameOffsetY);
 
-
+		changeCoordsToggle.onValueChanged.AddListener (SetChangeCoordsMode);
 		closeButton.onClick.AddListener (DestroyGraphicStatePanel);
 	}
 
@@ -118,22 +120,40 @@ public class GraphicStateInspector : MonoBehaviour {
 
 		if (InspectorManager.instance.chosenFurniture != null) 
 		{
+			Debug.Log ("furniture is not null");
 			EditorRoomManager.instance.ChangeInteractableCurrentGraphicState (stateName, InspectorManager.instance.chosenFurniture);
 			DestroyGraphicStatePanel ();
 			CreateGraphicStatePanel (InspectorManager.instance.chosenFurniture , i);
 
 		} else if (InspectorManager.instance.chosenCharacter != null) 
-		{			
+		{	
+			Debug.Log ("character is not null");
 			EditorRoomManager.instance.ChangeInteractableCurrentGraphicState (stateName, InspectorManager.instance.chosenCharacter);
 			DestroyGraphicStatePanel ();
 			CreateGraphicStatePanel (InspectorManager.instance.chosenCharacter , i);
 
-		}	
+		}
+	}
 
 
+	// chane coords 
 
+
+	public void SetChangeCoordsMode(bool isInCoordsMode)
+	{
+
+		if (isInCoordsMode) 
+		{			
+			BuildController.instance.mode = BuildController.Mode.changeCoords;
+		
+		} else {
+
+			BuildController.instance.mode = BuildController.Mode.inspect;
+		}
 
 	}
+
+
 
 
 
@@ -238,6 +258,7 @@ public class GraphicStateInspector : MonoBehaviour {
 		if (graphicStateInspectorObject != null) 
 		{
 			Destroy (graphicStateInspectorObject);	
+			BuildController.instance.mode = BuildController.Mode.inspect;
 			graphicStateInspectorObject = null;
 		}
 	}

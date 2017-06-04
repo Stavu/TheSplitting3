@@ -35,7 +35,7 @@ public static class EditorRoomHelper {
 
 		}
 
-		newRoom.myFurnitureList.ForEach (furn => Debug.Log (furn.myName));
+		newRoom.myFurnitureList.ForEach (furn => Debug.Log (furn.identificationName));
 
 
 

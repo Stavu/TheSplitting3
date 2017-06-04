@@ -9,7 +9,7 @@ public class PhysicalInteractable : Interactable {
 
 
 	public string identificationName;
-	public string myName;
+	public string fileName;
 
 	public Vector3 myPos {get; set;}
 
@@ -41,6 +41,38 @@ public class PhysicalInteractable : Interactable {
 
 
 
+	public List<Coords> GetMyCoordsList()
+	{	
+		Debug.Log ("GetMyCoordsList");
+
+		if (currentGraphicState == null) 
+		{			
+			Debug.LogError ("graphic state is null");
+		} 
+
+
+		if (CurrentGraphicState ().coordsList.Count > 0) 
+		{			
+			Debug.Log ("getting coords list");
+			return CurrentGraphicState ().coordsList;
+
+		} else {
+
+			List<Coords> coordsList = new List<Coords> ();
+
+			for (int i = 0; i < mySize.x; i++) 
+			{
+				for (int j = 0; j < mySize.y; j++) 
+				{
+					Coords coords = new Coords (x+i,y+j);
+					coordsList.Add (coords);
+				}
+			}
+
+			return coordsList;
+		}
+
+	}
 
 }
 
@@ -57,8 +89,6 @@ public class GraphicState {
 	public float frameOffsetY;
 
 	public List<Coords> coordsList;
-
-
 
 
 }

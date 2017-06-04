@@ -229,9 +229,6 @@ public class TileInspector : MonoBehaviour {
 
 		EditorRoomHelper.SetTileInteractionPersistency (isPersistent,tileInt);
 
-
-
-
 	}
 
 

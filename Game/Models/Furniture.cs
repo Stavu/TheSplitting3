@@ -19,7 +19,7 @@ public class Furniture : PhysicalInteractable {
 
 		// Constructor
 
-		this.myName = myName;
+		this.fileName = myName;
 		this.identificationName = myName;
 
 		this.x = x;
@@ -36,8 +36,9 @@ public class Furniture : PhysicalInteractable {
 
 	public Furniture(Room room, Furniture furn)
 	{		
-	
-		this.myName = furn.myName;
+		
+		this.identificationName = furn.identificationName;
+		this.fileName = furn.fileName;
 		this.x = room.MyGrid.myWidth - 1 - furn.x - ((int)furn.mySize.x - 1);
 		this.y = furn.y;
 

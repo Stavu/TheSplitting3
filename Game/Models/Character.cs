@@ -21,9 +21,9 @@ public class Character : PhysicalInteractable, ISpeaker, IWalker {
 
 	public string speakerName 
 	{
-		get	{ return myName; }
+		get	{ return identificationName; }
 
-		set { myName = value; }
+		set { identificationName = value; }
 	}
 
 
@@ -108,8 +108,9 @@ public class Character : PhysicalInteractable, ISpeaker, IWalker {
 		
 		// Constructor
 
-		this.myName = myName;
-
+		this.identificationName = myName;
+		this.fileName = myName;
+			
 		this.x = x;
 		this.y = y;
 

@@ -48,7 +48,7 @@ public class Testing : MonoBehaviour {
 			{				
 				if (interaction.subInteractionList.Count == 0) 
 				{
-					Debug.LogError (string.Format("TestRoom: {0} {1} has no subinteractions.", furn.myName, interaction.myVerb));
+					Debug.LogError (string.Format("TestRoom: {0} {1} has no subinteractions.", furn.identificationName, interaction.myVerb));
 				}
 			}
 		}
@@ -60,7 +60,7 @@ public class Testing : MonoBehaviour {
 			{				
 				if (interaction.subInteractionList.Count == 0) 
 				{
-					Debug.LogError (string.Format("TestRoom: {0} {1} has no subinteractions.", character.myName, interaction.myVerb));
+					Debug.LogError (string.Format("TestRoom: {0} {1} has no subinteractions.", character.identificationName, interaction.myVerb));
 				}
 			}
 		}

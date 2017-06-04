@@ -33,7 +33,7 @@ public class EditorTileManager : MonoBehaviour {
 	// Use this for initialization
 	public void Initialize () {
 
-		Debug.Log ("EditorTileManager");
+		//Debug.Log ("EditorTileManager");
 
 		EventsHandler.cb_editorNewRoomCreated += CreateTileObject;
 		EventsHandler.cb_tileLayoutChanged += ColorTiles;
@@ -115,8 +115,7 @@ public class EditorTileManager : MonoBehaviour {
 	public void ColorTiles()
 	{
 
-		Debug.Log ("ColorTiles");
-
+		//Debug.Log ("ColorTiles");
 
 		// First - Clean tile layout
 
@@ -134,17 +133,7 @@ public class EditorTileManager : MonoBehaviour {
 
 			if (tile.myFurniture != null) 
 			{
-				Furniture furn = tile.myFurniture;
-
-				for (int x = 0; x < furn.mySize.x; x++) 
-				{
-					for (int y = 0; y < furn.mySize.y; y++) 
-					{
-						Tile tempTile = EditorRoomManager.instance.room.MyGrid.GetTileAt (furn.x + x, furn.y + y);
-						tileGameObjectMap [tempTile].GetComponent<SpriteRenderer> ().color = Color.blue;
-
-					}
-				}
+				tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.blue;
 
 				continue;
 			}
@@ -152,17 +141,7 @@ public class EditorTileManager : MonoBehaviour {
 
 			if (tile.myCharacter != null) 
 			{
-				Character character = tile.myCharacter;
-
-				for (int x = 0; x < character.mySize.x; x++) 
-				{
-					for (int y = 0; y < character.mySize.y; y++) 
-					{
-						Tile tempTile = EditorRoomManager.instance.room.MyGrid.GetTileAt (character.x + x, character.y + y);
-						tileGameObjectMap [tempTile].GetComponent<SpriteRenderer> ().color = Color.magenta;
-
-					}
-				}
+				tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.magenta;
 
 				continue;
 			}

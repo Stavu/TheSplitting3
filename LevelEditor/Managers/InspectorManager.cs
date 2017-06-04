@@ -183,4 +183,25 @@ public class InspectorManager : MonoBehaviour {
 
 
 
+
+
+	public PhysicalInteractable GetChosenPI()
+	{
+		
+		if (InspectorManager.instance.chosenFurniture != null) 
+		{
+			return InspectorManager.instance.chosenFurniture;
+		
+		} else if (InspectorManager.instance.chosenCharacter != null) 
+		{			
+			return InspectorManager.instance.chosenCharacter;
+		}	
+			
+		return null;
+
+	}
+
+
+
+
 }

@@ -23,7 +23,7 @@ public class UseItemHelper {
 			case "compass":
 
 
-				switch (physicalInt.myName) 
+				switch (physicalInt.identificationName) 
 				{
 
 					case "door_abandoned_main_shadow":
@@ -58,7 +58,7 @@ public class UseItemHelper {
 			case "missing_picture":
 				
 
-				switch (physicalInt.myName) 
+				switch (physicalInt.identificationName) 
 				{
 
 					case "door_abandoned_main_shadow":

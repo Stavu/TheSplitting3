@@ -83,7 +83,7 @@ public class Utilities {
 
 		foreach (GameObject gameObj in animatedObjects) 
 		{
-			if (gameObj.name == myFurniture.myName) 
+			if (gameObj.name == myFurniture.fileName) 
 			{
 				obj = GameObject.Instantiate (gameObj);
 				obj.transform.SetParent (parent);
@@ -96,14 +96,14 @@ public class Utilities {
 
 		if (obj == null) 
 		{
-			obj = new GameObject (myFurniture.myName);
+			obj = new GameObject (myFurniture.fileName);
 			obj.transform.SetParent (parent);
 
 			GameObject childObj = new GameObject ("Image");
 			childObj.transform.SetParent (obj.transform);
 
 			sr = childObj.AddComponent<SpriteRenderer>();
-			sr.sprite = Resources.Load<Sprite> ("Sprites/Furniture/" + myFurniture.myName); 
+			sr.sprite = Resources.Load<Sprite> ("Sprites/Furniture/" + myFurniture.fileName); 
 			sr.flipX = myFurniture.imageFlipped;
 		}
 
@@ -149,7 +149,7 @@ public class Utilities {
 		// sorting order 
 
 		SpriteRenderer[] sr_list = obj.GetComponentsInChildren<SpriteRenderer> ();
-		Debug.Log ("length" + obj.transform.childCount);
+		//Debug.Log ("length" + obj.transform.childCount);
 
 
 		for (int i = 0; i < obj.transform.childCount; i++)
@@ -170,7 +170,7 @@ public class Utilities {
 
 		myCharacter.myPos = new Vector3 (myCharacter.x + myCharacter.mySize.x/2, myCharacter.y, 0);
 
-		GameObject obj = GameObject.Instantiate(Resources.Load<GameObject> ("Prefabs/Characters/" + myCharacter.myName)); 			
+		GameObject obj = GameObject.Instantiate(Resources.Load<GameObject> ("Prefabs/Characters/" + myCharacter.fileName)); 			
 		obj.transform.SetParent (parent);
 
 

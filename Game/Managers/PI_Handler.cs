@@ -33,6 +33,10 @@ public class PI_Handler : MonoBehaviour {
 
 		EventsHandler.cb_newAnimationState += ChangeCurrentGraphicState;
 
+		EventsHandler.cb_furnitureChanged += CreatePIGameObject;
+		EventsHandler.cb_characterChanged += CreatePIGameObject;
+
+
 		PI_gameObjectMap = new Dictionary<PhysicalInteractable, GameObject> ();
 		PI_nameMap = new Dictionary<string, PhysicalInteractable> ();
 	}
@@ -41,6 +45,10 @@ public class PI_Handler : MonoBehaviour {
 	void OnDestroy()
 	{
 		EventsHandler.cb_newAnimationState -= ChangeCurrentGraphicState;
+
+		EventsHandler.cb_furnitureChanged -= CreatePIGameObject;
+		EventsHandler.cb_characterChanged -= CreatePIGameObject;
+
 
 		PI_gameObjectMap.Clear ();
 		PI_nameMap.Clear ();
@@ -62,6 +70,69 @@ public class PI_Handler : MonoBehaviour {
 		PI_nameMap.Add (name, physicalInteractable);
 
 	}
+
+
+	public void CreatePIGameObject (PhysicalInteractable myPhysicalInteractable)
+	{
+		// if the furniture has an identification name, use it as the name. If it doesn't, use the file name.
+
+		bool useIdentifiactionName = ((myPhysicalInteractable.identificationName != null) && (myPhysicalInteractable.identificationName != string.Empty));
+		string PI_name = useIdentifiactionName ? myPhysicalInteractable.identificationName : myPhysicalInteractable.fileName;			
+
+		myPhysicalInteractable.myPos = new Vector3 (myPhysicalInteractable.x + myPhysicalInteractable.mySize.x/2, myPhysicalInteractable.y, 0);
+
+		GameObject obj = null;
+		SpriteRenderer sr = null;
+
+
+		// Animated Object
+
+		if (GameManager.stringPrefabMap.ContainsKey (myPhysicalInteractable.fileName)) {
+
+			obj = Instantiate (GameManager.stringPrefabMap [myPhysicalInteractable.fileName]);
+			sr = obj.GetComponentInChildren<SpriteRenderer> ();
+			string state = GameManager.playerData.GetAnimationState (myPhysicalInteractable.identificationName);
+
+			PI_Handler.instance.AddPIToMap (myPhysicalInteractable, obj, PI_name);
+
+			if (state != string.Empty) {
+				PI_Handler.instance.SetPIAnimationState (myPhysicalInteractable.identificationName, state, obj);
+			} 
+
+		} else {
+			
+			// if not animated object
+
+			obj = new GameObject (myPhysicalInteractable.fileName);
+			GameObject childObj = new GameObject ("Image");
+			childObj.transform.SetParent (obj.transform);
+
+			PI_Handler.instance.AddPIToMap (myPhysicalInteractable, obj, PI_name);
+
+			sr = childObj.AddComponent<SpriteRenderer>();
+			sr.sprite = Resources.Load<Sprite> ("Sprites/Furniture/" + myPhysicalInteractable.fileName); 
+
+		}
+
+
+		obj.transform.SetParent (this.transform);
+		obj.transform.position = new Vector3 (myPhysicalInteractable.myPos.x + myPhysicalInteractable.offsetX, myPhysicalInteractable.myPos.y + 0.5f + myPhysicalInteractable.offsetY, myPhysicalInteractable.myPos.z);
+
+
+		// sorting order 
+		Utilities.SetPISortingOrder (myPhysicalInteractable, obj);
+
+
+		if (myPhysicalInteractable.walkable == true) 
+		{
+			sr.sortingOrder = (int) -(myPhysicalInteractable.y + myPhysicalInteractable.mySize.y) * 10;
+
+		}
+
+		sr.sortingLayerName = Constants.furniture_character_layer;
+
+	}
+
 
 
 	public void ChangeCurrentGraphicState(PhysicalInteractable physicalInteractable, string state)

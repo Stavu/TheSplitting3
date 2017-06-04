@@ -85,9 +85,7 @@ public class GameData {
 			{
 				nameDialogueOptionMap.Add (dialogueOption.myTitle, dialogueOption);
 			}
-		}
-
-		Debug.Log (nameDialogueOptionMap.Count);
+		}	
 
 	}
 

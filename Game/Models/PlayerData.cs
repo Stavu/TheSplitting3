@@ -60,7 +60,7 @@ public class PlayerData {
 	{
 		foreach (Character character in RoomManager.instance.myRoom.myCharacterList) 
 		{
-			if (character.myName == characterName) 
+			if (character.identificationName == characterName) 
 			{
 				return true;
 			}

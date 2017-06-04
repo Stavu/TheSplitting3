@@ -113,5 +113,17 @@ public class EditorCharacterHandler : MonoBehaviour {
 
 		EditorRoomManager.instance.characterGameObjectMap.Add (myCharacter, obj);	
 
+
+
+		// populate list of graphic states
+
+		if (myCharacter.graphicStates.Count == 0) 
+		{
+			myCharacter.graphicStates = Utilities.GetGraphicStateList (myCharacter);
+		}
+
+		myCharacter.currentGraphicState = myCharacter.graphicStates [0];
+
+
 	}
 }

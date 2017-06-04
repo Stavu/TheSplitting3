@@ -178,10 +178,12 @@ public class Room {
 	public void CreateRoomInteractables()
 	{
 
+
 		// Furniture
 
 		foreach (Furniture furn in myFurnitureList) 
 		{
+			//Debug.Log ("current graphic state:" + furn.currentGraphicState == null);
 			List<Tile> FurnitureTiles = GetMyTiles(myGrid,furn.mySize, furn.x, furn.y);
 			FurnitureTiles.ForEach (tile => tile.PlaceFurnitureInTile (furn));
 
@@ -297,5 +299,24 @@ public class Room {
 		return myTilesList;
 
 	}
+
+
+
+	// Get tile list using a grid and a list of coords
+
+	public List<Tile> GetMyTiles (Grid grid, List<Coords> coordsList)
+	{
+
+		List<Tile> myTilesList = new List<Tile>();
+
+		foreach (Coords coords in coordsList) 
+		{
+			myTilesList.Add (grid.GetTileAt (coords.x, coords.y));
+		}
+
+		return myTilesList;
+
+	}
+
 
 }

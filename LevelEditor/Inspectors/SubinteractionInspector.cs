@@ -163,7 +163,7 @@ public class SubinteractionInspector : MonoBehaviour {
 					List<string> animationList = new List<string> ();
 					Furniture furn = InspectorManager.instance.chosenFurniture;
 
-					GameObject prefab = Resources.Load<GameObject> ("Prefabs/Furniture/" + furn.myName);
+					GameObject prefab = Resources.Load<GameObject> ("Prefabs/Furniture/" + furn.fileName);
 					Debug.Log ("create prefab");
 
 					animationList = Utilities.GetAnimationClipNames (prefab);
@@ -329,7 +329,7 @@ public class SubinteractionInspector : MonoBehaviour {
 				List<string> animationList = new List<string> ();
 				Furniture furn = InspectorManager.instance.chosenFurniture;
 
-				GameObject prefab = Resources.Load<GameObject> ("Prefabs/Furniture/" + furn.myName);
+				GameObject prefab = Resources.Load<GameObject> ("Prefabs/Furniture/" + furn.fileName);
 				Debug.Log ("create prefab");
 			
 				animationList = Utilities.GetAnimationClipNames (prefab);

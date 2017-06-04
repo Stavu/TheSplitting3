@@ -53,7 +53,7 @@ public class NavigationManager : MonoBehaviour {
 
 	void Start () 
 	{	
-		Debug.Log ("navigation start");
+		//Debug.Log ("navigation start");
 
 		fadeCanvas = Instantiate(Resources.Load<GameObject>("Prefabs/FadeCanvas"));
 		fadeImage = fadeCanvas.transform.Find ("Image").GetComponent<Image> ();

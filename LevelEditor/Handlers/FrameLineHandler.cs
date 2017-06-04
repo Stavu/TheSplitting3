@@ -42,32 +42,34 @@ public class FrameLineHandler : MonoBehaviour {
 	// Draw Line
 
 
-	public void CreateLine(Furniture furn)
+	public void CreateLine(PhysicalInteractable physicalInteractable)
 	{
-
-		GameObject lineObj = new GameObject ("frameline_" + furn.myName);
+		
+		GameObject lineObj = new GameObject ("frameline_" + physicalInteractable.identificationName);
 		lineObj.transform.SetParent (this.transform);
 
 		LineRenderer lr = lineObj.AddComponent<LineRenderer> ();
 		lr.loop = true;
 		lr.positionCount = 4;
+		lr.widthMultiplier = 0.1f;
 
-		List<Vector3> positionList = Utilities.GetPhysicalInteractableFrameBounds (furn);
+
+		List<Vector3> positionList = Utilities.EditorGetPhysicalInteractableFrameBounds (physicalInteractable);
 		Debug.Log ("center" + positionList [0]);
 
 
 		Vector3[] posArray = new Vector3[4];
 
-		/*
-		for (int i = 1; i < positionList; i++) 
+
+		for (int i = 1; i < positionList.Count; i++) 
 		{
-			posArray [i-1] = positionList [i];
+			posArray [i - 1] = positionList [i] + positionList [0] + new Vector3 (physicalInteractable.currentGraphicState.frameOffsetX, physicalInteractable.currentGraphicState.frameOffsetY,-5);
 		}
-		*/
 
 
-		//lr.SetPositions (posArray);
+		lr.SetPositions (posArray);
 
+		lineContainer.Add (lineObj);
 
 	}
 
@@ -81,39 +83,21 @@ public class FrameLineHandler : MonoBehaviour {
 		lineContainer.ForEach (obj => Destroy (obj));
 		lineContainer.Clear ();
 
-		foreach (Furniture furn in EditorRoomManager.instance.furnitureGameObjectMap.Keys) 
+		if (EditorRoomManager.instance.furnitureGameObjectMap != null) 
 		{
-
-			GameObject lineObj = new GameObject ("frameline_" + furn.myName);
-			lineObj.transform.SetParent (this.transform);
-
-			LineRenderer lr = lineObj.AddComponent<LineRenderer> ();
-			lr.loop = true;
-			lr.positionCount = 4;
-			lr.widthMultiplier = 0.1f;
-
-
-			List<Vector3> positionList = Utilities.EditorGetPhysicalInteractableFrameBounds (furn);
-			Debug.Log ("center" + positionList [0]);
-
-
-			Vector3[] posArray = new Vector3[4];
-
-
-			for (int i = 1; i < positionList.Count; i++) 
+			foreach (Furniture furn in EditorRoomManager.instance.furnitureGameObjectMap.Keys) 
 			{
-				posArray [i - 1] = positionList [i] + positionList [0] + new Vector3 (furn.currentGraphicState.frameOffsetX, furn.currentGraphicState.frameOffsetY,-5);
+				CreateLine (furn);
 			}
-
-
-			lr.SetPositions (posArray);
-
-			lineContainer.Add (lineObj);
-
 		}
 
-
-
+		if (EditorRoomManager.instance.characterGameObjectMap != null) 
+		{			
+			foreach (Character character in EditorRoomManager.instance.characterGameObjectMap.Keys) 
+			{
+				CreateLine (character);
+			}
+		}
 
 
 	}

@@ -47,15 +47,16 @@ public class EditorFurnitureHandler : MonoBehaviour
 
 		// If there's already a furniture on this tile, destroy it before creating a new furniture
 
+		Room myRoom = EditorRoomManager.instance.room;
+
 
 		if (tile.myFurniture != null)
 		{
-			EditorRoomManager.instance.room.myFurnitureList.Remove (tile.myFurniture);
+			myRoom.myFurnitureList.Remove (tile.myFurniture);
 
 			Destroy(EditorRoomManager.instance.furnitureGameObjectMap [tile.myFurniture]);
 			EditorRoomManager.instance.furnitureGameObjectMap.Remove (tile.myFurniture);
 		}
-
 
 		// create furniture
 
@@ -65,40 +66,36 @@ public class EditorFurnitureHandler : MonoBehaviour
 		// set default size
 
 		Sprite furnitureSprite = Resources.Load <Sprite> ("Sprites/Furniture/" + furnitureName);
-
 		furn.mySize = new Vector2 (Mathf.Ceil(furnitureSprite.bounds.size.x), 1f);
 
 
-		// According to state, add to list
+		// According to room state, add to list
 
-		if (EditorRoomManager.instance.room.RoomState == RoomState.Real) 
+
+		if (myRoom.RoomState == RoomState.Real) 
 		{			
 			// Real
 
-			EditorRoomManager.instance.room.myFurnitureList.Add (furn);
-			tile.myFurniture = furn;
+			myRoom.myFurnitureList.Add (furn);
 		
 		} else {
 
-			if (EditorRoomManager.instance.room.myMirrorRoom.inTheShadow == true) 
+			if (myRoom.myMirrorRoom.inTheShadow == true) 
 			{			
 				// Shadow
 
-				EditorRoomManager.instance.room.myMirrorRoom.myFurnitureList_Shadow.Add (furn);
-				tile.myFurniture = furn;
+				myRoom.myMirrorRoom.myFurnitureList_Shadow.Add (furn);
 
 			} else {
 
 				// Mirror
 
-				EditorRoomManager.instance.room.myFurnitureList.Add (furn);
-				tile.myFurniture = furn;
+				myRoom.myFurnitureList.Add (furn);
 			}
 		}
 
-
 		EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn);
-
+		PlaceFurnitureInTiles (furn, myRoom, myRoom.MyGrid);	
 
 	}
 
@@ -117,7 +114,12 @@ public class EditorFurnitureHandler : MonoBehaviour
 			
 			// -- REAL ROOM -- //
 
-			room.myFurnitureList.ForEach (furn => EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn));
+			foreach (Furniture furn in room.myFurnitureList) 
+			{				
+				EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn);
+				PlaceFurnitureInTiles (furn, room, room.myGrid);
+			}
+
 
 		} else {
 
@@ -127,23 +129,53 @@ public class EditorFurnitureHandler : MonoBehaviour
 			{
 				// SHADOW ROOM
 
-				room.myMirrorRoom.myFurnitureList_Shadow.ForEach (furn => EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn));
+				foreach (Furniture furn in room.myMirrorRoom.myFurnitureList_Shadow) 
+				{
+					EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn);
+					PlaceFurnitureInTiles (furn, room, room.myMirrorRoom.shadowGrid);
+
+				}
 
 			} else {
 
 				// MIRROR ROOM
-				
-				room.myFurnitureList.ForEach (furn => EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn));
+
+				foreach (Furniture furn in room.myFurnitureList) 
+				{
+					EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn);					
+					PlaceFurnitureInTiles (furn, room, room.myGrid);
+				}
 			}
 
 			// PERSISTANT FURNITURE
 
-			room.myMirrorRoom.myFurnitureList_Persistant.ForEach (furn => EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn));
+			foreach (Furniture furn in room.myMirrorRoom.myFurnitureList_Persistant) 
+			{
+				EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn);				
+				PlaceFurnitureInTiles (furn, room, room.myMirrorRoom.shadowGrid);
+				PlaceFurnitureInTiles (furn, room, room.myGrid);
+			}
+		}	
+	}
 
+
+
+
+	public void PlaceFurnitureInTiles(Furniture furn, Room room, Grid grid)
+	{
+		List<Tile> tempTileList = room.GetMyTiles (grid, furn.GetMyCoordsList ());
+		Debug.Log ("tile list count" + tempTileList.Count);
+
+		foreach (Tile myTile in tempTileList) 
+		{			
+			Debug.Log ("tile x " + myTile.x + "y " + myTile.y);
+			myTile.myFurniture = furn;
 		}
-			
+
+		EventsHandler.Invoke_cb_tileLayoutChanged ();
 
 	}
+
 
 
 

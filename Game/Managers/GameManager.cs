@@ -54,8 +54,11 @@ public class GameManager : MonoBehaviour
 	public Dictionary<string,Room> stringRoomMap = new Dictionary<string, Room> ();
 
 
+
 	public static PlayerData playerData;
 	public static GameData gameData;
+
+	public static Dictionary<string,GameObject> stringPrefabMap;
 
 	public InputState inputState = InputState.Character;
 
@@ -83,6 +86,11 @@ public class GameManager : MonoBehaviour
 		speakerColorMap.Add("geM", Color.magenta);
 		speakerColorMap.Add("llehctiM", Color.cyan);
 		speakerColorMap.Add("Stella", Color.red);
+
+		if (stringPrefabMap == null) 
+		{
+			LoadPrefabs ();
+		}
 
 	}
 
@@ -124,6 +132,27 @@ public class GameManager : MonoBehaviour
 			// Adding room to dictionary
 
 			stringRoomMap.Add (myRoom.myName, myRoom);					
+		}
+	}
+
+
+	public void LoadPrefabs()
+	{
+							
+		stringPrefabMap = new Dictionary<string, GameObject> ();
+
+		GameObject[] furnitureArray = Resources.LoadAll<GameObject> ("Prefabs/Furniture");
+		GameObject[] characterArray = Resources.LoadAll<GameObject> ("Prefabs/Characters");
+
+		foreach (GameObject obj in furnitureArray) 
+		{
+			stringPrefabMap.Add (obj.name, obj);
+		}
+
+		foreach (GameObject obj in characterArray) 
+		{
+			stringPrefabMap.Add (obj.name, obj);
+
 		}
 	}
 

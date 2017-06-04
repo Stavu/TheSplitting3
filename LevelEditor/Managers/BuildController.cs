@@ -22,13 +22,8 @@ public class BuildController : MonoBehaviour {
 	// Singleton //
 
 
-
-
-
 	public string furnitureName;
 	public string characterName;
-
-
 
 
 	public enum Mode
@@ -37,13 +32,12 @@ public class BuildController : MonoBehaviour {
 		buildFurniture,
 		buildCharacter,
 		buildTileInteraction,
+		changeCoords,
 		inspect
 
 	}
 
 	public Mode mode = Mode.inspect;
-
-
 
 
 
@@ -118,7 +112,14 @@ public class BuildController : MonoBehaviour {
 
 				break;
 
+			
+			case Mode.changeCoords:
 
+				Debug.Log ("change coords");
+				EditorRoomManager.instance.SetPICoords (tile);
+
+
+				return;
 			
 		
 		}

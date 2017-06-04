@@ -32,7 +32,6 @@ public class FurnitureManager : MonoBehaviour {
 	public void Initialize () 
 	{		
 	
-		EventsHandler.cb_furnitureChanged += CreateFurnitureGameObject;
 
 		//furnitureGameObjectMap = new Dictionary<Furniture, GameObject> ();
 		//nameFurnitureMap = new Dictionary<string, Furniture> ();
@@ -43,7 +42,7 @@ public class FurnitureManager : MonoBehaviour {
 	public void OnDestroy()
 	{	
 	
-		EventsHandler.cb_furnitureChanged -= CreateFurnitureGameObject;
+		//EventsHandler.cb_furnitureChanged -= CreateFurnitureGameObject;
 			
 	}
 
@@ -59,13 +58,13 @@ public class FurnitureManager : MonoBehaviour {
 
 
 
-
+	/*
 	public void CreateFurnitureGameObject (Furniture myFurniture)
 	{
 		// if the furniture has an identification name, use it as the name. If it doesn't, use the file name.
 
 		bool useIdentifiactionName = ((myFurniture.identificationName != null) && (myFurniture.identificationName != string.Empty));
-		string furnitureName = useIdentifiactionName ? myFurniture.identificationName : myFurniture.myName;			
+		string furnitureName = useIdentifiactionName ? myFurniture.identificationName : myFurniture.fileName;			
 
 		myFurniture.myPos = new Vector3 (myFurniture.x + myFurniture.mySize.x/2, myFurniture.y, 0);
 
@@ -79,7 +78,7 @@ public class FurnitureManager : MonoBehaviour {
 
 		foreach (GameObject gameObj in animatedObjects) 
 		{
-			if (gameObj.name == myFurniture.myName) 
+			if (gameObj.name == myFurniture.fileName) 
 			{
 				obj = Instantiate (gameObj);
 				sr = obj.GetComponentInChildren<SpriteRenderer>();
@@ -101,14 +100,14 @@ public class FurnitureManager : MonoBehaviour {
 
 		if (obj == null) 
 		{
-			obj = new GameObject (myFurniture.myName);
+			obj = new GameObject (myFurniture.fileName);
 			GameObject childObj = new GameObject ("Image");
 			childObj.transform.SetParent (obj.transform);
 
 			PI_Handler.instance.AddPIToMap (myFurniture, obj, furnitureName);
 					
 			sr = childObj.AddComponent<SpriteRenderer>();
-			sr.sprite = Resources.Load<Sprite> ("Sprites/Furniture/" + myFurniture.myName); 
+			sr.sprite = Resources.Load<Sprite> ("Sprites/Furniture/" + myFurniture.fileName); 
 		}
 
 
@@ -132,7 +131,7 @@ public class FurnitureManager : MonoBehaviour {
 	}
 
 
-
+	*/
 
 
 

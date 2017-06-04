@@ -31,11 +31,8 @@ public class CharacterManager : MonoBehaviour {
 	// Use this for initialization
 
 	public void Initialize () 
-	{
-		EventsHandler.cb_characterChanged += CreateCharacterGameObject;
-
+	{		
 		//characterGameObjectMap = new Dictionary<Character, GameObject> ();
-
 	}
 
 
@@ -43,10 +40,7 @@ public class CharacterManager : MonoBehaviour {
 	public void OnDestroy()
 	{	
 
-		EventsHandler.cb_characterChanged -= CreateCharacterGameObject;
-
 	}
-
 
 
 	// Update is called once per frame
@@ -57,20 +51,19 @@ public class CharacterManager : MonoBehaviour {
 
 	}
 
-
+	/*
 
 	public void CreateCharacterGameObject (Character myCharacter)
 	{
 
 		GameObject obj = Utilities.CreateCharacterGameObject (myCharacter, this.transform);
 
-		PI_Handler.instance.AddPIToMap (myCharacter, obj, myCharacter.myName);
+		PI_Handler.instance.AddPIToMap (myCharacter, obj, myCharacter.identificationName);
+
 
 	}
 
-
-
-
+	*/
 
 
 

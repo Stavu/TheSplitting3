@@ -67,7 +67,7 @@ public class RoomManager : MonoBehaviour {
 
 			myRoom.myCharacterList.ForEach (character => {
 				EventsHandler.Invoke_cb_characterChanged (character);
-				nameSpeakerMap.Add (character.myName, character);
+				nameSpeakerMap.Add (character.identificationName, character);
 			});
 
 			myRoom.myTileInteractionList.ForEach (tileInt => EventsHandler.Invoke_cb_tileInteractionChanged (tileInt));
@@ -94,7 +94,7 @@ public class RoomManager : MonoBehaviour {
 
 			myRoom.myCharacterList.ForEach (character => {
 				EventsHandler.Invoke_cb_characterChanged (character);
-				nameSpeakerMap.Add (character.myName, character);
+				nameSpeakerMap.Add (character.identificationName, character);
 			});
 
 			myRoom.myMirrorRoom.myTileInteractionList_Persistant.ForEach (tileInt => EventsHandler.Invoke_cb_tileInteractionChanged (tileInt));

@@ -11,7 +11,7 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 	Transform panel;
 
-	Text nameText;
+	Text fileNameText;
 	InputField identificationText;
 
 	Toggle imageFlippedToggle;
@@ -86,7 +86,7 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 		panel = inspectorObject.transform.FindChild ("Panel");
 
-		nameText = panel.FindChild ("Name").GetComponent<Text> ();
+		fileNameText = panel.FindChild ("Name").GetComponent<Text> ();
 		identificationText = panel.Find ("IdentificationName").GetComponent<InputField> ();
 
 		imageFlippedToggle = panel.Find ("ImageFlippedToggle").GetComponent<Toggle> ();
@@ -120,7 +120,7 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 		// Text
 
-		nameText.text = currentPhysicalInteractable.myName;
+		fileNameText.text = currentPhysicalInteractable.fileName;
 		identificationText.text = currentPhysicalInteractable.identificationName;
 
 		sizeXPlaceholder.text = currentPhysicalInteractable.mySize.x.ToString();
@@ -261,7 +261,7 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 		{
 			if (name == string.Empty) 
 			{
-				InspectorManager.instance.chosenFurniture.identificationName = InspectorManager.instance.chosenFurniture.myName;
+				InspectorManager.instance.chosenFurniture.identificationName = InspectorManager.instance.chosenFurniture.fileName;
 
 			} else {			
 
@@ -272,7 +272,7 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 		{			
 			if (name == string.Empty) 
 			{
-				InspectorManager.instance.chosenCharacter.identificationName = InspectorManager.instance.chosenCharacter.myName;
+				InspectorManager.instance.chosenCharacter.identificationName = InspectorManager.instance.chosenCharacter.fileName;
 
 			} else {			
 
