@@ -423,37 +423,115 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 	public void DeletePhysicalInteractable()
 	{
+		Room myRoom;
 
 		// Furniture
 
 		if (InspectorManager.instance.chosenFurniture != null) 
 		{
+			myRoom = EditorRoomManager.instance.room;
 			Furniture furn = InspectorManager.instance.chosenFurniture;
 			GameObject obj = EditorRoomManager.instance.furnitureGameObjectMap[furn];
-			Tile tile = EditorRoomManager.instance.room.MyGrid.GetTileAt (furn.x, furn.y);
-
-
+			//Tile tile = myRoom.MyGrid.GetTileAt (furn.x, furn.y);
+		
 			Destroy (obj.gameObject);
 			EditorRoomManager.instance.furnitureGameObjectMap.Remove (furn);
-			EditorRoomManager.instance.room.myFurnitureList.Remove (furn);
-			tile.myFurniture = null;
+
+
+			// Removing from Furniture Lists 
+
+			if (myRoom.myFurnitureList.Contains (furn)) 
+			{
+				// REAL & MIRROR
+
+				myRoom.myFurnitureList.Remove (furn);
+			}
+
+
+			if (myRoom.roomState == RoomState.Mirror) 
+			{
+				if (myRoom.myMirrorRoom.myFurnitureList_Persistant.Contains(furn))
+				{
+					// PERSISTENT
+
+					myRoom.myMirrorRoom.myFurnitureList_Persistant.Remove (furn);
+				}
+
+				if (myRoom.myMirrorRoom.myFurnitureList_Shadow.Contains(furn))
+				{
+					// SHADOW
+
+					myRoom.myMirrorRoom.myFurnitureList_Shadow.Remove (furn);
+				}
+
+				// Removing from Tiles
+
+				foreach (Tile oldTile in myRoom.myMirrorRoom.shadowGrid.gridArray) 
+				{
+					if (oldTile.myFurniture == furn) 
+					{
+						oldTile.myFurniture = null;
+					}
+				}
+			}
+
+			foreach (Tile oldTile in myRoom.myGrid.gridArray) 
+			{
+				if (oldTile.myFurniture == furn) 
+				{
+					oldTile.myFurniture = null;
+				}
+			}
 
 			InspectorManager.instance.chosenFurniture = null;
 		}
+
+
 
 		// Character 
 
 		if (InspectorManager.instance.chosenCharacter != null) 
 		{
+			myRoom = EditorRoomManager.instance.room;
 			Character character = InspectorManager.instance.chosenCharacter;
 			GameObject obj = EditorRoomManager.instance.characterGameObjectMap[character];
-			Tile tile = EditorRoomManager.instance.room.MyGrid.GetTileAt (character.x, character.y);
-
 
 			Destroy (obj.gameObject);
 			EditorRoomManager.instance.characterGameObjectMap.Remove (character);
-			EditorRoomManager.instance.room.myCharacterList.Remove (character);
-			tile.myCharacter = null;
+			myRoom.myCharacterList.Remove (character);
+	
+
+			// Removing from Furniture Lists 
+
+			if (myRoom.myCharacterList.Contains (character)) 
+			{
+				// REAL & MIRROR
+
+				myRoom.myCharacterList.Remove (character);
+			}
+
+
+			if (myRoom.myMirrorRoom != null) 
+			{
+				// Removing from Tiles
+
+				foreach (Tile oldTile in myRoom.myMirrorRoom.shadowGrid.gridArray) 
+				{
+					if (oldTile.myCharacter == character) 
+					{
+						oldTile.myCharacter = null;
+					}
+				}
+			}
+
+			foreach (Tile oldTile in myRoom.myGrid.gridArray) 
+			{
+				if (oldTile.myCharacter == character) 
+				{
+					oldTile.myCharacter = null;
+				}
+			}
+
 
 			InspectorManager.instance.chosenCharacter = null;
 		}

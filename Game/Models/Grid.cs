@@ -65,48 +65,10 @@ public class Grid {
 		int x = Mathf.FloorToInt (myPos.x);
 		int y = Mathf.FloorToInt (myPos.y);
 
-
 		return GetTileAt(x,y);
 
 	}
 
-
-	public void ChangePIInTiles(PhysicalInteractable physicalInteractable, GraphicState newState)
-	{
-
-		List<Tile> oldTiles = EditorRoomManager.instance.room.GetMyTiles (this, physicalInteractable.CurrentGraphicState().coordsList);			
-		List<Tile> newTiles = EditorRoomManager.instance.room.GetMyTiles (this, newState.coordsList);
-
-
-		if (physicalInteractable is Furniture) 
-		{
-			foreach (Tile oldTile in oldTiles) 
-			{
-				oldTile.myFurniture = null;
-			}
-
-			foreach (Tile newTile in newTiles) 
-			{
-				newTile.myFurniture = (Furniture)physicalInteractable;
-			}
-		}
-
-
-		if (physicalInteractable is Character) 
-		{
-			foreach (Tile oldTile in oldTiles) 
-			{
-				oldTile.myCharacter = null;
-			}
-
-			foreach (Tile newTile in newTiles) 
-			{
-				newTile.myCharacter = (Character)physicalInteractable;
-			}
-		}
-			
-
-	}
 
 
 

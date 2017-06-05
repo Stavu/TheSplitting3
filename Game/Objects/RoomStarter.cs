@@ -28,12 +28,15 @@ public class RoomStarter : MonoBehaviour {
 	public void Initialize () 
 	{
 		EventsHandler.cb_entered_room += StartRoom;
+		EventsHandler.cb_roomCreated += PrepareRoom;
 	}
 	
 
 	void OnDestroy () 
 	{
 		EventsHandler.cb_entered_room -= StartRoom;
+		EventsHandler.cb_roomCreated -= PrepareRoom;
+
 	}
 
 
@@ -43,6 +46,45 @@ public class RoomStarter : MonoBehaviour {
 	{
 
 	}
+
+
+
+
+	// -------- PREPARE ROOM --------//
+
+	public void PrepareRoom(Room room)
+	{
+
+		switch (room.myName) 
+		{
+			case "doorTest":
+
+				if (GameManager.playerData.CheckIfEventExists ("pottery_broke") == true) 
+				{
+					SoundManager.instance.PlaySound ("pottery_break", 0);
+				}
+						
+				break;
+
+
+			case "abandoned_lobby_mirror":			
+
+				break;
+
+
+			case "abandoned_wing_outside_shadow":
+
+				break;
+
+
+			case "abandoned_wing_outside":
+
+				break;
+
+		}
+
+	}
+
 
 
 
@@ -87,6 +129,12 @@ public class RoomStarter : MonoBehaviour {
 
 		}
 	}
+
+
+
+
+
+
 
 
 }

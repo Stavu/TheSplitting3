@@ -36,6 +36,8 @@ public class SubInteraction : IConditionable {
 	public string soundToPlay;
 	public int numberOfPlays;
 
+	public string soundToStop;
+
 	public string eventToAdd;
 	public string eventToRemove;
 
@@ -191,6 +193,14 @@ public class SubInteraction : IConditionable {
 				break;
 
 			
+			case "StopSound":
+
+				SoundManager.Invoke_cb_stopSound (soundToStop);
+				EventsHandler.Invoke_cb_inputStateChanged ();
+
+				break;
+
+
 			case "playCutscene":
 
 				//CutsceneManager.instance.c

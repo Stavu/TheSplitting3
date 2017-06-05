@@ -34,7 +34,7 @@ public class EditorFurnitureHandler : MonoBehaviour
 
 
 
-	// Placing Furniture in the editor 
+	// Placing Furniture in the editor - when building new furniture
 
 	public void PlaceFurniture(Tile tile, string furnitureName)
 	{
@@ -103,6 +103,9 @@ public class EditorFurnitureHandler : MonoBehaviour
 
 
 	// -- FACTORY -- //
+
+	// when loading a room
+
 
 	public void FurnitureFactory(Room room)
 	{
@@ -184,7 +187,7 @@ public class EditorFurnitureHandler : MonoBehaviour
 
 		//Debug.Log ("CreateFurnitureObject");
 
-		GameObject obj = Utilities.CreateFurnitureGameObject (furn, this.transform);
+		GameObject obj = Utilities.CreateEditorFurnitureGameObject (furn, this.transform);
 
 
 		if (furn == null) 
@@ -196,7 +199,6 @@ public class EditorFurnitureHandler : MonoBehaviour
 		{
 			EditorRoomManager.instance.furnitureGameObjectMap = new Dictionary<Furniture, GameObject> ();
 		}
-
 
 		EditorRoomManager.instance.furnitureGameObjectMap.Add (furn, obj);	
 

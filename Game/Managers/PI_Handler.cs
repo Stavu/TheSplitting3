@@ -95,9 +95,17 @@ public class PI_Handler : MonoBehaviour {
 
 			PI_Handler.instance.AddPIToMap (myPhysicalInteractable, obj, PI_name);
 
-			if (state != string.Empty) {
+			if (state != string.Empty) 
+			{
 				PI_Handler.instance.SetPIAnimationState (myPhysicalInteractable.identificationName, state, obj);
 			} 
+
+			AnimationEvent animationEvent = obj.GetComponent<AnimationEvent> ();
+
+			if (animationEvent != null) 
+			{
+				animationEvent.physicalInteractable = myPhysicalInteractable;
+			}
 
 		} else {
 			
@@ -114,14 +122,12 @@ public class PI_Handler : MonoBehaviour {
 
 		}
 
-
 		obj.transform.SetParent (this.transform);
 		obj.transform.position = new Vector3 (myPhysicalInteractable.myPos.x + myPhysicalInteractable.offsetX, myPhysicalInteractable.myPos.y + 0.5f + myPhysicalInteractable.offsetY, myPhysicalInteractable.myPos.z);
 
-
 		// sorting order 
-		Utilities.SetPISortingOrder (myPhysicalInteractable, obj);
 
+		Utilities.SetPISortingOrder (myPhysicalInteractable, obj);
 
 		if (myPhysicalInteractable.walkable == true) 
 		{
@@ -135,21 +141,25 @@ public class PI_Handler : MonoBehaviour {
 
 
 
+	// Change Current Graphic State
+
 	public void ChangeCurrentGraphicState(PhysicalInteractable physicalInteractable, string state)
 	{
+		ActionBoxManager.instance.CloseFurnitureFrame ();
+
 		foreach (GraphicState graphicState in physicalInteractable.graphicStates) 
 		{
+			//Debug.Log ("state " + state + " name " + graphicState.graphicStateName);
+
 			if (graphicState.graphicStateName == state) 
 			{
+				RoomManager.instance.myRoom.ChangePIInTiles (physicalInteractable, graphicState);
 				physicalInteractable.currentGraphicState = graphicState;
-
-				//GameManager.playerData.AddAnimationState (PI_name, state);
-
+				GameManager.playerData.AddAnimationState (physicalInteractable.identificationName, state);
+			
 			}
 		}
 	}
-
-
 
 
 
@@ -157,7 +167,6 @@ public class PI_Handler : MonoBehaviour {
 
 	public void SetPIAnimationState(string PI_name, string state, GameObject obj = null)
 	{
-
 		if (PI_nameMap.ContainsKey (PI_name)) 
 		{
 			PhysicalInteractable physicalInteractable = PI_nameMap [PI_name];
@@ -177,7 +186,6 @@ public class PI_Handler : MonoBehaviour {
 		} else {
 
 			Debug.LogError ("I don't have this title name " + PI_name);
-
 		}
 	}
 

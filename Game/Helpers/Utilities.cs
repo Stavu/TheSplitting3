@@ -67,32 +67,24 @@ public class Utilities {
 	}
 
 
+	// Editor function
 
-	public static GameObject CreateFurnitureGameObject (Furniture myFurniture, Transform parent)
-	{
-
-		//Debug.Log ("Assign Furniture Image");
-
-		GameObject[] animatedObjects = Resources.LoadAll<GameObject> ("Prefabs/Furniture");
-
+	public static GameObject CreateEditorFurnitureGameObject (Furniture myFurniture, Transform parent)
+	{		
 
 		myFurniture.myPos = new Vector3 (myFurniture.x + myFurniture.mySize.x/2, myFurniture.y, 0);
 
 		GameObject obj = null;
 		SpriteRenderer sr = null;
 
-		foreach (GameObject gameObj in animatedObjects) 
+		if (EditorRoomManager.stringPrefabMap.ContainsKey (myFurniture.fileName)) 
 		{
-			if (gameObj.name == myFurniture.fileName) 
-			{
-				obj = GameObject.Instantiate (gameObj);
-				obj.transform.SetParent (parent);
+			obj = GameObject.Instantiate (EditorRoomManager.stringPrefabMap[myFurniture.fileName]);
+			obj.transform.SetParent (parent);
 
-				sr = obj.GetComponentInChildren<SpriteRenderer>();
-
-				break;
-			}	
+			sr = obj.GetComponentInChildren<SpriteRenderer>();
 		}
+		
 
 		if (obj == null) 
 		{
@@ -118,9 +110,6 @@ public class Utilities {
 
 		obj.transform.position = new Vector3 (myFurniture.myPos.x + myFurniture.offsetX, myFurniture.myPos.y + 0.5f + myFurniture.offsetY, myFurniture.myPos.z);
 		Debug.Log (obj.transform.position);
-
-
-		//Debug.Log ("object position" + myFurniture.myName + obj.transform.position + sr.sprite.bounds);
 
 
 		// sorting order 

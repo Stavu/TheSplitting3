@@ -36,6 +36,8 @@ public class SoundManager : MonoBehaviour {
 	public static bool soundIsOff = false;
 
 	Dictionary<string,AudioClip> stringAudioClipMap;
+	Dictionary<string,AudioSource> stringAudioSourceLoopMap;
+
 	AudioSource[] audioSources = new AudioSource[10];
 	int nextAudioSource = 0;
 
@@ -72,7 +74,9 @@ public class SoundManager : MonoBehaviour {
 	void OnDestroy()
 	{
 		cb_playSound -= PlaySound;
+		cb_stopSound -= StopSound;
 		cb_leftRoom_start -= StopLoopSounds;
+		cb_enteredRoom_start -= ActivateLoopSounds;
 	}
 
 	
@@ -88,8 +92,9 @@ public class SoundManager : MonoBehaviour {
 	public void RegisterSounds()
 	{		
 		cb_playSound += PlaySound;
+		cb_stopSound += StopSound;
 		cb_leftRoom_start += StopLoopSounds;
-
+		cb_enteredRoom_start += ActivateLoopSounds;
 	}
 
 
@@ -111,6 +116,8 @@ public class SoundManager : MonoBehaviour {
 		AudioClip[] clipList = Resources.LoadAll<AudioClip> ("Audio/SoundEffects");
 
 		stringAudioClipMap = new Dictionary<string, AudioClip> ();
+		stringAudioSourceLoopMap = new Dictionary<string, AudioSource> ();
+
 
 
 		// Populate clipList
@@ -147,16 +154,32 @@ public class SoundManager : MonoBehaviour {
 	}
 
 
+	public void StopSound(string soundName)
+	{
+		Debug.Log ("stop sound " + soundName);
+
+		if (stringAudioSourceLoopMap.ContainsKey (soundName)) 
+		{
+			stringAudioSourceLoopMap [soundName].Stop ();
+			stringAudioSourceLoopMap.Remove (soundName);
+		}
+	}
+
+
 
 	IEnumerator PlaySoundList(AudioSource audioSource, int n)
 	{
 
 		if (n == 0) 
-		{				
+		{		
+			// PLAY IN LOOP
+
 			Debug.Log ("n = 0");
 
 			audioSource.loop = true;
 			audioSource.Play ();
+
+			stringAudioSourceLoopMap.Add (audioSource.clip.name, audioSource);
 
 			yield return null;
 		
@@ -205,10 +228,8 @@ public class SoundManager : MonoBehaviour {
 
 
 	public void StopLoopSounds(float fadeSpeed)
-	{
-		
+	{		
 		StartCoroutine(FadeOutLoopSounds(fadeSpeed));
-
 	}
 
 
@@ -232,10 +253,40 @@ public class SoundManager : MonoBehaviour {
 		{
 			audioSource.Stop();
 		}
+
+		stringAudioSourceLoopMap.Clear();
+
 	}
 
 
+	public void ActivateLoopSounds(float fadeSpeed)
+	{
+		StartCoroutine(FadeInLoopSounds(fadeSpeed));
+	}
 
+
+	IEnumerator FadeInLoopSounds(float fadeSpeed)
+	{
+		float i = 0;
+
+		while (i < 1) 
+		{	
+			foreach (AudioSource audioSource in audioSources_loop) 
+			{
+				audioSource.volume = i;				
+			}
+
+			i += Time.deltaTime / fadeSpeed;
+
+			yield return new WaitForFixedUpdate ();
+		}
+
+		foreach (AudioSource audioSource in audioSources_loop) 
+		{
+			audioSource.volume = 1;	
+		}
+
+	}
 
 
 
@@ -256,7 +307,16 @@ public class SoundManager : MonoBehaviour {
 
 	}
 
+	public static Action<string> cb_stopSound; 
 
+	public static void Invoke_cb_stopSound(string soundName)
+	{
+		if(cb_stopSound != null)
+		{
+			cb_stopSound (soundName);
+		}
+
+	}
 
 	public static Action<float> cb_leftRoom_start;
 
@@ -270,6 +330,16 @@ public class SoundManager : MonoBehaviour {
 	}
 
 
+	public static Action<float> cb_enteredRoom_start;
+
+	public static void Invoke_cb_enteredRoom_start(float speed)
+	{
+		if(cb_enteredRoom_start != null)
+		{
+			cb_enteredRoom_start (speed);
+		}
+
+	}
 
 
 

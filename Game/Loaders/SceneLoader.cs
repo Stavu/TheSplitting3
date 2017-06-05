@@ -50,7 +50,7 @@ public class SceneLoader : MonoBehaviour {
 		CharacterManager.instance.Initialize ();
 
 		InputManager.instance.Initialize ();
-		//TileManager.instance.Initialize ();
+		TileManager.instance.Initialize ();
 		PlayerManager.instance.Initialize ();
 		ActionBoxManager.instance.Initialize ();
 		InteractionManager.instance.Initialize ();	

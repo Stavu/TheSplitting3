@@ -201,6 +201,8 @@ public static class EventsHandler
 			cb_furnitureChanged (furniture);
 		}
 
+		Invoke_cb_tileLayoutChanged ();	
+
 	}
 
 
@@ -213,6 +215,7 @@ public static class EventsHandler
 			cb_characterChanged (character);
 		}
 
+		Invoke_cb_tileLayoutChanged ();	
 	}
 
 
@@ -226,6 +229,8 @@ public static class EventsHandler
 		{
 			cb_tileInteractionChanged (tileInt);
 		}
+
+		Invoke_cb_tileLayoutChanged ();	
 
 	}
 
@@ -265,6 +270,8 @@ public static class EventsHandler
 
 	public static void Invoke_cb_newAnimationState(PhysicalInteractable physicalInteractable, string state)
 	{
+		Debug.Log ("Invoke_cb_newAnimationState");
+
 		if(cb_newAnimationState != null)
 		{
 			cb_newAnimationState (physicalInteractable, state);

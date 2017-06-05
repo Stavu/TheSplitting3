@@ -131,7 +131,7 @@ public class NavigationManager : MonoBehaviour {
 	IEnumerator FadeIn()
 	{
 
-		Debug.LogFormat ("fade in");
+		SoundManager.Invoke_cb_enteredRoom_start (fadeSpeed);
 
 		fadeImage.color = lastColor;
 		float i = 1;

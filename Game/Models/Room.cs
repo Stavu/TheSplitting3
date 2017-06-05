@@ -274,14 +274,11 @@ public class Room {
 
 	public List<Tile> GetMyTiles (Grid grid, Vector2 mySize, int x ,int y)
 	{
-
 		List<Tile> myTilesList = new List<Tile>();
-
 
 		for (int i = 0; i < mySize.x; i++) {
 
 			for (int j = 0; j < mySize.y; j++) {
-
 
 				Tile tempTile = grid.GetTileAt (x + i, y + j);
 
@@ -292,12 +289,10 @@ public class Room {
 				}
 
 				myTilesList.Add (tempTile);
-
 			}
 		}
 
 		return myTilesList;
-
 	}
 
 
@@ -306,7 +301,6 @@ public class Room {
 
 	public List<Tile> GetMyTiles (Grid grid, List<Coords> coordsList)
 	{
-
 		List<Tile> myTilesList = new List<Tile>();
 
 		foreach (Coords coords in coordsList) 
@@ -315,6 +309,60 @@ public class Room {
 		}
 
 		return myTilesList;
+	}
+
+
+
+
+	public void ChangePIInTiles(PhysicalInteractable physicalInteractable, GraphicState newState)
+	{
+
+		Debug.Log ("ChangePIInTiles");
+
+
+		List<Tile> oldTiles;
+
+		if (physicalInteractable.CurrentGraphicState ().coordsList.Count > 0) {
+			Debug.Log ("get list from coords");
+			oldTiles = GetMyTiles (MyGrid, physicalInteractable.CurrentGraphicState ().coordsList);	
+
+		} else {
+
+			Debug.Log ("get list from size");
+			oldTiles = GetMyTiles (MyGrid, physicalInteractable.mySize, physicalInteractable.x, physicalInteractable.y);
+		}
+
+		List<Tile> newTiles;
+
+		if (newState.coordsList.Count > 0) {
+			newTiles = GetMyTiles (MyGrid, newState.coordsList);
+
+		} else {
+
+			newTiles = GetMyTiles (MyGrid, physicalInteractable.mySize, physicalInteractable.x, physicalInteractable.y);
+		}
+
+		if (physicalInteractable is Furniture) {
+			foreach (Tile oldTile in oldTiles) {
+				oldTile.myFurniture = null;
+			}
+
+			foreach (Tile newTile in newTiles) {
+				newTile.myFurniture = (Furniture)physicalInteractable;
+			}
+		}
+
+		if (physicalInteractable is Character) {
+			foreach (Tile oldTile in oldTiles) {
+				oldTile.myCharacter = null;
+			}
+
+			foreach (Tile newTile in newTiles) {
+				newTile.myCharacter = (Character)physicalInteractable;
+			}
+		}
+
+		EventsHandler.Invoke_cb_tileLayoutChanged ();
 
 	}
 

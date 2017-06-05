@@ -41,6 +41,7 @@ public class SubinteractionInspector : MonoBehaviour {
 			"showDialogueTree",
 			"PlayAnimation",
 			"PlaySound",
+			"StopSound",
 			"moveToRoom",
 			"intoShadows",
 			"outOfShadows",
@@ -151,6 +152,12 @@ public class SubinteractionInspector : MonoBehaviour {
 
 					playSound.Find("SoundNameInput").GetComponent<InputField>().text = subInt.soundToPlay;
 					playSound.Find("NumberOfPlaysInput").GetComponent<InputField>().text = subInt.numberOfPlays.ToString();
+
+					break;
+
+				case "StopSound":
+
+					textInputSmall.text = subInt.soundToStop;
 
 					break;
 
@@ -311,13 +318,17 @@ public class SubinteractionInspector : MonoBehaviour {
 
 				break;
 
-
 			case "PlaySound":
 				
 				playSound.gameObject.SetActive (true);
 			
 				break;
 
+			case "StopSound":
+
+				textInputSmall.gameObject.SetActive (true);
+
+				break;
 
 			case "PlayAnimation":
 
@@ -459,6 +470,14 @@ public class SubinteractionInspector : MonoBehaviour {
 				}
 
 				currentSubint.numberOfPlays = int.Parse(numberOfPlaysString);
+
+				break;
+
+
+			case "StopSound":
+
+				currentSubint.soundToStop = textInputSmall.text;
+
 
 				break;
 

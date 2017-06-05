@@ -40,6 +40,7 @@ public class EditorRoomManager : MonoBehaviour {
 	public Dictionary<Furniture,GameObject> furnitureGameObjectMap;
 	public Dictionary<Character,GameObject> characterGameObjectMap;
 
+	public static Dictionary<string,GameObject> stringPrefabMap;
 
 	public static string roomToLoad;
 	public static bool loadRoomFromMemory = false;
@@ -65,9 +66,43 @@ public class EditorRoomManager : MonoBehaviour {
 		{
 			editorTileInteractionHandler = gameObject.AddComponent<EditorTileInteractionHandler> ();
 			editorTileInteractionHandler.Initialize ();
+		}
+
+
+		// loading the prefabs
+
+		if (stringPrefabMap == null) 
+		{
+			LoadPrefabs ();
+		}
+
+
+	}
+
+
+
+	// Load Prefabs
+
+	public void LoadPrefabs()
+	{
+
+		stringPrefabMap = new Dictionary<string, GameObject> ();
+
+		GameObject[] furnitureArray = Resources.LoadAll<GameObject> ("Prefabs/Furniture");
+		GameObject[] characterArray = Resources.LoadAll<GameObject> ("Prefabs/Characters");
+
+		foreach (GameObject obj in furnitureArray) 
+		{
+			stringPrefabMap.Add (obj.name, obj);
+		}
+
+		foreach (GameObject obj in characterArray) 
+		{
+			stringPrefabMap.Add (obj.name, obj);
 
 		}
 	}
+
 
 
 	// Create Empty Room
@@ -122,6 +157,7 @@ public class EditorRoomManager : MonoBehaviour {
 	}
 
 
+
 	// Create New Room
 
 	public void CreateNewRoomFromSprite(string name)
@@ -147,14 +183,12 @@ public class EditorRoomManager : MonoBehaviour {
 
 	public void SetPICoords(Tile tile)
 	{
-
 		Coords coords = new Coords (tile.x, tile.y);
 
 		PhysicalInteractable chosenPhysicalInteractable = InspectorManager.instance.GetChosenPI ();
 
 		for (int i = 0; i < chosenPhysicalInteractable.currentGraphicState.coordsList.Count; i++)
-		{		
-			
+		{			
 			if ((chosenPhysicalInteractable.currentGraphicState.coordsList[i].x == coords.x) && (chosenPhysicalInteractable.currentGraphicState.coordsList[i].y == coords.y)) 
 			{
 				chosenPhysicalInteractable.currentGraphicState.coordsList.RemoveAt (i);
@@ -164,7 +198,27 @@ public class EditorRoomManager : MonoBehaviour {
 
 				return;
 			}
+		}
 
+
+		// Get furniture out of old tiles if there wasn't a coords list before
+
+		if (chosenPhysicalInteractable.currentGraphicState.coordsList.Count == 0) 
+		{
+			List<Tile> oldTileList = EditorRoomManager.instance.room.GetMyTiles (EditorRoomManager.instance.room.MyGrid, chosenPhysicalInteractable.mySize, chosenPhysicalInteractable.x, chosenPhysicalInteractable.y);
+
+			foreach (Tile oldTile in oldTileList) 
+			{
+				if (chosenPhysicalInteractable is Furniture) 
+				{
+					oldTile.myFurniture = null;
+				}
+
+				if (chosenPhysicalInteractable is Character) 
+				{
+					oldTile.myCharacter = null;
+				}
+			}		
 		}
 
 		chosenPhysicalInteractable.currentGraphicState.coordsList.Add (coords);
@@ -178,6 +232,7 @@ public class EditorRoomManager : MonoBehaviour {
 		{
 			tile.myCharacter = (Character)chosenPhysicalInteractable;
 		}
+
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
 
@@ -208,7 +263,6 @@ public class EditorRoomManager : MonoBehaviour {
 		}
 
 		SetBackgroundObject (room);
-
 	}
 
 
@@ -264,7 +318,6 @@ public class EditorRoomManager : MonoBehaviour {
 
 	public string SerializeRoom ()
 	{
-
 		string roomString = JsonUtility.ToJson (room);
 		//Debug.Log ("roomString" + roomString);
 		//Debug.Log(Application.persistentDataPath); 
@@ -282,7 +335,6 @@ public class EditorRoomManager : MonoBehaviour {
 		UnityEditor.AssetDatabase.Refresh ();
 
 		return roomString;
-
 	}
 
 
@@ -300,19 +352,15 @@ public class EditorRoomManager : MonoBehaviour {
 		{
 			Furniture furn = (Furniture)interactable;
 			furnitureGameObjectMap [furn].transform.position = new Vector3 (furn.x + furn.mySize.x / 2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
-
 		}
 
 		if (interactable is Character) 
 		{
-
 			Character character = (Character)interactable;
 			characterGameObjectMap[character].transform.position = new Vector3 (character.x + character.mySize.x / 2 + character.offsetX, character.y + 0.5f + character.offsetY, 0);
-
 		}
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
-
 	}
 
 
@@ -326,15 +374,12 @@ public class EditorRoomManager : MonoBehaviour {
 		{
 			Furniture furn = (Furniture)interactable;
 			furnitureGameObjectMap[furn].transform.position = new Vector3 (furn.x + furn.mySize.x/2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
-
 		}
 
 		if (interactable is Character) 
 		{
-
 			Character character = (Character)interactable;
 			characterGameObjectMap[character].transform.position = new Vector3 (character.x + character.mySize.x/2 + character.offsetX, character.y + 0.5f + character.offsetY, 0);
-
 		}
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
@@ -345,14 +390,11 @@ public class EditorRoomManager : MonoBehaviour {
 
 	public void ChangeInteractableTileX(int x, Interactable interactable)
 	{
-
 		if (interactable == null) 
 		{
 
 			Debug.Log ("interactable is null");
 		}
-
-
 	
 		Tile tile = room.MyGrid.GetTileAt (interactable.x, interactable.y);
 		Tile tileNew = room.MyGrid.GetTileAt (x, interactable.y);
@@ -361,9 +403,6 @@ public class EditorRoomManager : MonoBehaviour {
 		{			
 			return;
 		}
-
-
-
 
 		if (interactable is Furniture) 
 		{
@@ -377,8 +416,7 @@ public class EditorRoomManager : MonoBehaviour {
 
 			// Game object
 			furnitureGameObjectMap [furn].transform.position = new Vector3 (furn.x + furn.mySize.x / 2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
-
-		
+					
 		} else if (interactable is Character) 
 		{	
 
@@ -392,19 +430,15 @@ public class EditorRoomManager : MonoBehaviour {
 			// Game object
 			characterGameObjectMap [character].transform.position = new Vector3 (character.x + character.mySize.x / 2 + character.offsetX, character.y + 0.5f + character.offsetY, 0);
 
-
 		} else if (interactable is TileInteraction)		
-		{			
-
+		{	
 			tile.myTileInteraction = null;
 			interactable.x = x;
 
 			tileNew.myTileInteraction = (TileInteraction)interactable;
-
 		}
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
-
 
 	}
 
@@ -412,10 +446,8 @@ public class EditorRoomManager : MonoBehaviour {
 
 	public void ChangeInteractableTileY(int y, Interactable interactable)
 	{
-
 		Tile tile = room.MyGrid.GetTileAt (interactable.x, interactable.y);
 		Tile tileNew = room.MyGrid.GetTileAt (interactable.x, y);
-
 
 		if (tileNew == null) 
 		{			
@@ -447,7 +479,6 @@ public class EditorRoomManager : MonoBehaviour {
 			// Game object
 			characterGameObjectMap [character].transform.position = new Vector3 (character.x + character.mySize.x / 2 + character.offsetX, character.y + 0.5f + character.offsetY, 0);
 
-
 		}
 		else if (interactable is TileInteraction) 
 		{
@@ -461,7 +492,6 @@ public class EditorRoomManager : MonoBehaviour {
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
 
-
 	}
 
 
@@ -469,8 +499,7 @@ public class EditorRoomManager : MonoBehaviour {
 	// OFFSETS //
 
 	public void ChangeInteractableOffsetX(float offsetX, Interactable interactable)
-	{
-		
+	{		
 		if (interactable is Furniture) 
 		{
 			Furniture furn = (Furniture)interactable;
@@ -484,7 +513,6 @@ public class EditorRoomManager : MonoBehaviour {
 			character.offsetX = offsetX;
 
 			characterGameObjectMap [character].transform.position = new Vector3 (character.x + character.mySize.x / 2 + character.offsetX, character.y + 0.5f + character.offsetY, 0);
-
 		} 
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
@@ -508,7 +536,6 @@ public class EditorRoomManager : MonoBehaviour {
 			character.offsetY = offsetY;
 
 			characterGameObjectMap[character].transform.position = new Vector3 (character.x + character.mySize.x/2 + character.offsetX, character.y + 0.5f + character.offsetY, 0);
-
 		} 
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
@@ -518,13 +545,11 @@ public class EditorRoomManager : MonoBehaviour {
 
 
 
-
 	// ------- GRAPHIC STATE ------- //
 
 
 	public void ChangeInteractableCurrentGraphicState(string state, PhysicalInteractable interactable)
 	{
-
 		foreach (GraphicState graphicState in interactable.graphicStates) 
 		{
 			Debug.Log (graphicState.graphicStateName + "=>" + state);
@@ -534,11 +559,11 @@ public class EditorRoomManager : MonoBehaviour {
 
 				// clean previous graphic state
 
-				EditorRoomManager.instance.room.MyGrid.ChangePIInTiles (interactable, graphicState);
-
+				EditorRoomManager.instance.room.ChangePIInTiles (interactable, graphicState);
 				interactable.currentGraphicState = graphicState;
 
 				// go to animation state
+
 				GameObject obj = GetPhysicalInteractableGameObject (interactable);
 				Animator animator = obj.GetComponent<Animator> ();
 				animator.PlayInFixedTime (state);
@@ -596,26 +621,10 @@ public class EditorRoomManager : MonoBehaviour {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	// ---- LOAD ROOM ---- //
 
 	public Room LoadRoom(string roomString)
 	{
-
 		Debug.Log ("LoadRoom");
 
 		Room tempRoom = JsonUtility.FromJson<Room> (roomString);
@@ -641,10 +650,6 @@ public class EditorRoomManager : MonoBehaviour {
 
 						Debug.LogError ("graphicStates is null");
 					}
-
-					//Tile tileShadow = tempRoom.myMirrorRoom.shadowGrid.GetTileAt (furn.x, furn.y);
-					//tileShadow.myFurniture = furn;
-
 				}
 
 				foreach (TileInteraction tileInt in tempRoom.myMirrorRoom.myTileInteractionList_Shadow) 
@@ -658,7 +663,6 @@ public class EditorRoomManager : MonoBehaviour {
 
 				foreach (Furniture furn in tempRoom.myFurnitureList) 
 				{
-
 					if (furn.graphicStates != null) 
 					{
 						furn.currentGraphicState = furn.graphicStates [0];
@@ -667,19 +671,13 @@ public class EditorRoomManager : MonoBehaviour {
 
 						Debug.LogError ("graphicStates is null");
 					}
-
-					//Tile tile = tempRoom.MyGrid.GetTileAt (furn.x, furn.y);
-				//	tile.myFurniture = furn;
-
 				}
 
 				foreach (TileInteraction tileInt in tempRoom.myTileInteractionList) 
 				{
 					Tile tile = tempRoom.MyGrid.GetTileAt (tileInt.x, tileInt.y);
 					tile.myTileInteraction = tileInt;
-
 				}
-
 			}
 
 
@@ -696,18 +694,10 @@ public class EditorRoomManager : MonoBehaviour {
 
 					Debug.LogError ("graphicStates is null");
 				}
-
-				//Tile tile = tempRoom.MyGrid.GetTileAt (furn.x, furn.y);
-				//tile.myFurniture = furn;
-
-				//Tile tileShadow = tempRoom.myMirrorRoom.shadowGrid.GetTileAt (furn.x, furn.y);
-				//tileShadow.myFurniture = furn;
-
 			}
 
 			foreach (TileInteraction tileInt in tempRoom.myMirrorRoom.myTileInteractionList_Persistant) 
-			{
-				
+			{				
 				Tile tile = tempRoom.MyGrid.GetTileAt (tileInt.x, tileInt.y);
 				tile.myTileInteraction = tileInt;
 
@@ -732,8 +722,7 @@ public class EditorRoomManager : MonoBehaviour {
 			// REAL ROOM 
 
 			foreach (Furniture furn in tempRoom.myFurnitureList) 
-			{
-				
+			{				
 				if (furn.graphicStates != null) 
 				{
 					furn.currentGraphicState = furn.graphicStates [0];
@@ -742,16 +731,13 @@ public class EditorRoomManager : MonoBehaviour {
 
 				Debug.LogError ("graphicStates is null");
 				}
-
-				//Tile tile = tempRoom.MyGrid.GetTileAt (furn.x, furn.y);
-				//	tile.myFurniture = furn;
 			}
 
 
 			foreach (Character character in tempRoom.myCharacterList) 
 			{
-			//	Tile tile = tempRoom.MyGrid.GetTileAt (character.x, character.y);
-				//tile.myCharacter = character;
+				Tile tile = tempRoom.MyGrid.GetTileAt (character.x, character.y);
+				tile.myCharacter = character;
 			}
 
 

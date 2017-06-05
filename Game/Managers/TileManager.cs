@@ -31,11 +31,12 @@ public class TileManager : MonoBehaviour {
 	// Use this for initialization
 	public void Initialize () 
 	{	
-		EventsHandler.cb_furnitureChanged += ColorTiles;
-		EventsHandler.cb_characterChanged += ColorTiles;
-		EventsHandler.cb_tileInteractionChanged += ColorTiles;
+		//EventsHandler.cb_furnitureChanged += ColorTiles;
+		//EventsHandler.cb_characterChanged += ColorTiles;
+		//EventsHandler.cb_tileInteractionChanged += ColorTiles;
 		EventsHandler.cb_characterMove += FindPlayerTile;
 		EventsHandler.cb_roomCreated += CreateTileObject;
+		EventsHandler.cb_tileLayoutChanged += ColorTiles;
 
 		tileGameObjectMap = new Dictionary<Tile, GameObject>();
 					
@@ -44,12 +45,12 @@ public class TileManager : MonoBehaviour {
 
 	public void OnDestroy()
 	{
-		EventsHandler.cb_furnitureChanged -= ColorTiles;
-		EventsHandler.cb_characterChanged -= ColorTiles;
-		EventsHandler.cb_tileInteractionChanged -= ColorTiles;
+		//EventsHandler.cb_furnitureChanged -= ColorTiles;
+		//EventsHandler.cb_characterChanged -= ColorTiles;
+		//EventsHandler.cb_tileInteractionChanged -= ColorTiles;
 		EventsHandler.cb_characterMove -= FindPlayerTile;
 		EventsHandler.cb_roomCreated -= CreateTileObject;
-	
+		EventsHandler.cb_tileLayoutChanged -= ColorTiles;
 	}
 
 
@@ -117,7 +118,7 @@ public class TileManager : MonoBehaviour {
 	}
 
 
-
+	/*
 	// Color furniture tiles inside game
 
 	public void ColorTiles(Interactable interactable)
@@ -140,7 +141,67 @@ public class TileManager : MonoBehaviour {
 
 
 	}
+	*/
 
+
+
+
+	public void ColorTiles()
+	{
+
+		//Debug.Log ("ColorTiles");
+
+		// First - Clean tile layout
+
+		foreach (GameObject obj in tileGameObjectMap.Values) 
+		{
+
+			obj.GetComponent<SpriteRenderer> ().color = new Color (1f, 1f, 1f, 0.1f);
+
+		}
+
+		// Color furniture tiles
+
+		foreach (Tile tile in RoomManager.instance.myRoom.MyGrid.gridArray) 
+		{
+
+			if (tile.myFurniture != null) 
+			{
+				tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.blue;
+
+				continue;
+			}
+
+
+			if (tile.myCharacter != null) 
+			{
+				tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.magenta;
+
+				continue;
+			}
+
+
+			if (tile.myTileInteraction != null) 
+			{
+				TileInteraction tileInt = tile.myTileInteraction;
+
+				for (int x = 0; x < tileInt.mySize.x; x++) 
+				{
+					for (int y = 0; y < tileInt.mySize.y; y++) 
+					{
+						Tile tempTile = RoomManager.instance.myRoom.MyGrid.GetTileAt (tileInt.x + x, tileInt.y + y);
+						tileGameObjectMap [tempTile].GetComponent<SpriteRenderer> ().color = new Color (0.1f, 0.3f, 0.2f, 0.4f);
+
+					}
+				}
+
+				continue;
+			}
+
+		}
+
+
+	}
 
 
 

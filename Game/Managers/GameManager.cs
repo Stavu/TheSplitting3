@@ -77,7 +77,6 @@ public class GameManager : MonoBehaviour
 		if (roomToLoad == null) 
 		{
 			roomToLoad = stringRoomMap ["test1"];
-
 		}
 
 		speakerColorMap = new Dictionary<string, Color> ();
