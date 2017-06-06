@@ -998,7 +998,8 @@ public class EditorRoomManager : MonoBehaviour {
 
 			if (tempRoom.myMirrorRoom.inTheShadow == true) 
 			{
-				
+				// SHADOW ROOM
+
 				foreach (Furniture furn in tempRoom.myMirrorRoom.myFurnitureList_Shadow) 
 				{
 					if (furn.graphicStates != null) 
@@ -1020,6 +1021,8 @@ public class EditorRoomManager : MonoBehaviour {
 
 			} else {
 
+				// MIRROR ROOM
+
 				foreach (Furniture furn in tempRoom.myFurnitureList) 
 				{
 					if (furn.graphicStates != null) 
@@ -1035,7 +1038,12 @@ public class EditorRoomManager : MonoBehaviour {
 				foreach (TileInteraction tileInt in tempRoom.myTileInteractionList) 
 				{
 					Tile tile = tempRoom.MyGrid.GetTileAt (tileInt.x, tileInt.y);
-					tile.myTileInteraction = tileInt;
+
+					// place interactable in new tiles
+
+					List<Tile> tileList = tempRoom.GetMyTiles (tempRoom.MyGrid, tileInt.mySize, tileInt.x, tileInt.y);
+					tempRoom.PlaceInteractableIntileList (tileList, tileInt);
+
 				}
 			}
 
@@ -1054,25 +1062,33 @@ public class EditorRoomManager : MonoBehaviour {
 				}
 			}
 
+			foreach (Character character in tempRoom.myCharacterList) 
+			{				
+				if (character.graphicStates != null) 
+				{
+					character.currentGraphicState = character.graphicStates [0];
+
+				} else {
+
+					Debug.LogError ("graphicStates is null");
+				}
+			}
+
+
 			foreach (TileInteraction tileInt in tempRoom.myMirrorRoom.myTileInteractionList_Persistant) 
 			{				
 				Tile tile = tempRoom.MyGrid.GetTileAt (tileInt.x, tileInt.y);
-				tile.myTileInteraction = tileInt;
+
+				List<Tile> tileList = tempRoom.GetMyTiles (tempRoom.MyGrid, tileInt.mySize, tileInt.x, tileInt.y);
+				tempRoom.PlaceInteractableIntileList (tileList, tileInt);
 
 				Tile tileShadow = tempRoom.myMirrorRoom.shadowGrid.GetTileAt (tileInt.x, tileInt.y);
-				tileShadow.myTileInteraction = tileInt;
-
+			
+				List<Tile> tileList_shadow = tempRoom.GetMyTiles (tempRoom.myMirrorRoom.shadowGrid, tileInt.mySize, tileInt.x, tileInt.y);
+				tempRoom.PlaceInteractableIntileList (tileList_shadow, tileInt);
 			}
 
-			foreach (Character character in tempRoom.myCharacterList) 
-			{
-				Tile tile = tempRoom.MyGrid.GetTileAt (character.x, character.y);
-				tile.myCharacter = character;
 
-				Tile tileShadow = tempRoom.myMirrorRoom.shadowGrid.GetTileAt (character.x, character.y);
-				tileShadow.myCharacter = character;
-
-			}
 
 		} else {
 			
@@ -1093,14 +1109,23 @@ public class EditorRoomManager : MonoBehaviour {
 
 			foreach (Character character in tempRoom.myCharacterList) 
 			{
-				Tile tile = tempRoom.MyGrid.GetTileAt (character.x, character.y);
-				tile.myCharacter = character;
+				if (character.graphicStates != null) 
+				{
+					character.currentGraphicState = character.graphicStates [0];
+
+				} else {
+
+					Debug.LogError ("graphicStates is null");
+				}
 			}
 
 			foreach (TileInteraction tileInt in tempRoom.myTileInteractionList) 
 			{
 				Tile tile = tempRoom.MyGrid.GetTileAt (tileInt.x, tileInt.y);
-				tile.myTileInteraction = tileInt;
+
+				List<Tile> tileList = tempRoom.GetMyTiles (tempRoom.MyGrid, tileInt.mySize, tileInt.x, tileInt.y);
+				tempRoom.PlaceInteractableIntileList (tileList, tileInt);
+
 			}
 		}
 
