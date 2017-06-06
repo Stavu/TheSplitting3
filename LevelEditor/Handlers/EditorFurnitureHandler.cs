@@ -49,27 +49,37 @@ public class EditorFurnitureHandler : MonoBehaviour
 
 		if (tile.myFurniture != null)
 		{
+			Furniture oldFurn = tile.myFurniture;
+		
 			if (myRoom.RoomState == RoomState.Real) 
 			{			
 				// Real
-				myRoom.myFurnitureList.Remove (tile.myFurniture);
+				myRoom.myFurnitureList.Remove (oldFurn);
 
 			} else {
 
 				if (myRoom.myMirrorRoom.inTheShadow == true) 
 				{			
 					// Shadow
-					myRoom.myMirrorRoom.myFurnitureList_Shadow.Remove (tile.myFurniture);
+					myRoom.myMirrorRoom.myFurnitureList_Shadow.Remove (oldFurn);
 
 				} else {
 
 					// Mirror
-					myRoom.myFurnitureList.Remove (tile.myFurniture);
+					myRoom.myFurnitureList.Remove (oldFurn);
 				}
 			}
 
-			Destroy(EditorRoomManager.instance.furnitureGameObjectMap [tile.myFurniture]);
-			EditorRoomManager.instance.furnitureGameObjectMap.Remove (tile.myFurniture);
+			Destroy(EditorRoomManager.instance.furnitureGameObjectMap [oldFurn]);
+			EditorRoomManager.instance.furnitureGameObjectMap.Remove (oldFurn);
+
+			foreach (Tile oldTile in myRoom.MyGrid.gridArray) 
+			{
+				if (oldTile.myFurniture == oldFurn) 
+				{
+					oldTile.myFurniture = null;
+				}
+			}
 		}
 
 		// create furniture

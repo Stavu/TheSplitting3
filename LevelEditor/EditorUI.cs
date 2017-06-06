@@ -445,6 +445,17 @@ public class EditorUI : MonoBehaviour {
 	}
 
 
+	public static void DisplayAlert_B(string textString)
+	{
+		GameObject alertObject = Instantiate(Resources.Load<GameObject>("Prefabs/Editor/Alert_B"));
+
+		Text alertText = alertObject.transform.Find ("Panel").Find ("Text").GetComponent<Text> ();
+		alertText.text = textString;
+
+		Button okButton = alertObject.transform.Find ("Panel").Find ("OkButton").GetComponent<Button> ();
+
+		okButton.onClick.AddListener (() => Destroy(alertObject));
+	}
 
 
 

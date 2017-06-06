@@ -68,15 +68,12 @@ public class EditorRoomManager : MonoBehaviour {
 			editorTileInteractionHandler.Initialize ();
 		}
 
-
 		// loading the prefabs
 
 		if (stringPrefabMap == null) 
 		{
 			LoadPrefabs ();
 		}
-
-
 	}
 
 
@@ -124,7 +121,6 @@ public class EditorRoomManager : MonoBehaviour {
 	}
 
 	// adding background image 
-
 
 	public void InitializeRoom(string name = "abandoned_lobby_bg")
 	{
@@ -320,48 +316,171 @@ public class EditorRoomManager : MonoBehaviour {
 	}
 
 
-	// SERIALIZE ROOM //
 
 
-	public string SerializeRoom ()
+
+	// Checking if tiles are clean
+
+	public bool CheckNewTiles(List<Tile> tileList, Interactable interactable)
 	{
-		string roomString = JsonUtility.ToJson (room);
-		//Debug.Log ("roomString" + roomString);
-		//Debug.Log(Application.persistentDataPath); 
-
-		string path = ("Assets/Resources/Jsons/Rooms/" + room.myName + ".json");
-
-		using (FileStream fs = new FileStream(path, FileMode.Create))
+		foreach (Tile tile in tileList) 
 		{
-			using (StreamWriter writer = new StreamWriter(fs))
+			if (interactable is Furniture) 
 			{
-				writer.Write(roomString);
+				if (tile.myFurniture != null) 
+				{
+					if (tile.myFurniture != interactable) 
+					{
+						return false;
+					}
+				}
+			}
+
+			if (interactable is Character) 
+			{
+				if (tile.myCharacter != null) 
+				{
+					if (tile.myCharacter != interactable) 
+					{
+						return false;
+					}
+				}
+			}
+
+			if (interactable is TileInteraction) 
+			{
+				if (tile.myTileInteraction != null) 
+				{
+					if (tile.myTileInteraction != interactable) 
+					{
+						return false;
+					}
+				}
 			}
 		}
 
-		UnityEditor.AssetDatabase.Refresh ();
-
-		return roomString;
+		return true;
 	}
+
 
 
 
 	// CHANGING INTERACTABLE //
 
 	public void ChangeInteractableWidth(int width, Interactable interactable)
-	{
-		interactable.mySize = new Vector2 (width, interactable.mySize.y);
-
+	{	
 		if (interactable is Furniture) 
-		{
+		{			
 			Furniture furn = (Furniture)interactable;
+
+			if (furn.currentGraphicState.coordsList.Count > 0) 
+			{
+				EditorUI.DisplayAlert_B ("The furniture has a coords list."); 
+				return;
+			}
+
+			Room myRoom = EditorRoomManager.instance.room;
+
+			Vector2 targetSize = new Vector2 (width, furn.mySize.y);
+			List<Tile> tileList = myRoom.GetMyTiles (myRoom.MyGrid, targetSize, furn.x, furn.y);
+
+			if (CheckNewTiles (tileList, furn) == false) 
+			{
+				EditorUI.DisplayAlert_B ("There is furniture in the way."); 
+				return;
+			}
+
+			furn.mySize = targetSize;
+
+			// clean tiles
+
+			foreach (Tile tile in myRoom.MyGrid.gridArray) 
+			{
+				if (tile.myFurniture == furn) 
+				{
+					tile.myFurniture = null;
+				}
+			}
+
+			// place interactable in new tiles
+
+			myRoom.PlaceInteractableIntileList (tileList, furn);
+
 			furnitureGameObjectMap [furn].transform.position = new Vector3 (furn.x + furn.mySize.x / 2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
 		}
 
 		if (interactable is Character) 
 		{
 			Character character = (Character)interactable;
+
+			if (character.currentGraphicState.coordsList.Count > 0) 
+			{
+				EditorUI.DisplayAlert_B ("The character has a coords list."); 
+				return;
+			}
+
+			Room myRoom = EditorRoomManager.instance.room;
+
+			Vector2 targetSize = new Vector2 (width, character.mySize.y);
+			List<Tile> tileList = myRoom.GetMyTiles (myRoom.MyGrid, targetSize, character.x, character.y);
+
+			if (CheckNewTiles (tileList, character) == false) 
+			{
+				EditorUI.DisplayAlert_B ("There are characters in the way."); 
+				return;
+			}
+
+			character.mySize = targetSize;
+
+			// clean tiles
+
+			foreach (Tile tile in myRoom.MyGrid.gridArray) 
+			{
+				if (tile.myCharacter == character) 
+				{
+					tile.myCharacter = null;
+				}
+			}
+
+			// place interactable in new tiles
+
+			myRoom.PlaceInteractableIntileList (tileList, character);
+
 			characterGameObjectMap[character].transform.position = new Vector3 (character.x + character.mySize.x / 2 + character.offsetX, character.y + 0.5f + character.offsetY, 0);
+		}
+
+
+		if (interactable is TileInteraction) 
+		{			
+			TileInteraction tileInt = (TileInteraction)interactable;
+
+			Room myRoom = EditorRoomManager.instance.room;
+
+			Vector2 targetSize = new Vector2 (width, tileInt.mySize.y);
+			List<Tile> tileList = myRoom.GetMyTiles (myRoom.MyGrid, targetSize, tileInt.x, tileInt.y);
+
+			if (CheckNewTiles (tileList, tileInt) == false) 
+			{
+				EditorUI.DisplayAlert_B ("There is a tile interaction in the way."); 
+				return;
+			}
+
+			tileInt.mySize = targetSize;
+
+			// clean tiles
+
+			foreach (Tile tile in myRoom.MyGrid.gridArray) 
+			{
+				if (tile.myTileInteraction == tileInt) 
+				{
+					tile.myTileInteraction = null;
+				}
+			}
+
+			// place interactable in new tiles
+
+			myRoom.PlaceInteractableIntileList (tileList, tileInt);
+
 		}
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
@@ -370,19 +489,119 @@ public class EditorRoomManager : MonoBehaviour {
 
 
 	public void ChangeInteractableHeight(int height, Interactable interactable)
-	{
-		interactable.mySize = new Vector2 (interactable.mySize.x, height);
-
+	{		
 		if (interactable is Furniture) 
-		{
+		{			
 			Furniture furn = (Furniture)interactable;
-			furnitureGameObjectMap[furn].transform.position = new Vector3 (furn.x + furn.mySize.x/2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
+
+			if (furn.currentGraphicState.coordsList.Count > 0) 
+			{
+				EditorUI.DisplayAlert_B ("The furniture has a coords list."); 
+				return;
+			}
+
+			Room myRoom = EditorRoomManager.instance.room;
+
+			Vector2 targetSize = new Vector2 (furn.mySize.x, height);
+			List<Tile> tileList = myRoom.GetMyTiles (myRoom.MyGrid, targetSize, furn.x, furn.y);
+
+			if (CheckNewTiles (tileList, furn) == false) 
+			{
+				EditorUI.DisplayAlert_B ("There is furniture in the way."); 
+				return;
+			}
+
+			furn.mySize = targetSize;
+
+			// clean tiles
+
+			foreach (Tile tile in myRoom.MyGrid.gridArray) 
+			{
+				if (tile.myFurniture == furn) 
+				{
+					tile.myFurniture = null;
+				}
+			}
+
+			// place interactable in new tiles
+
+			myRoom.PlaceInteractableIntileList (tileList, furn);
+
+			furnitureGameObjectMap [furn].transform.position = new Vector3 (furn.x + furn.mySize.x / 2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
 		}
+
 
 		if (interactable is Character) 
 		{
 			Character character = (Character)interactable;
-			characterGameObjectMap[character].transform.position = new Vector3 (character.x + character.mySize.x/2 + character.offsetX, character.y + 0.5f + character.offsetY, 0);
+
+			if (character.currentGraphicState.coordsList.Count > 0) 
+			{
+				EditorUI.DisplayAlert_B ("The character has a coords list."); 
+				return;
+			}
+
+			Room myRoom = EditorRoomManager.instance.room;
+
+			Vector2 targetSize = new Vector2 (character.mySize.x, height);
+			List<Tile> tileList = myRoom.GetMyTiles (myRoom.MyGrid, targetSize, character.x, character.y);
+
+			if (CheckNewTiles (tileList, character) == false) 
+			{
+				EditorUI.DisplayAlert_B ("There are characters in the way."); 
+				return;
+			}
+
+			character.mySize = targetSize;
+
+			// clean tiles
+
+			foreach (Tile tile in myRoom.MyGrid.gridArray) 
+			{
+				if (tile.myCharacter == character) 
+				{
+					tile.myCharacter = null;
+				}
+			}
+
+			// place interactable in new tiles
+
+			myRoom.PlaceInteractableIntileList (tileList, character);
+
+			characterGameObjectMap[character].transform.position = new Vector3 (character.x + character.mySize.x / 2 + character.offsetX, character.y + 0.5f + character.offsetY, 0);
+		}
+
+
+		if (interactable is TileInteraction) 
+		{			
+			TileInteraction tileInt = (TileInteraction)interactable;
+
+			Room myRoom = EditorRoomManager.instance.room;
+
+			Vector2 targetSize = new Vector2 (tileInt.mySize.x, height);
+			List<Tile> tileList = myRoom.GetMyTiles (myRoom.MyGrid, targetSize, tileInt.x, tileInt.y);
+
+			if (CheckNewTiles (tileList, tileInt) == false) 
+			{
+				EditorUI.DisplayAlert_B ("There is a tile interaction in the way."); 
+				return;
+			}
+
+			tileInt.mySize = targetSize;
+
+			// clean tiles
+
+			foreach (Tile tile in myRoom.MyGrid.gridArray) 
+			{
+				if (tile.myTileInteraction == tileInt) 
+				{
+					tile.myTileInteraction = null;
+				}
+			}
+
+			// place interactable in new tiles
+
+			myRoom.PlaceInteractableIntileList (tileList, tileInt);
 		}
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
@@ -395,48 +614,122 @@ public class EditorRoomManager : MonoBehaviour {
 		if (interactable == null) 
 		{
 			Debug.Log ("interactable is null");
-		}
-	
-		Tile tile = room.MyGrid.GetTileAt (interactable.x, interactable.y);
-		Tile tileNew = room.MyGrid.GetTileAt (x, interactable.y);
-
-		if (tileNew == null) 
-		{			
-			return;
-		}
+		}	
 
 		if (interactable is Furniture) 
-		{
-			
+		{			
 			Furniture furn = (Furniture)interactable;
 
-			tile.myFurniture = null;
+			if (furn.currentGraphicState.coordsList.Count > 0) 
+			{
+				EditorUI.DisplayAlert_B ("The furniture has a coords list."); 
+				return;
+			}
+
+			Room myRoom = EditorRoomManager.instance.room;
+
+			List<Tile> tileList = myRoom.GetMyTiles (myRoom.MyGrid, furn.mySize, x, furn.y);
+
+			if (CheckNewTiles (tileList, furn) == false) 
+			{
+				EditorUI.DisplayAlert_B ("There is furniture in the way."); 
+				return;
+			}
+		
 			furn.x = x;
 
-			tileNew.myFurniture = furn;
+			// clean tiles
+
+			foreach (Tile tile in myRoom.MyGrid.gridArray) 
+			{
+				if (tile.myFurniture == furn) 
+				{
+					tile.myFurniture = null;
+				}
+			}
+
+			// place interactable in new tiles
+
+			myRoom.PlaceInteractableIntileList (tileList, furn);
 
 			// Game object
+
 			furnitureGameObjectMap [furn].transform.position = new Vector3 (furn.x + furn.mySize.x / 2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
 					
-		} else if (interactable is Character) 
-		{	
+		} 
 
+		if (interactable is Character) 
+		{	
 			Character character = (Character)interactable;
 
-			tile.myCharacter = null;
+			if (character.currentGraphicState.coordsList.Count > 0) 
+			{
+				EditorUI.DisplayAlert_B ("The character has a coords list."); 
+				return;
+			}
+
+			Room myRoom = EditorRoomManager.instance.room;
+
+			List<Tile> tileList = myRoom.GetMyTiles (myRoom.MyGrid, character.mySize, x, character.y);
+
+			if (CheckNewTiles (tileList, character) == false) 
+			{
+				EditorUI.DisplayAlert_B ("There is furniture in the way."); 
+				return;
+			}
+
 			character.x = x;
 
-			tileNew.myCharacter = character;
+			// clean tiles
+
+			foreach (Tile tile in myRoom.MyGrid.gridArray) 
+			{
+				if (tile.myCharacter == character) 
+				{
+					tile.myCharacter = null;
+				}
+			}
+
+			// place interactable in new tiles
+
+			myRoom.PlaceInteractableIntileList (tileList, character);
 
 			// Game object
+
 			characterGameObjectMap [character].transform.position = new Vector3 (character.x + character.mySize.x / 2 + character.offsetX, character.y + 0.5f + character.offsetY, 0);
 
-		} else if (interactable is TileInteraction)		
-		{	
-			tile.myTileInteraction = null;
-			interactable.x = x;
+		}
 
-			tileNew.myTileInteraction = (TileInteraction)interactable;
+		if (interactable is TileInteraction)		
+		{				
+			TileInteraction tileInt = (TileInteraction)interactable;
+
+			Room myRoom = EditorRoomManager.instance.room;
+
+			List<Tile> tileList = myRoom.GetMyTiles (myRoom.MyGrid, tileInt.mySize, x, tileInt.y);
+
+			if (CheckNewTiles (tileList, tileInt) == false) 
+			{
+				EditorUI.DisplayAlert_B ("There is a tile interaction in the way."); 
+				return;
+			}
+
+			tileInt.x = x;
+
+			// clean tiles
+
+			foreach (Tile tile in myRoom.MyGrid.gridArray) 
+			{
+				if (tile.myTileInteraction == tileInt) 
+				{
+					tile.myTileInteraction = null;
+				}
+			}
+
+			// place interactable in new tiles
+
+			myRoom.PlaceInteractableIntileList (tileList, tileInt);
+
 		}
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
@@ -446,45 +739,119 @@ public class EditorRoomManager : MonoBehaviour {
 
 	public void ChangeInteractableTileY(int y, Interactable interactable)
 	{
-		Tile tile = room.MyGrid.GetTileAt (interactable.x, interactable.y);
-		Tile tileNew = room.MyGrid.GetTileAt (interactable.x, y);
-
-		if (tileNew == null) 
-		{			
-			return;
-		}
-
 		if (interactable is Furniture) 
-		{
+		{			
 			Furniture furn = (Furniture)interactable;
 
-			tile.myFurniture = null;
+			if (furn.currentGraphicState.coordsList.Count > 0) 
+			{
+				EditorUI.DisplayAlert_B ("The furniture has a coords list."); 
+				return;
+			}
+
+			Room myRoom = EditorRoomManager.instance.room;
+
+			List<Tile> tileList = myRoom.GetMyTiles (myRoom.MyGrid, furn.mySize, furn.x, y);
+
+			if (CheckNewTiles (tileList, furn) == false) 
+			{
+				EditorUI.DisplayAlert_B ("There is furniture in the way."); 
+				return;
+			}
+
 			furn.y = y;
 
-			tileNew.myFurniture = furn;
+			// clean tiles
+
+			foreach (Tile tile in myRoom.MyGrid.gridArray) 
+			{
+				if (tile.myFurniture == furn) 
+				{
+					tile.myFurniture = null;
+				}
+			}
+
+			// place interactable in new tiles
+
+			myRoom.PlaceInteractableIntileList (tileList, furn);
+
+			// Game object
 
 			furnitureGameObjectMap [furn].transform.position = new Vector3 (furn.x + furn.mySize.x / 2 + furn.offsetX, furn.y + 0.5f + furn.offsetY, 0);
-	
-		} else if (interactable is Character) 
+
+		} 
+
+		if (interactable is Character) 
 		{	
 			Character character = (Character)interactable;
 
-			tile.myCharacter = null;
+			if (character.currentGraphicState.coordsList.Count > 0) 
+			{
+				EditorUI.DisplayAlert_B ("The character has a coords list."); 
+				return;
+			}
+
+			Room myRoom = EditorRoomManager.instance.room;
+
+			List<Tile> tileList = myRoom.GetMyTiles (myRoom.MyGrid, character.mySize, character.x, y);
+
+			if (CheckNewTiles (tileList, character) == false) 
+			{
+				EditorUI.DisplayAlert_B ("There is furniture in the way."); 
+				return;
+			}
+
 			character.y = y;
 
-			tileNew.myCharacter = character;
+			// clean tiles
+
+			foreach (Tile tile in myRoom.MyGrid.gridArray) 
+			{
+				if (tile.myCharacter == character) 
+				{
+					tile.myCharacter = null;
+				}
+			}
+
+			// place interactable in new tiles
+
+			myRoom.PlaceInteractableIntileList (tileList, character);
 
 			// Game object
+
 			characterGameObjectMap [character].transform.position = new Vector3 (character.x + character.mySize.x / 2 + character.offsetX, character.y + 0.5f + character.offsetY, 0);
 
 		}
-		else if (interactable is TileInteraction) 
-		{
-			
-			tile.myTileInteraction = null;
-			interactable.y = y;
 
-			tileNew.myTileInteraction = (TileInteraction)interactable;
+		if (interactable is TileInteraction)		
+		{				
+			TileInteraction tileInt = (TileInteraction)interactable;
+
+			Room myRoom = EditorRoomManager.instance.room;
+
+			List<Tile> tileList = myRoom.GetMyTiles (myRoom.MyGrid, tileInt.mySize, tileInt.x, y);
+
+			if (CheckNewTiles (tileList, tileInt) == false) 
+			{
+				EditorUI.DisplayAlert_B ("There is a tile interaction in the way."); 
+				return;
+			}
+
+			tileInt.y = y;
+
+			// clean tiles
+
+			foreach (Tile tile in myRoom.MyGrid.gridArray) 
+			{
+				if (tile.myTileInteraction == tileInt) 
+				{
+					tile.myTileInteraction = null;
+				}
+			}
+
+			// place interactable in new tiles
+
+			myRoom.PlaceInteractableIntileList (tileList, tileInt);
 
 		}
 
@@ -760,6 +1127,34 @@ public class EditorRoomManager : MonoBehaviour {
 
 		return obj;
 	}
+
+
+
+
+	// SERIALIZE ROOM //
+
+
+	public string SerializeRoom ()
+	{
+		string roomString = JsonUtility.ToJson (room);
+		//Debug.Log ("roomString" + roomString);
+		//Debug.Log(Application.persistentDataPath); 
+
+		string path = ("Assets/Resources/Jsons/Rooms/" + room.myName + ".json");
+
+		using (FileStream fs = new FileStream(path, FileMode.Create))
+		{
+			using (StreamWriter writer = new StreamWriter(fs))
+			{
+				writer.Write(roomString);
+			}
+		}
+
+		UnityEditor.AssetDatabase.Refresh ();
+
+		return roomString;
+	}
+
 
 
 

@@ -237,6 +237,33 @@ public class Room {
 	}
 
 
+
+
+	// Placing interactable in tile list
+
+	public void PlaceInteractableIntileList(List<Tile> tileList, Interactable interactable)
+	{
+		foreach (Tile tile in tileList) 
+		{
+			if (interactable is Furniture) 
+			{
+				tile.myFurniture = (Furniture)interactable;
+			}
+
+			if (interactable is Character) 
+			{
+				tile.myCharacter = (Character)interactable;
+			}
+
+			if (interactable is TileInteraction) 
+			{
+				tile.myTileInteraction = (TileInteraction)interactable;
+			}			
+		}
+	}
+
+
+
 	// Get all the tiles associated with this interactable object
 
 	public List<Tile> GetMyTiles (Grid grid, Vector2 mySize, int x ,int y)

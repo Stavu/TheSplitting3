@@ -30,28 +30,37 @@ public class EditorTileInteractionHandler : MonoBehaviour {
 
 		Room myRoom = EditorRoomManager.instance.room;
 
-		// If there's already a tileInteraction on this tile, destroy it before creating a new tileInteraction
 
+		// If there's already a tileInteraction on this tile, destroy it before creating a new tileInteraction
 
 		if (tile.myTileInteraction != null)
 		{
+			TileInteraction oldTileInt = tile.myTileInteraction;
 
 			if (EditorRoomManager.instance.room.RoomState == RoomState.Real) 
 			{			
 				// Real
-				EditorRoomManager.instance.room.myTileInteractionList.Remove (tile.myTileInteraction);
+				EditorRoomManager.instance.room.myTileInteractionList.Remove (oldTileInt);
 
 			} else {
 
 				if (EditorRoomManager.instance.room.myMirrorRoom.inTheShadow == true) 
 				{			
 					// Shadow
-					EditorRoomManager.instance.room.myMirrorRoom.myTileInteractionList_Shadow.Remove (tile.myTileInteraction);
+					EditorRoomManager.instance.room.myMirrorRoom.myTileInteractionList_Shadow.Remove (oldTileInt);
 
 				} else {
 
 					// Mirror
-					EditorRoomManager.instance.room.myTileInteractionList.Remove (tile.myTileInteraction);
+					EditorRoomManager.instance.room.myTileInteractionList.Remove (oldTileInt);
+				}
+			}
+
+			foreach (Tile oldTile in myRoom.MyGrid.gridArray) 
+			{
+				if (oldTile.myTileInteraction == oldTileInt) 
+				{
+					oldTile.myTileInteraction = null;
 				}
 			}
 		}

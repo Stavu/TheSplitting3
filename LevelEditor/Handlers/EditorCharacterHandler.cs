@@ -46,15 +46,23 @@ public class EditorCharacterHandler : MonoBehaviour {
 
 		// If there's already a character on this tile, destroy it before creating a new character
 
-
 		if (tile.myCharacter != null)
 		{
+			Character oldChar = tile.myCharacter;
+
 			myRoom.myCharacterList.Remove (tile.myCharacter);
 
-			Destroy(EditorRoomManager.instance.characterGameObjectMap [tile.myCharacter]);
-			EditorRoomManager.instance.characterGameObjectMap.Remove (tile.myCharacter);
-		}
+			Destroy(EditorRoomManager.instance.characterGameObjectMap [oldChar]);
+			EditorRoomManager.instance.characterGameObjectMap.Remove (oldChar);
 
+			foreach (Tile oldTile in myRoom.MyGrid.gridArray) 
+			{
+				if (oldTile.myCharacter == oldChar) 
+				{
+					oldTile.myCharacter = null;
+				}
+			}
+		}
 
 		// create furniture
 
