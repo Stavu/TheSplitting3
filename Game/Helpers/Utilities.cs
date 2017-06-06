@@ -99,7 +99,6 @@ public class Utilities {
 			sr.flipX = myFurniture.imageFlipped;
 		}
 
-
 		/*
 		if (myFurniture.currentGraphicState.frameExtents == Vector2.zero) 
 		{

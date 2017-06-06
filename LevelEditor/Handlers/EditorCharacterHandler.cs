@@ -42,18 +42,18 @@ public class EditorCharacterHandler : MonoBehaviour {
 			return;
 		}
 
+		Room myRoom = EditorRoomManager.instance.room;
 
 		// If there's already a character on this tile, destroy it before creating a new character
 
 
 		if (tile.myCharacter != null)
 		{
-			EditorRoomManager.instance.room.myCharacterList.Remove (tile.myCharacter);
+			myRoom.myCharacterList.Remove (tile.myCharacter);
 
 			Destroy(EditorRoomManager.instance.characterGameObjectMap [tile.myCharacter]);
 			EditorRoomManager.instance.characterGameObjectMap.Remove (tile.myCharacter);
 		}
-
 
 
 		// create furniture
@@ -65,14 +65,11 @@ public class EditorCharacterHandler : MonoBehaviour {
 
 		character.mySize = Vector2.one;
 
-
-		EditorRoomManager.instance.room.myCharacterList.Add (character);
-
+		myRoom.myCharacterList.Add (character);
 		tile.myCharacter = character;
 
-
 		EventsHandler.Invoke_cb_editorCharacterModelChanged (character);
-
+		PlaceCharacterInTiles (character, myRoom, myRoom.MyGrid);	
 
 	}
 
@@ -84,10 +81,9 @@ public class EditorCharacterHandler : MonoBehaviour {
 		//Debug.Log ("FurnitureFactory");
 
 		foreach (Character character in room.myCharacterList) 
-		{			
-
+		{	
 			EventsHandler.Invoke_cb_editorCharacterModelChanged (character);
-
+			PlaceCharacterInTiles (character, room, room.MyGrid);	
 		}
 
 	}
@@ -95,10 +91,9 @@ public class EditorCharacterHandler : MonoBehaviour {
 
 
 	public void CreateCharacterObject(Character myCharacter)
-	{			
+	{	
 
 		GameObject obj = Utilities.CreateCharacterGameObject (myCharacter, this.transform);
-
 
 		if (myCharacter == null) 
 		{
@@ -110,9 +105,7 @@ public class EditorCharacterHandler : MonoBehaviour {
 			EditorRoomManager.instance.characterGameObjectMap = new Dictionary<Character, GameObject> ();
 		}
 
-
 		EditorRoomManager.instance.characterGameObjectMap.Add (myCharacter, obj);	
-
 
 
 		// populate list of graphic states
@@ -124,6 +117,26 @@ public class EditorCharacterHandler : MonoBehaviour {
 
 		myCharacter.currentGraphicState = myCharacter.graphicStates [0];
 
-
 	}
+
+
+
+
+	public void PlaceCharacterInTiles(Character character, Room room, Grid grid)
+	{
+		List<Tile> tempTileList = room.GetMyTiles (grid, character.GetMyCoordsList ());
+		Debug.Log ("tile list count" + tempTileList.Count);
+
+		foreach (Tile myTile in tempTileList) 
+		{			
+			Debug.Log ("tile x " + myTile.x + "y " + myTile.y);
+			myTile.myCharacter = character;
+		}
+
+		EventsHandler.Invoke_cb_tileLayoutChanged ();
+	}
+
+
+
+
 }

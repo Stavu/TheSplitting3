@@ -37,25 +37,21 @@ public class EditorFurnitureHandler : MonoBehaviour
 	// Placing Furniture in the editor - when building new furniture
 
 	public void PlaceFurniture(Tile tile, string furnitureName)
-	{
-		
+	{		
 		if(furnitureName == null)
 		{
 			return;
 		}
 
-
 		// If there's already a furniture on this tile, destroy it before creating a new furniture
 
 		Room myRoom = EditorRoomManager.instance.room;
-
 
 		if (tile.myFurniture != null)
 		{
 			if (myRoom.RoomState == RoomState.Real) 
 			{			
 				// Real
-
 				myRoom.myFurnitureList.Remove (tile.myFurniture);
 
 			} else {
@@ -63,13 +59,11 @@ public class EditorFurnitureHandler : MonoBehaviour
 				if (myRoom.myMirrorRoom.inTheShadow == true) 
 				{			
 					// Shadow
-
 					myRoom.myMirrorRoom.myFurnitureList_Shadow.Remove (tile.myFurniture);
 
 				} else {
 
 					// Mirror
-
 					myRoom.myFurnitureList.Remove (tile.myFurniture);
 				}
 			}
@@ -129,12 +123,10 @@ public class EditorFurnitureHandler : MonoBehaviour
 
 	public void FurnitureFactory(Room room)
 	{
-
 		//Debug.Log ("FurnitureFactory");
 
 		if (room.RoomState == RoomState.Real) 
-		{
-			
+		{			
 			// -- REAL ROOM -- //
 
 			foreach (Furniture furn in room.myFurnitureList) 
@@ -142,7 +134,6 @@ public class EditorFurnitureHandler : MonoBehaviour
 				EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn);
 				PlaceFurnitureInTiles (furn, room, room.myGrid);
 			}
-
 
 		} else {
 
@@ -156,7 +147,6 @@ public class EditorFurnitureHandler : MonoBehaviour
 				{
 					EventsHandler.Invoke_cb_editorFurnitureModelChanged (furn);
 					PlaceFurnitureInTiles (furn, room, room.myMirrorRoom.shadowGrid);
-
 				}
 
 			} else {

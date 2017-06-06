@@ -155,32 +155,14 @@ public class TileManager : MonoBehaviour {
 
 		foreach (GameObject obj in tileGameObjectMap.Values) 
 		{
-
 			obj.GetComponent<SpriteRenderer> ().color = new Color (1f, 1f, 1f, 0.1f);
-
 		}
+
 
 		// Color furniture tiles
 
 		foreach (Tile tile in RoomManager.instance.myRoom.MyGrid.gridArray) 
 		{
-
-			if (tile.myFurniture != null) 
-			{
-				tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.blue;
-
-				continue;
-			}
-
-
-			if (tile.myCharacter != null) 
-			{
-				tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.magenta;
-
-				continue;
-			}
-
-
 			if (tile.myTileInteraction != null) 
 			{
 				TileInteraction tileInt = tile.myTileInteraction;
@@ -190,17 +172,21 @@ public class TileManager : MonoBehaviour {
 					for (int y = 0; y < tileInt.mySize.y; y++) 
 					{
 						Tile tempTile = RoomManager.instance.myRoom.MyGrid.GetTileAt (tileInt.x + x, tileInt.y + y);
-						tileGameObjectMap [tempTile].GetComponent<SpriteRenderer> ().color = new Color (0.1f, 0.3f, 0.2f, 0.4f);
-
+						tileGameObjectMap [tempTile].GetComponent<SpriteRenderer> ().color = Color.yellow;
 					}
 				}
-
-				continue;
 			}
 
+			if (tile.myCharacter != null) 
+			{
+				tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.magenta;
+			}
+
+			if (tile.myFurniture != null) 
+			{
+				tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.blue;
+			}
 		}
-
-
 	}
 
 

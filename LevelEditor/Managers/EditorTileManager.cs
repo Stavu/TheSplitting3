@@ -66,8 +66,7 @@ public class EditorTileManager : MonoBehaviour {
 
 
 		foreach (GameObject obj in tileGameObjectMap.Values) 
-		{
-			
+		{			
 			Destroy (obj);
 		}
 
@@ -76,13 +75,10 @@ public class EditorTileManager : MonoBehaviour {
 			Destroy (tilesParent);
 		}
 
-
 		tileGameObjectMap.Clear ();
 
 
-
 		// Create new tiles
-
 
 		tilesParent = new GameObject ("Tiles");
 
@@ -97,18 +93,12 @@ public class EditorTileManager : MonoBehaviour {
 
 			tileGameObjectMap.Add(tile, obj);
 
-
 			// adding object to hirarchy under TileManager
 
-			//	obj.transform.SetParent (this.transform);
 			obj.name = "Tile " + tile.x + "," + tile.y;
 
-
 		}
-
 	}
-
-
 
 
 
@@ -121,7 +111,6 @@ public class EditorTileManager : MonoBehaviour {
 
 		foreach (GameObject obj in tileGameObjectMap.Values) 
 		{
-
 			obj.GetComponent<SpriteRenderer> ().color = new Color (1f, 1f, 1f, 0.1f);
 
 		}
@@ -130,23 +119,6 @@ public class EditorTileManager : MonoBehaviour {
 
 		foreach (Tile tile in EditorRoomManager.instance.room.MyGrid.gridArray) 
 		{
-
-			if (tile.myFurniture != null) 
-			{
-				tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.blue;
-
-				continue;
-			}
-
-
-			if (tile.myCharacter != null) 
-			{
-				tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.magenta;
-
-				continue;
-			}
-
-
 			if (tile.myTileInteraction != null) 
 			{
 				TileInteraction tileInt = tile.myTileInteraction;
@@ -157,19 +129,19 @@ public class EditorTileManager : MonoBehaviour {
 					{
 						Tile tempTile = EditorRoomManager.instance.room.MyGrid.GetTileAt (tileInt.x + x, tileInt.y + y);
 						tileGameObjectMap [tempTile].GetComponent<SpriteRenderer> ().color = Color.yellow;
-
 					}
 				}
-
-				continue;
 			}
 
+			if (tile.myCharacter != null) 
+			{
+				tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.magenta;
+			}
+
+			if (tile.myFurniture != null) 
+			{
+				tileGameObjectMap [tile].GetComponent<SpriteRenderer> ().color = Color.blue;
+			}
 		}
-
-
 	}
-
-
-
-
 }

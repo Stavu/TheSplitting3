@@ -371,6 +371,7 @@ public class TileInspector : MonoBehaviour {
 
 	public void DeleteTileInteraction()
 	{
+		Debug.Log ("delete tile interaction");
 
 		TileInteraction tileInt = InspectorManager.instance.chosenTileInteraction;
 

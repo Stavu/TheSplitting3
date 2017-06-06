@@ -28,13 +28,11 @@ public class BuildController : MonoBehaviour {
 
 	public enum Mode
 	{
-
 		buildFurniture,
 		buildCharacter,
 		buildTileInteraction,
 		changeCoords,
 		inspect
-
 	}
 
 	public Mode mode = Mode.inspect;
@@ -45,14 +43,12 @@ public class BuildController : MonoBehaviour {
 	public void Initialize () 
 	{
 		EventsHandler.cb_editorTilesSelected += OnTilesSelected;
-
 	}
 
 
 	public void OnDestroy()
 	{
 		EventsHandler.cb_editorTilesSelected -= OnTilesSelected;
-
 	}
 
 
@@ -66,8 +62,6 @@ public class BuildController : MonoBehaviour {
 
 
 	// ---- TILES SELECTED ---- //
-
-
 
 
 	public void OnTilesSelected(Tile tile)
@@ -84,8 +78,7 @@ public class BuildController : MonoBehaviour {
 
 
 		switch (mode) 
-		{
-		
+		{		
 			case Mode.inspect:
 
 				InspectTiles (tile);
@@ -118,35 +111,43 @@ public class BuildController : MonoBehaviour {
 				Debug.Log ("change coords");
 				EditorRoomManager.instance.SetPICoords (tile);
 
-
-				return;
-			
-		
+				return;		
 		}
-
 
 		// return to inspect mode
 
 		mode = Mode.inspect;
-
 	}
-
-
 
 
 
 	public void InspectTiles(Tile tile)
 	{
+		// everyone is null
 
-		//Debug.Log ("Inspect tiles");	
+		InspectorManager.instance.chosenFurniture = null;
+		InspectorManager.instance.chosenCharacter = null;
+		InspectorManager.instance.chosenTileInteraction = null;
+
+
+		// inspect tile
 
 		InspectorManager.instance.chosenFurniture = tile.myFurniture;
+
+		if (InspectorManager.instance.chosenFurniture != null) 
+		{			
+			return;
+		}
+
 		InspectorManager.instance.chosenCharacter = tile.myCharacter;
+
+		if (InspectorManager.instance.chosenCharacter != null) 
+		{			
+			return;
+		}
+
 		InspectorManager.instance.chosenTileInteraction = tile.myTileInteraction;
-
 	}
-
-
 
 
 }

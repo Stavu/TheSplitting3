@@ -85,7 +85,6 @@ public class EditorRoomManager : MonoBehaviour {
 
 	public void LoadPrefabs()
 	{
-
 		stringPrefabMap = new Dictionary<string, GameObject> ();
 
 		GameObject[] furnitureArray = Resources.LoadAll<GameObject> ("Prefabs/Furniture");
@@ -99,7 +98,6 @@ public class EditorRoomManager : MonoBehaviour {
 		foreach (GameObject obj in characterArray) 
 		{
 			stringPrefabMap.Add (obj.name, obj);
-
 		}
 	}
 
@@ -109,26 +107,20 @@ public class EditorRoomManager : MonoBehaviour {
 
 	public Room CreateEmptyRoom(int myWidth, int myHeight)
 	{
-
 		Room tempRoom = new Room (myWidth,myHeight);
 
 		furnitureGameObjectMap = new Dictionary<Furniture, GameObject> ();
 		characterGameObjectMap = new Dictionary<Character, GameObject> ();
 
 		return tempRoom;
-
 	}
-
 
 	public void Update()
 	{
-
 		if(Input.GetKeyDown(KeyCode.H))
 		{
 			Debug.Log ("room name " + room.myName);
 		}
-
-
 	}
 
 	// adding background image 
@@ -136,7 +128,6 @@ public class EditorRoomManager : MonoBehaviour {
 
 	public void InitializeRoom(string name = "abandoned_lobby_bg")
 	{
-
 		//Debug.Log ("SetRoomBackground");
 
 		if (roomToLoad == null) 
@@ -153,7 +144,6 @@ public class EditorRoomManager : MonoBehaviour {
 		SetBackgroundObject (room);
 
 		Utilities.AdjustOrthographicCamera (room);
-
 	}
 
 
@@ -161,8 +151,7 @@ public class EditorRoomManager : MonoBehaviour {
 	// Create New Room
 
 	public void CreateNewRoomFromSprite(string name)
-	{
-		
+	{		
 		Sprite roomSprite = Resources.Load <Sprite> ("Sprites/Rooms/" + name);
 
 		int myWidth = (int)roomSprite.bounds.size.x;
@@ -174,7 +163,6 @@ public class EditorRoomManager : MonoBehaviour {
 		roomToLoad = JsonUtility.ToJson (room);
 
 		SceneManager.LoadScene ("LevelEditor");
-
 	}
 
 
@@ -199,7 +187,6 @@ public class EditorRoomManager : MonoBehaviour {
 				return;
 			}
 		}
-
 
 		// Get furniture out of old tiles if there wasn't a coords list before
 
@@ -359,13 +346,10 @@ public class EditorRoomManager : MonoBehaviour {
 
 
 
-
 	// CHANGING INTERACTABLE //
-
 
 	public void ChangeInteractableWidth(int width, Interactable interactable)
 	{
-
 		interactable.mySize = new Vector2 (width, interactable.mySize.y);
 
 		if (interactable is Furniture) 
@@ -387,7 +371,6 @@ public class EditorRoomManager : MonoBehaviour {
 
 	public void ChangeInteractableHeight(int height, Interactable interactable)
 	{
-
 		interactable.mySize = new Vector2 (interactable.mySize.x, height);
 
 		if (interactable is Furniture) 
@@ -403,7 +386,6 @@ public class EditorRoomManager : MonoBehaviour {
 		}
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
-
 	}
 
 
@@ -412,7 +394,6 @@ public class EditorRoomManager : MonoBehaviour {
 	{
 		if (interactable == null) 
 		{
-
 			Debug.Log ("interactable is null");
 		}
 	
@@ -459,7 +440,6 @@ public class EditorRoomManager : MonoBehaviour {
 		}
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
-
 	}
 
 
@@ -476,7 +456,6 @@ public class EditorRoomManager : MonoBehaviour {
 
 		if (interactable is Furniture) 
 		{
-
 			Furniture furn = (Furniture)interactable;
 
 			tile.myFurniture = null;
@@ -488,7 +467,6 @@ public class EditorRoomManager : MonoBehaviour {
 	
 		} else if (interactable is Character) 
 		{	
-
 			Character character = (Character)interactable;
 
 			tile.myCharacter = null;
@@ -511,7 +489,6 @@ public class EditorRoomManager : MonoBehaviour {
 		}
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
-
 	}
 
 
@@ -542,7 +519,6 @@ public class EditorRoomManager : MonoBehaviour {
 
 	public void ChangeInteractableOffsetY(float offsetY, Interactable interactable)
 	{
-
 		if (interactable is Furniture) 
 		{
 			Furniture furn = (Furniture)interactable;
@@ -559,7 +535,6 @@ public class EditorRoomManager : MonoBehaviour {
 		} 
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
-
 	}
 
 
@@ -619,7 +594,6 @@ public class EditorRoomManager : MonoBehaviour {
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
 	}
 
-
 	// FRAME OFFSETS //
 
 	public void ChangeInteractableFrameOffsetX(float offsetX, PhysicalInteractable interactable)
@@ -630,14 +604,12 @@ public class EditorRoomManager : MonoBehaviour {
 	}
 
 
-
 	public void ChangeInteractableFrameOffsetY(float offsetY, PhysicalInteractable interactable)
 	{
 		interactable.currentGraphicState.frameOffsetY = offsetY;
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
 	}
-
 
 
 
@@ -701,7 +673,6 @@ public class EditorRoomManager : MonoBehaviour {
 			}
 
 
-
 			// Persistant Interactables 
 
 			foreach (Furniture furn in tempRoom.myMirrorRoom.myFurnitureList_Persistant) 
@@ -753,13 +724,11 @@ public class EditorRoomManager : MonoBehaviour {
 				}
 			}
 
-
 			foreach (Character character in tempRoom.myCharacterList) 
 			{
 				Tile tile = tempRoom.MyGrid.GetTileAt (character.x, character.y);
 				tile.myCharacter = character;
 			}
-
 
 			foreach (TileInteraction tileInt in tempRoom.myTileInteractionList) 
 			{
@@ -769,7 +738,6 @@ public class EditorRoomManager : MonoBehaviour {
 		}
 
 		return tempRoom;
-
 	}
 
 
