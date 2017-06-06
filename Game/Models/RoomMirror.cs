@@ -24,6 +24,7 @@ public class RoomMirror {
 	public List<TileInteraction> myTileInteractionList_Shadow;
 
 	public Grid shadowGrid;
+	public string myShadowMusic;
 
 
 	// Shallow Room - for editor

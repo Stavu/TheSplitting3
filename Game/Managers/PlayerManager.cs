@@ -37,9 +37,7 @@ public class PlayerManager : MonoBehaviour {
 	// Use this for initialization
 
 	public void Initialize () 
-	{
-		Debug.Log ("player manager initialize");
-
+	{		
 		EventsHandler.cb_roomCreated += CreatePlayer;
 		EventsHandler.cb_playerCreated += CreatePlayerObject;
 		EventsHandler.cb_keyPressed += MovePlayer;

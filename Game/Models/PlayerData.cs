@@ -87,7 +87,7 @@ public class PlayerData {
 			return true;
 		}	
 
-		Debug.Log ("already existed");
+		//Debug.Log ("already existed");
 		return false;
 	}
 
@@ -125,7 +125,7 @@ public class PlayerData {
 	public void AddAnimationState(string physicalInateractable,string animationState)
 	{		
 
-		Debug.Log ("add animation state");
+		//Debug.Log ("add animation state");
 
 		foreach (PI_AnimationState state in animationStateList) 
 		{
@@ -152,7 +152,7 @@ public class PlayerData {
 
 	public string GetAnimationState(string physicalInateractable)
 	{
-		Debug.Log ("get animation state");
+		//Debug.Log ("get animation state");
 
 		string animationState;
 
@@ -161,7 +161,7 @@ public class PlayerData {
 			if (physicalInateractable == state.myName) 
 			{
 				animationState = state.animationState;
-				Debug.Log ("return animation state " + animationState);
+				//Debug.Log ("return animation state " + animationState);
 				return animationState;
 			}
 		}

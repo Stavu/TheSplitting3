@@ -50,7 +50,15 @@ public class RoomManager : MonoBehaviour {
 	}
 
 
-	// Use this for initialization
+	// Update is called once per frame
+
+	void Update () 
+	{
+
+
+	}
+
+
 
 	public void BuildRoom () {
 
@@ -103,7 +111,6 @@ public class RoomManager : MonoBehaviour {
 
 		}
 
-
 		// adding the player to the speaker map
 
 		nameSpeakerMap.Add (PlayerManager.myPlayer.myName, PlayerManager.myPlayer);
@@ -112,14 +119,6 @@ public class RoomManager : MonoBehaviour {
 
 	}
 
-	
-	// Update is called once per frame
-
-	void Update () 
-	{
-
-		
-	}
 
 
 	void CreateRoom()	
@@ -132,6 +131,7 @@ public class RoomManager : MonoBehaviour {
 
 		CreateRoomObject (myRoom);
 	}
+
 
 
 	public void CreateRoomObject(Room room)
@@ -159,7 +159,6 @@ public class RoomManager : MonoBehaviour {
 		}
 
 	}
-
 
 
 

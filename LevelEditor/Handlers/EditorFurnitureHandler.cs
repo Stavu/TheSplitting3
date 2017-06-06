@@ -52,7 +52,27 @@ public class EditorFurnitureHandler : MonoBehaviour
 
 		if (tile.myFurniture != null)
 		{
-			myRoom.myFurnitureList.Remove (tile.myFurniture);
+			if (myRoom.RoomState == RoomState.Real) 
+			{			
+				// Real
+
+				myRoom.myFurnitureList.Remove (tile.myFurniture);
+
+			} else {
+
+				if (myRoom.myMirrorRoom.inTheShadow == true) 
+				{			
+					// Shadow
+
+					myRoom.myMirrorRoom.myFurnitureList_Shadow.Remove (tile.myFurniture);
+
+				} else {
+
+					// Mirror
+
+					myRoom.myFurnitureList.Remove (tile.myFurniture);
+				}
+			}
 
 			Destroy(EditorRoomManager.instance.furnitureGameObjectMap [tile.myFurniture]);
 			EditorRoomManager.instance.furnitureGameObjectMap.Remove (tile.myFurniture);

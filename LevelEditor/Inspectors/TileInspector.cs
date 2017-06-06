@@ -131,7 +131,7 @@ public class TileInspector : MonoBehaviour {
 
 		if (currentTileInteraction.mySubInt != null) 
 		{			
-			if (currentTileInteraction.mySubInt.RawText != null) 
+			if (currentTileInteraction.mySubInt.RawText != string.Empty) 
 			{
 
 				//Debug.Log ("CreateTileInspector: insert raw text" + currentTileInteraction.mySubInt.RawText);
@@ -152,7 +152,7 @@ public class TileInspector : MonoBehaviour {
 
 		if (currentTileInteraction.mySubInt != null) 
 		{			
-			if (currentTileInteraction.mySubInt.destinationRoomName != null) 
+			if (currentTileInteraction.mySubInt.destinationRoomName != string.Empty) 
 			{
 				enterRoomCheckBox.isOn = true;
 				destinationRoomInput.interactable = true;

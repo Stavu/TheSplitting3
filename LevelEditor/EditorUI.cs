@@ -28,6 +28,8 @@ public class EditorUI : MonoBehaviour {
 
 
 	Dropdown backgroundDropdown;
+	Dropdown musicDropdown;
+
 	public GameObject interactableSelectPrefab;
 	public GameObject interactableButtonPrefab;
 
@@ -66,6 +68,8 @@ public class EditorUI : MonoBehaviour {
 	public void CreateBgSelect()
 	{	
 
+		Room myRoom = EditorRoomManager.instance.room;
+
 		// Lists
 
 		List<string> bgNameList = new List<string> ();
@@ -73,17 +77,26 @@ public class EditorUI : MonoBehaviour {
 
 		foreach (Sprite spr in bgSpriteList) 
 		{
-
 			bgNameList.Add (spr.name);
-
 		}
+
+
+		List<string> clipNameList = new List<string> ();
+		AudioClip[] musicClipList = Resources.LoadAll <AudioClip> ("Audio/Music/");
+
+		foreach (AudioClip clip in musicClipList) 
+		{
+			clipNameList.Add (clip.name);
+		}
+
 
 		// Assign
 
 		toGameButton = transform.Find ("ToGameButton").GetComponent<Button> ();
 
 		roomNameInput = transform.Find ("RoomNameInput").GetComponent<InputField> ();
-		backgroundDropdown = gameObject.GetComponentInChildren<Dropdown>();
+		backgroundDropdown = transform.Find ("Dropdown").GetComponent<Dropdown> ();
+		musicDropdown = transform.Find ("MusicDropdown").GetComponent<Dropdown> ();
 		furnButton = transform.Find ("FurnitureButton").GetComponent<Button>();
 		characterButton = transform.Find ("CharacterButton").GetComponent<Button>();
 		tileIntButton = transform.Find ("TileInteractionButton").GetComponent<Button> ();
@@ -97,9 +110,63 @@ public class EditorUI : MonoBehaviour {
 
 		toGameButton.onClick.AddListener(() => SceneManager.LoadScene("Main"));
 
+
+		// BACKGROUND DROPDOWN
+
 		backgroundDropdown.AddOptions (bgNameList);
 		backgroundDropdown.onValueChanged.AddListener (NewBackgroundSelected);
-	
+
+
+		// set bg dropdown value 
+
+		string roomBgName = myRoom.bgName;
+			
+		if (myRoom.roomState == RoomState.Mirror) 			
+		{
+			if (myRoom.myMirrorRoom.inTheShadow == true) 
+			{
+				roomBgName = myRoom.myMirrorRoom.bgName_Shadow;
+			}
+		}
+
+		if (bgNameList.Contains (roomBgName) == true) 
+		{
+			backgroundDropdown.value = bgNameList.IndexOf (roomBgName);
+
+		} else {
+
+			Debug.LogError ("can't find bg name in list");
+		}
+			
+
+		// MUSIC DROPDOWN
+
+		musicDropdown.AddOptions (clipNameList);
+		musicDropdown.onValueChanged.AddListener (NewMusicSelected);
+
+
+		// set music dropdown value 
+
+		string roomMusicName = myRoom.myMusic;
+
+		if (myRoom.roomState == RoomState.Mirror) 			
+		{
+			if (myRoom.myMirrorRoom.inTheShadow == true) 
+			{
+				roomMusicName = myRoom.myMirrorRoom.myShadowMusic;
+			}
+		}
+
+		if (clipNameList.Contains (roomMusicName) == true) 
+		{
+			musicDropdown.value = clipNameList.IndexOf (roomMusicName);
+
+		} else {
+
+			Debug.LogError ("can't find clip name in list");
+		}
+
+
 		furnButton.onClick.AddListener (CreateFurnitureSelect);
 
 		characterButton.onClick.AddListener (CreateCharacterSelect);
@@ -108,30 +175,29 @@ public class EditorUI : MonoBehaviour {
 		newRoomButton.onClick.AddListener (CreateBackgroundSelect);
 		flipRoomButton.onClick.AddListener (FlipRoom);
 		roomStateDropdown.onValueChanged.AddListener (SetRoomState);
-		roomStateDropdown.value = (int)EditorRoomManager.instance.room.RoomState;
+		roomStateDropdown.value = (int)myRoom.RoomState;
 
 		roomNameInput.onEndEdit.AddListener (RoomNameChanged);
 
 
-
 		// Room name 
 
-		if (EditorRoomManager.instance.room.myName != null) 
+		if (myRoom.myName != null) 
 		{
-			roomNameInput.text = EditorRoomManager.instance.room.myName;
+			roomNameInput.text = myRoom.myName;
 		}
 
 
 		// Shadow state 
 
-		if (EditorRoomManager.instance.room.RoomState == RoomState.Real) 
+		if (myRoom.RoomState == RoomState.Real) 
 		{
 			shadowToggle.interactable = false;
 		
 		} else {
 
 			shadowToggle.interactable = true;
-			shadowToggle.isOn = EditorRoomManager.instance.room.myMirrorRoom.inTheShadow;
+			shadowToggle.isOn = myRoom.myMirrorRoom.inTheShadow;
 			roomStateDropdown.interactable = !shadowToggle.isOn;
 		}
 
@@ -140,18 +206,21 @@ public class EditorUI : MonoBehaviour {
 	}
 
 
+	// Dropdown - on value changed //
+
+	public void NewMusicSelected(int optionNum)
+	{
+		string spriteName = musicDropdown.options [optionNum].text;
+		EditorRoomManager.instance.ChangeRoomMusic (spriteName);
+	}
 
 
 	public void NewBackgroundSelected(int optionNum)
 	{
-
-		Debug.Log ("change room bg");
-
-		string spriteName = backgroundDropdown.options [optionNum].text;
-
-		EditorRoomManager.instance.ChangeRoomBackground (spriteName);
-
+		string clipName = backgroundDropdown.options [optionNum].text;
+		EditorRoomManager.instance.ChangeRoomBackground (clipName);
 	}
+
 
 
 

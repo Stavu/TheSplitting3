@@ -34,9 +34,11 @@ public class SoundManager : MonoBehaviour {
 
 
 	public static bool soundIsOff = false;
+	public static bool musicIsOff = false;
 
 	Dictionary<string,AudioClip> stringAudioClipMap;
 	Dictionary<string,AudioSource> stringAudioSourceLoopMap;
+	Dictionary<string,AudioClip> stringAudioClipMusicMap;
 
 	AudioSource[] audioSources = new AudioSource[10];
 	int nextAudioSource = 0;
@@ -44,30 +46,8 @@ public class SoundManager : MonoBehaviour {
 	AudioSource[] audioSources_loop = new AudioSource[5];
 	int nextAudioSource_loop = 0;
 
-
-	/*
-	public enum SFX_Type
-	{
-		WalkingOnFloor,
-		WalkingOnGrass,
-		OpenDoor,
-		CloseDoor
-	}
-
-
-	[Serializable]
-	public struct NamedSound
-	{
-		public SFX_Type type;
-		public AudioClip[] clips;
-	}
-
-
-	public NamedSound[] soundEffects;
-	public Dictionary<SFX_Type, AudioClip[]> soundEffectsMap;
-
-	*/
-
+	AudioSource[] audioSources_music = new AudioSource[2];
+	int currentMusicChannel = 0;
 
 
 
@@ -77,6 +57,7 @@ public class SoundManager : MonoBehaviour {
 		cb_stopSound -= StopSound;
 		cb_leftRoom_start -= StopLoopSounds;
 		cb_enteredRoom_start -= ActivateLoopSounds;
+		EventsHandler.cb_roomCreated -= SwitchMusic;
 	}
 
 	
@@ -88,53 +69,135 @@ public class SoundManager : MonoBehaviour {
 	}
 
 
-
 	public void RegisterSounds()
 	{		
 		cb_playSound += PlaySound;
 		cb_stopSound += StopSound;
 		cb_leftRoom_start += StopLoopSounds;
 		cb_enteredRoom_start += ActivateLoopSounds;
+		EventsHandler.cb_roomCreated += SwitchMusic;
 	}
-
 
 
 	public void LoadAllSounds()
 	{
-
 		for (int i = 0; i < audioSources.Length; i++) 
 		{
-			audioSources[i] = gameObject.AddComponent<AudioSource> ();			
+			audioSources [i] = gameObject.AddComponent<AudioSource> ();			
 		}	
 
 		for (int i = 0; i < audioSources_loop.Length; i++) 
 		{
-			audioSources_loop[i] = gameObject.AddComponent<AudioSource> ();			
+			audioSources_loop [i] = gameObject.AddComponent<AudioSource> ();			
 		}
 
+		for (int i = 0; i < audioSources_music.Length; i++) 
+		{			
+			audioSources_music [i] = gameObject.AddComponent<AudioSource> ();	
+			audioSources_music [i].loop = true;
+		}
 
-		AudioClip[] clipList = Resources.LoadAll<AudioClip> ("Audio/SoundEffects");
+		AudioClip[] clipList_sound = Resources.LoadAll<AudioClip> ("Audio/SoundEffects");
+		AudioClip[] clipList_music = Resources.LoadAll<AudioClip> ("Audio/Music");
 
 		stringAudioClipMap = new Dictionary<string, AudioClip> ();
 		stringAudioSourceLoopMap = new Dictionary<string, AudioSource> ();
-
+		stringAudioClipMusicMap = new Dictionary<string, AudioClip> ();
 
 
 		// Populate clipList
 
-		foreach (AudioClip clip in clipList) 
+		foreach (AudioClip clip in clipList_sound) 
 		{
 			stringAudioClipMap.Add (clip.name, clip);
 		}
 
+		foreach (AudioClip clip in clipList_music) 
+		{
+			stringAudioClipMusicMap.Add (clip.name, clip);
+		}
 	}
 
 
 
 
+	// ------ MUSIC ------ // 
+
+
+
+	public void SwitchMusic(Room nextRoom)
+	{		
+	
+		if (audioSources_music [currentMusicChannel].clip == null) 
+		{
+			audioSources_music [currentMusicChannel].clip = stringAudioClipMusicMap [nextRoom.myMusic];
+			audioSources_music [currentMusicChannel].Play ();
+			return;
+		}			
+
+		if (audioSources_music [currentMusicChannel].clip.name == nextRoom.myMusic) 
+		{
+			Debug.Log ("same music");
+			return;
+		}
+
+		string clipName = nextRoom.myMusic;
+
+		// if next room is in shadow state
+
+		if (nextRoom.roomState == RoomState.Mirror) 
+		{
+			if (nextRoom.myMirrorRoom.inTheShadow == true) 
+			{
+				clipName = nextRoom.myMirrorRoom.myShadowMusic;
+			}
+		}
+
+		if (stringAudioClipMusicMap.ContainsKey (clipName) == false) 
+		{
+			Debug.LogError ("couldn't find clip name");
+			return;
+		}
+
+		StartCoroutine (CrossFadeMusic (clipName));
+	}
+
+
+
+	// -- CROSS FADE MUSIC -- //
+
+	IEnumerator CrossFadeMusic(string nextClip)
+	{
+		int nextMusicChannel = currentMusicChannel == 0 ? 1 : 0;
+		audioSources_music [nextMusicChannel].clip = stringAudioClipMusicMap [nextClip];
+		audioSources_music [nextMusicChannel].Play ();
+
+		float i = 0;
+
+		while (i < 1) 
+		{	
+			audioSources_music[currentMusicChannel].volume = 1-i;
+			audioSources_music [nextMusicChannel].volume = i;
+
+			i += Time.deltaTime / NavigationManager.fadeSpeed;
+
+			yield return new WaitForFixedUpdate ();
+		}
+
+		audioSources_music[currentMusicChannel].volume = 0;
+		audioSources_music [currentMusicChannel].Stop ();
+
+		audioSources_music [nextMusicChannel].volume = 1;
+
+		currentMusicChannel = nextMusicChannel;
+	}
+
+
+
+	// ------ SOUND ------ //
+
 	public void PlaySound(string soundName, int numberOfPlays)
 	{
-
 		Debug.Log ("play sound " + soundName);
 
 		if (numberOfPlays == 0) 
@@ -166,10 +229,10 @@ public class SoundManager : MonoBehaviour {
 	}
 
 
+	// play sound a unmber of times. If the number is 0, play sound in loop.
 
 	IEnumerator PlaySoundList(AudioSource audioSource, int n)
 	{
-
 		if (n == 0) 
 		{		
 			// PLAY IN LOOP
@@ -201,6 +264,7 @@ public class SoundManager : MonoBehaviour {
 
 
 
+	// Set sound on/off in settings
 
 	public void SetSound(bool soundOff)
 	{
@@ -226,14 +290,16 @@ public class SoundManager : MonoBehaviour {
 
 	// When leaving a room, stopping loop sounds
 
-
-	public void StopLoopSounds(float fadeSpeed)
+	public void StopLoopSounds()
 	{		
-		StartCoroutine(FadeOutLoopSounds(fadeSpeed));
+		StartCoroutine(FadeOutLoopSounds());
 	}
 
 
-	IEnumerator FadeOutLoopSounds(float fadeSpeed)
+
+	// ---- FADE IN & OUT ---- //
+
+	IEnumerator FadeOutLoopSounds()
 	{
 		float i = 1;
 
@@ -244,7 +310,7 @@ public class SoundManager : MonoBehaviour {
 				audioSource.volume = i;				
 			}
 
-			i -= Time.deltaTime / fadeSpeed;
+			i -= Time.deltaTime / NavigationManager.fadeSpeed;
 
 			yield return new WaitForFixedUpdate ();
 		}
@@ -259,13 +325,13 @@ public class SoundManager : MonoBehaviour {
 	}
 
 
-	public void ActivateLoopSounds(float fadeSpeed)
+	public void ActivateLoopSounds()
 	{
-		StartCoroutine(FadeInLoopSounds(fadeSpeed));
+		StartCoroutine(FadeInLoopSounds());
 	}
 
 
-	IEnumerator FadeInLoopSounds(float fadeSpeed)
+	IEnumerator FadeInLoopSounds()
 	{
 		float i = 0;
 
@@ -276,7 +342,7 @@ public class SoundManager : MonoBehaviour {
 				audioSource.volume = i;				
 			}
 
-			i += Time.deltaTime / fadeSpeed;
+			i += Time.deltaTime / NavigationManager.fadeSpeed;
 
 			yield return new WaitForFixedUpdate ();
 		}
@@ -287,6 +353,8 @@ public class SoundManager : MonoBehaviour {
 		}
 
 	}
+
+
 
 
 
@@ -318,25 +386,25 @@ public class SoundManager : MonoBehaviour {
 
 	}
 
-	public static Action<float> cb_leftRoom_start;
+	public static Action cb_leftRoom_start;
 
-	public static void Invoke_cb_leftRoom_start(float speed)
+	public static void Invoke_cb_leftRoom_start()
 	{
 		if(cb_leftRoom_start != null)
 		{
-			cb_leftRoom_start (speed);
+			cb_leftRoom_start ();
 		}
 
 	}
 
 
-	public static Action<float> cb_enteredRoom_start;
+	public static Action cb_enteredRoom_start;
 
-	public static void Invoke_cb_enteredRoom_start(float speed)
+	public static void Invoke_cb_enteredRoom_start()
 	{
 		if(cb_enteredRoom_start != null)
 		{
-			cb_enteredRoom_start (speed);
+			cb_enteredRoom_start ();
 		}
 
 	}

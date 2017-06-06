@@ -179,22 +179,22 @@ public static class EditorRoomHelper {
 	public static void DestroyAllInteractablesInPos(int x ,int y)
 	{
 		
-		GetFurnitureFromList(EditorRoomManager.instance.room.myFurnitureList,x,y);
-		GetCharacterFromList(EditorRoomManager.instance.room.myCharacterList,x,y);
-		GetTileInteractionFromList(EditorRoomManager.instance.room.myTileInteractionList,x,y);
+		RemoveFurnitureFromList(EditorRoomManager.instance.room.myFurnitureList,x,y);
+		RemoveCharacterFromList(EditorRoomManager.instance.room.myCharacterList,x,y);
+		RemoveTileInteractionFromList(EditorRoomManager.instance.room.myTileInteractionList,x,y);
 
-		GetFurnitureFromList(EditorRoomManager.instance.room.myMirrorRoom.myFurnitureList_Shadow,x,y);
-		GetTileInteractionFromList(EditorRoomManager.instance.room.myMirrorRoom.myTileInteractionList_Shadow,x,y);
+		RemoveFurnitureFromList(EditorRoomManager.instance.room.myMirrorRoom.myFurnitureList_Shadow,x,y);
+		RemoveTileInteractionFromList(EditorRoomManager.instance.room.myMirrorRoom.myTileInteractionList_Shadow,x,y);
 
-		GetFurnitureFromList(EditorRoomManager.instance.room.myMirrorRoom.myFurnitureList_Persistant,x,y);
-		GetTileInteractionFromList(EditorRoomManager.instance.room.myMirrorRoom.myTileInteractionList_Persistant,x,y);
+		RemoveFurnitureFromList(EditorRoomManager.instance.room.myMirrorRoom.myFurnitureList_Persistant,x,y);
+		RemoveTileInteractionFromList(EditorRoomManager.instance.room.myMirrorRoom.myTileInteractionList_Persistant,x,y);
 
 
 	}
 
 
 
-	public static void GetFurnitureFromList(List<Furniture> originList, int x, int y)
+	public static void RemoveFurnitureFromList(List<Furniture> originList, int x, int y)
 	{
 		for (int i = originList.Count - 1; i >= 0; i--) 
 		{
@@ -206,7 +206,7 @@ public static class EditorRoomHelper {
 	}
 
 
-	public static void GetCharacterFromList(List<Character> originList, int x, int y)
+	public static void RemoveCharacterFromList(List<Character> originList, int x, int y)
 	{
 		for (int i = originList.Count - 1; i >= 0; i--) 
 		{
@@ -218,7 +218,7 @@ public static class EditorRoomHelper {
 	}
 
 
-	public static void GetTileInteractionFromList(List<TileInteraction> originList, int x, int y)
+	public static void RemoveTileInteractionFromList(List<TileInteraction> originList, int x, int y)
 	{
 
 		for (int i = originList.Count - 1; i >= 0; i--) 

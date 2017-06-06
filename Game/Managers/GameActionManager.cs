@@ -252,9 +252,7 @@ public class GameActionManager : MonoBehaviour {
 			currentTileInteraction = tileInt;
 
 			if (currentTileInteraction != null)
-			{				
-				Debug.Log ("Sub Interact");
-
+			{	
 				// Check if passed the conditions
 			
 				if (Utilities.EvaluateConditions (tileInt.mySubInt.ConditionList))

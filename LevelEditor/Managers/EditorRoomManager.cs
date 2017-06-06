@@ -233,11 +233,32 @@ public class EditorRoomManager : MonoBehaviour {
 			tile.myCharacter = (Character)chosenPhysicalInteractable;
 		}
 
-
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
-
 	}
 
+
+
+
+	// Room Music 
+
+	public void ChangeRoomMusic(string name = "maze_music")
+	{
+		if (room.RoomState == RoomState.Real) 
+		{
+			room.myMusic = name;
+
+		} else {
+
+			if (room.myMirrorRoom.inTheShadow == true) 
+			{
+				room.myMirrorRoom.myShadowMusic = name;
+
+			} else {
+
+				room.myMusic = name;
+			}
+		}
+	}
 
 
 
@@ -245,7 +266,6 @@ public class EditorRoomManager : MonoBehaviour {
 
 	public void ChangeRoomBackground(string name = "abandoned_lobby_bg")
 	{
-
 		if (room.RoomState == RoomState.Real) 
 		{
 			room.bgName = name;

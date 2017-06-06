@@ -5,23 +5,18 @@ using UnityEngine;
 using System;
 
 
-
 public enum InventoryState
 {
-
 	Browse,
 	UseItem,
 	Combine,
 	Closed
-
 }
-
 
 
 [Serializable]
 
 public class Inventory {
-
 
 	public List<InventoryItem> items;
 
@@ -29,18 +24,12 @@ public class Inventory {
 	public InventoryState myState = InventoryState.Closed;
 
 
-
 	public Inventory ()
 	{
-
 		// fresh inventory
 
-		items = new List<InventoryItem> ();
-
-	
+		items = new List<InventoryItem> ();	
 	}
-
-
 
 
 	// Adding Item
@@ -56,10 +45,8 @@ public class Inventory {
 			{
 				Debug.LogError ("There's already an item with the same name");
 				return;
-			}
-			
+			}			
 		}
-
 
 		items.Add (item);
 		item.Initialize ();
@@ -71,12 +58,10 @@ public class Inventory {
 	}
 
 
-
 	// Removing Item
 
 	public void RemoveItem(InventoryItem item)
 	{
-
 		if (items.Contains (item)) 
 		{
 			items.Remove (item);
@@ -84,13 +69,8 @@ public class Inventory {
 
 		EventsHandler.Invoke_cb_inventoryChanged (this);
 
-		GameManager.instance.SaveData ();
-
-		
+		GameManager.instance.SaveData ();		
 	}
-
-
-
 
 
 

@@ -6,14 +6,10 @@ using System;
 
 
 
-
-
 public enum RoomState
 {
-
 	Real,
 	Mirror
-
 }
 
 
@@ -21,6 +17,7 @@ public enum RoomState
 public class Room {
 
 	public string myName;
+	public string myMusic;
 
 	public int myWidth;
 	public int myHeight;
@@ -60,8 +57,6 @@ public class Room {
 	}
 
 
-
-
 	public string bgName;
 	public bool bgFlipped = false;
 
@@ -77,7 +72,6 @@ public class Room {
 		get 
 		{
 			return roomState;
-
 		}
 
 		set 
@@ -87,17 +81,12 @@ public class Room {
 			if ((roomState == RoomState.Mirror) && (myMirrorRoom == null))
 			{
 				myMirrorRoom = new RoomMirror ();
-
 			}
 		}
-
 	}
 
 
-
-
 	public RoomMirror myMirrorRoom;
-
 
 
 
@@ -117,9 +106,6 @@ public class Room {
 
 	public Room(int myWidth, int myHeight)
 	{
-
-		//Debug.Log ("room shallow");
-
 		//this.myName = myName;
 
 		this.myWidth = myWidth;
@@ -128,15 +114,12 @@ public class Room {
 		RoomState = RoomState.Real;
 
 		//this.bgName = bgName;
-
 	
 		myGrid = new Grid (myWidth,myHeight);
 
 		this.myFurnitureList = new List<Furniture> ();
 		this.myCharacterList = new List<Character> ();
 		this.myTileInteractionList = new List<TileInteraction> ();
-
-
 	}
 
 
@@ -148,8 +131,8 @@ public class Room {
 
 		//Debug.Log ("room clone");
 
-
 		this.myName = clone.myName;
+		this.myMusic = clone.myMusic;
 
 		this.myWidth = clone.myWidth;
 		this.myHeight = clone.myHeight;
@@ -168,25 +151,23 @@ public class Room {
 		if (myMirrorRoom != null) 
 		{
 			myMirrorRoom.shadowGrid = new Grid (myWidth, myHeight);
+			myMirrorRoom.myShadowMusic = clone.myMirrorRoom.myShadowMusic;
 		}
 	
 		CreateRoomInteractables ();
-
 	}
 
 
+	// Create room interactables
+
 	public void CreateRoomInteractables()
 	{
-
-
 		// Furniture
 
 		foreach (Furniture furn in myFurnitureList) 
-		{
-			//Debug.Log ("current graphic state:" + furn.currentGraphicState == null);
+		{			
 			List<Tile> FurnitureTiles = GetMyTiles(myGrid,furn.mySize, furn.x, furn.y);
 			FurnitureTiles.ForEach (tile => tile.PlaceFurnitureInTile (furn));
-
 		}
 
 		// Character
@@ -195,7 +176,6 @@ public class Room {
 		{
 			List<Tile> CharacterTiles = GetMyTiles(myGrid,character.mySize, character.x, character.y);
 			CharacterTiles.ForEach (tile => tile.PlaceCharacterInTile (character));
-
 		}
 
 		// Tile interactions
@@ -204,16 +184,12 @@ public class Room {
 		{
 			List<Tile> TileInteractionTiles = GetMyTiles(myGrid,tileInteraction.mySize, tileInteraction.x, tileInteraction.y);
 			TileInteractionTiles.ForEach (tile => tile.PlaceTileInteraction (tileInteraction));
-
 		}
-
 
 		if (RoomState == RoomState.Mirror) 
 		{
-
 			if (myMirrorRoom.inTheShadow == true) 
 			{
-
 				// -- SHADOW ROOM -- //
 
 				// Furniture
@@ -230,9 +206,7 @@ public class Room {
 				{
 					List<Tile> TileInteractionTiles = GetMyTiles(myMirrorRoom.shadowGrid, tileInteraction.mySize, tileInteraction.x, tileInteraction.y);
 					TileInteractionTiles.ForEach (tile => tile.PlaceTileInteraction (tileInteraction));
-
 				}
-
 			} 
 
 
@@ -247,8 +221,6 @@ public class Room {
 
 				List<Tile> FurnitureTiles_Shadow = GetMyTiles(myMirrorRoom.shadowGrid, furn.mySize, furn.x, furn.y);
 				FurnitureTiles_Shadow.ForEach (tile => tile.PlaceFurnitureInTile (furn));
-
-
 			}
 
 			// Tile interactions
@@ -260,14 +232,9 @@ public class Room {
 
 				List<Tile> TileInteractionTiles_Shadow = GetMyTiles(myMirrorRoom.shadowGrid, tileInteraction.mySize, tileInteraction.x, tileInteraction.y);
 				TileInteractionTiles_Shadow.ForEach (tile => tile.PlaceTileInteraction (tileInteraction));
-
 			}
-
 		}
-
-
 	}
-
 
 
 	// Get all the tiles associated with this interactable object
@@ -313,22 +280,22 @@ public class Room {
 
 
 
+	// When changing a graphic state - change physical interactable tiles
 
 	public void ChangePIInTiles(PhysicalInteractable physicalInteractable, GraphicState newState)
 	{
 
-		Debug.Log ("ChangePIInTiles");
-
+		//Debug.Log ("ChangePIInTiles");
 
 		List<Tile> oldTiles;
 
 		if (physicalInteractable.CurrentGraphicState ().coordsList.Count > 0) {
-			Debug.Log ("get list from coords");
+			//Debug.Log ("get list from coords");
 			oldTiles = GetMyTiles (MyGrid, physicalInteractable.CurrentGraphicState ().coordsList);	
 
 		} else {
 
-			Debug.Log ("get list from size");
+			//Debug.Log ("get list from size");
 			oldTiles = GetMyTiles (MyGrid, physicalInteractable.mySize, physicalInteractable.x, physicalInteractable.y);
 		}
 

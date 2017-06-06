@@ -10,13 +10,10 @@ using UnityEngine.UI;
 
 public enum FadeState
 {
-
 	FadeIn,
 	FadeOut,
 	Inactive
-
 }
-
 
 
 public class NavigationManager : MonoBehaviour {
@@ -43,7 +40,7 @@ public class NavigationManager : MonoBehaviour {
 	GameObject fadeCanvas;
 	Image fadeImage;
 
-	float fadeSpeed = 0.5f;
+	public static float fadeSpeed = 0.5f;
 	static Color lastColor;
 
 	public static bool navigationInProcess;
@@ -66,9 +63,7 @@ public class NavigationManager : MonoBehaviour {
 
 	void OnDestroy()
 	{
-
 		SceneManager.sceneLoaded -= StartFadeIn;
-
 	}
 
 
@@ -88,19 +83,18 @@ public class NavigationManager : MonoBehaviour {
 
 		lastColor = color;
 		StartCoroutine(FadeOut (scene, color));	
-
 	}
 
 
+
+
 	// Fading from scene to black / white screen
-
-
 
 	// -- FADE OUT -- //
 
 	IEnumerator FadeOut(string scene, Color color)
 	{
-		SoundManager.Invoke_cb_leftRoom_start (fadeSpeed);
+		SoundManager.Invoke_cb_leftRoom_start ();
 
 		fadeImage.color = color;
 		float i = 0;
@@ -121,7 +115,6 @@ public class NavigationManager : MonoBehaviour {
 		EventsHandler.Invoke_cb_inputStateChanged ();
 
 		SceneManager.LoadScene (scene);
-
 	}
 
 
@@ -130,8 +123,7 @@ public class NavigationManager : MonoBehaviour {
 
 	IEnumerator FadeIn()
 	{
-
-		SoundManager.Invoke_cb_enteredRoom_start (fadeSpeed);
+		SoundManager.Invoke_cb_enteredRoom_start ();
 
 		fadeImage.color = lastColor;
 		float i = 1;
@@ -147,7 +139,6 @@ public class NavigationManager : MonoBehaviour {
 		fadeImage.material.SetFloat ("_Fade", 0);
 
 		EventsHandler.Invoke_cb_entered_room (RoomManager.instance.myRoom);
-
 	}
 
 
@@ -157,7 +148,6 @@ public class NavigationManager : MonoBehaviour {
 		fadeCanvas = Instantiate(Resources.Load<GameObject>("Prefabs/FadeCanvas"));
 		fadeImage = fadeCanvas.transform.Find ("Image").GetComponent<Image> ();
 		StartCoroutine(FadeIn());	
-
 	}
 
 
