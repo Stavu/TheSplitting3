@@ -128,7 +128,6 @@ public class Room {
 
 	public Room(Room clone)
 	{
-
 		//Debug.Log ("room clone");
 
 		this.myName = clone.myName;
@@ -357,7 +356,6 @@ public class Room {
 		}
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
-
 	}
 
 

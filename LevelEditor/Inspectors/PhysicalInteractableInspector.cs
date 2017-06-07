@@ -51,13 +51,11 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 
 
-
 	// Use this for initialization
 
 	void Start () 
 	{
-		inspectorObjectPrefab = Resources.Load<GameObject> ("Prefabs/Editor/InteractionPanelPrefabs/Inspector");
-		
+		inspectorObjectPrefab = Resources.Load<GameObject> ("Prefabs/Editor/InteractionPanelPrefabs/Inspector");		
 	}
 	
 	// Update is called once per frame
@@ -68,17 +66,14 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 	}
 
 
-
 	// INSPECTOR //
 
 
 	public void CreateInspector(PhysicalInteractable currentPhysicalInteractable)
 	{
-
 		Debug.Log ("createInspector");
 
 		DestroyInspector ();
-
 		inspectorObject = Instantiate (inspectorObjectPrefab);
 
 
@@ -115,7 +110,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 		offsetXPlaceholder = panel.FindChild ("OffsetX").FindChild ("Placeholder").GetComponent<Text> ();
 		offsetYPlaceholder = panel.FindChild ("OffsetY").FindChild ("Placeholder").GetComponent<Text> ();
-
 
 
 		// Text
@@ -191,7 +185,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 				} else {
 
 					persistentToggle.isOn = false;
-
 				}
 			}
 
@@ -233,9 +226,7 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 
 	public void DestroyInspector()
-	{
-
-	//	Debug.Log ("destroy inspector");
+	{	
 		if (inspectorObject != null) 
 		{
 			Destroy (inspectorObject);
@@ -247,9 +238,7 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 
 
-
 	// --------- EDITING --------- // 
-
 
 
 
@@ -279,12 +268,10 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 				InspectorManager.instance.chosenCharacter.identificationName = name;
 			}
 		}
-
 	}
 
 
 	// image flipping 
-
 
 	public void SetImageFlipped(bool isFlipped)
 	{
@@ -299,8 +286,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 
 	// persistency
-
-
 
 	public void FurniturePersistantToggleClicked(bool isPersistent)
 	{
@@ -346,7 +331,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 	// change position
 
-
 	public void changeX(string x)
 	{
 		int newX = int.Parse (x);
@@ -379,7 +363,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 
 	// change offset
-
 
 	public void changeOffsetX(string x)
 	{
@@ -417,8 +400,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 
 
-
-
 	// ----- DELETE ----- //
 
 	public void DeletePhysicalInteractable()
@@ -446,7 +427,6 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 
 				myRoom.myFurnitureList.Remove (furn);
 			}
-
 
 			if (myRoom.roomState == RoomState.Mirror) 
 			{
@@ -532,14 +512,11 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 				}
 			}
 
-
 			InspectorManager.instance.chosenCharacter = null;
 		}
 
-
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
 		//DestroyInspector ();
-
 	}
 
 

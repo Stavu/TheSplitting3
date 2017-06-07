@@ -21,6 +21,44 @@ public class Cutscene  {
 
 
 
+public class ChangePlayerScene : Cutscene
+{
+	public ChangePlayerScene (string myName) : base (myName)
+	{
+		EventsHandler.cb_dialogueEnded += (() => isClearToContinue = true);
+		EventsHandler.cb_characterFinishedPath += (() => isClearToContinue = true);
+	}
+
+	public override IEnumerator MyCutscene()
+	{
+
+		Debug.Log ("switch cutscene");
+
+		// move to room
+
+		PlayerManager.instance.SwitchPlayer ("llehctiM");
+		//InteractionManager.instance.MoveToRoom ("test_mom", new Vector2 (15, 15));
+	
+		///////////
+		yield return new WaitForSeconds (2);
+		///////////
+
+		// End of Cutscne
+
+		Debug.Log ("end of cutscene");
+
+		CutsceneManager.inCutscene = false;
+		EventsHandler.Invoke_cb_inputStateChanged ();
+
+	}
+
+}
+
+
+
+
+// ---------------------------------------------------------------------------------------------- //
+
 
 public class DanielScene : Cutscene
 {
@@ -32,7 +70,6 @@ public class DanielScene : Cutscene
 
 	}
 
-
 	public override IEnumerator MyCutscene()
 	{
 
@@ -40,7 +77,7 @@ public class DanielScene : Cutscene
 
 		// Declerations
 
-		Character llehctiM = (Character)PI_Handler.instance.PI_nameMap ["llehctiM"];
+		Character llehctiM = (Character)PI_Handler.instance.name_PI_map ["llehctiM"];
 		Player Daniel = PlayerManager.myPlayer;
 
 		// dialogue between daniel and llehctiM

@@ -95,9 +95,7 @@ public class Condition {
 
 			case ConditionType.NotInTheShadow:
 
-				break;	
-
-		
+				break;		
 		}
 	}
 
@@ -114,17 +112,17 @@ public class Condition {
 			
 			case ConditionType.HasItem:
 				
-				return GameManager.playerData.CheckIfItemExists (hasItem);
+				return GameManager.userData.GetCurrentPlayerData().CheckIfItemExists (hasItem);
 
 
 			case ConditionType.EventOccured:
 				
-				return GameManager.playerData.CheckIfEventExists (eventOccured);
+				return GameManager.userData.CheckIfEventExists (eventOccured);
 
 			
 			case ConditionType.CharacterInRoom:
 				
-				return GameManager.playerData.CheckIfCharacterExistsInRoom (characterInRoom);
+				return GameManager.userData.CheckIfCharacterExistsInRoom (characterInRoom);
 							
 
 			case ConditionType.InTheShadow:
@@ -143,17 +141,17 @@ public class Condition {
 
 			case ConditionType.LacksItem:
 
-				return !GameManager.playerData.CheckIfItemExists (lacksItem);
+				return !GameManager.userData.GetCurrentPlayerData().CheckIfItemExists (lacksItem);
 
 
 			case ConditionType.EventDidntOccur:
 
-				return !GameManager.playerData.CheckIfEventExists (eventDidntOccur);
+				return !GameManager.userData.CheckIfEventExists (eventDidntOccur);
 
 
 			case ConditionType.CharacterNotInRoom:
 
-				return !GameManager.playerData.CheckIfCharacterExistsInRoom (characterNotInRoom);
+				return !GameManager.userData.CheckIfCharacterExistsInRoom (characterNotInRoom);
 
 
 			case ConditionType.NotInTheShadow:

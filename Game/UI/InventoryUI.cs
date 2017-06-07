@@ -149,8 +149,7 @@ public class InventoryUI : MonoBehaviour {
 	// Use this for initialization
 
 	public void Initialize () 
-	{
-		
+	{		
 		CreateInventory();
 		CloseInventory();
 
@@ -159,19 +158,18 @@ public class InventoryUI : MonoBehaviour {
 		EventsHandler.cb_inventoryChanged += UpdateInventory;
 		EventsHandler.cb_keyPressedDown += BrowseInteractions;
 		EventsHandler.cb_itemAddedToInventory += ItemBlink;
-
+		EventsHandler.cb_playerSwitched += SwitchPlayerInventory;
 	}
 
 
-
 	void OnDestroy()
-	{
-		
+	{		
 		EventsHandler.cb_key_i_pressed -= OnInventoryKeyPressed;
 		EventsHandler.cb_keyPressedDown -= BrowseInventory;
 		EventsHandler.cb_inventoryChanged -= UpdateInventory;
 		EventsHandler.cb_keyPressedDown -= BrowseInteractions;
 		EventsHandler.cb_itemAddedToInventory -= ItemBlink;
+		EventsHandler.cb_playerSwitched -= SwitchPlayerInventory;
 	}
 
 
@@ -201,27 +199,33 @@ public class InventoryUI : MonoBehaviour {
 		// If there's already an inventory, display error
 
 		if (inventoryObject != null) 
-		{
-		
+		{		
 			Debug.LogError ("There's already an inventory object");
-
 		}
 
 		// Creating inventory
 
-		Inventory inventory = GameManager.playerData.inventory;
+		if (GameManager.userData.GetCurrentPlayerData () == null) 
+		{
+			Debug.LogError ("data is null");
+		}
+
+		if (GameManager.userData.GetCurrentPlayerData ().inventory == null) 
+		{
+			Debug.LogError ("inventory is null");
+		}
+	
+		Inventory inventory = GameManager.userData.GetCurrentPlayerData().inventory;
 		inventory.myState = InventoryState.Closed; //FIXME
 	
 		inventoryObject = Instantiate(Resources.Load<GameObject>("Prefabs/InventoryUI"));
 		itemsContainer = inventoryObject.transform.FindChild ("Items").gameObject;
-
-					
+							
 		if (itemsContainer == null) 
 		{
 			Debug.LogError ("Can't find items container");
 			return;
 		}
-
 
 		itemGameObjectMap = new Dictionary<InventoryItem, GameObject> ();
 
@@ -239,6 +243,13 @@ public class InventoryUI : MonoBehaviour {
 
 		UpdateInventory (inventory);
 
+	}
+
+
+	public void SwitchPlayerInventory(Player player)
+	{
+		Inventory currentInventory = GameManager.userData.GetCurrentPlayerData ().inventory;
+		UpdateInventory (currentInventory);
 	}
 
 
@@ -330,7 +341,7 @@ public class InventoryUI : MonoBehaviour {
 
 		// If there are no items in the inventory, display text message, then return
 
-		if(GameManager.playerData.inventory.items.Count == 0)
+		if(GameManager.userData.GetCurrentPlayerData().inventory.items.Count == 0)
 		{
 			Debug.Log ("count 0");
 
@@ -358,7 +369,7 @@ public class InventoryUI : MonoBehaviour {
 
 		// --- INVENTORY STATE --- //
 
-		GameManager.playerData.inventory.myState = state;
+		GameManager.userData.GetCurrentPlayerData().inventory.myState = state;
 
 
 		foreach (GameObject obj in itemGameObjectMap.Values) 
@@ -369,11 +380,11 @@ public class InventoryUI : MonoBehaviour {
 
 		if (state != InventoryState.Combine) 
 		{
-			chosenItem = GameManager.playerData.inventory.items [0];
+			chosenItem = GameManager.userData.GetCurrentPlayerData().inventory.items [0];
 
 		} else {
 
-			chosenCombineItem = GameManager.playerData.inventory.items [GameManager.playerData.inventory.items.IndexOf (chosenItem)];
+			chosenCombineItem = GameManager.userData.GetCurrentPlayerData().inventory.items [GameManager.userData.GetCurrentPlayerData().inventory.items.IndexOf (chosenItem)];
 		}
 
 
@@ -431,13 +442,13 @@ public class InventoryUI : MonoBehaviour {
 
 		int i;
 
-		if (GameManager.playerData.inventory.myState == InventoryState.Combine) 
+		if (GameManager.userData.GetCurrentPlayerData().inventory.myState == InventoryState.Combine) 
 		{			
-			i = GameManager.playerData.inventory.items.IndexOf (chosenCombineItem);
+			i = GameManager.userData.GetCurrentPlayerData().inventory.items.IndexOf (chosenCombineItem);
 
 		} else { 
 			
-			i = GameManager.playerData.inventory.items.IndexOf (chosenItem);
+			i = GameManager.userData.GetCurrentPlayerData().inventory.items.IndexOf (chosenItem);
 		}
 
 		int new_i = i;
@@ -451,7 +462,7 @@ public class InventoryUI : MonoBehaviour {
 
 				new_i++;
 
-				if (new_i >= GameManager.playerData.inventory.items.Count) 
+				if (new_i >= GameManager.userData.GetCurrentPlayerData().inventory.items.Count) 
 				{
 					new_i = 0;			
 				}
@@ -465,7 +476,7 @@ public class InventoryUI : MonoBehaviour {
 
 				if (new_i < 0) 
 				{
-					new_i = GameManager.playerData.inventory.items.Count - 1;
+					new_i = GameManager.userData.GetCurrentPlayerData().inventory.items.Count - 1;
 				}
 
 				break;
@@ -480,18 +491,18 @@ public class InventoryUI : MonoBehaviour {
 		}
 
 
-		switch (GameManager.playerData.inventory.myState) 
+		switch (GameManager.userData.GetCurrentPlayerData().inventory.myState) 
 		{
 
 			case InventoryState.Combine:
 
-				chosenCombineItem = GameManager.playerData.inventory.items [new_i];
+				chosenCombineItem = GameManager.userData.GetCurrentPlayerData().inventory.items [new_i];
 				break;
 
 
 			case InventoryState.Browse:
 				
-				chosenItem = GameManager.playerData.inventory.items [new_i];
+				chosenItem = GameManager.userData.GetCurrentPlayerData().inventory.items [new_i];
 
 				// if we're in browsing state, update the zoom in window
 
@@ -501,7 +512,7 @@ public class InventoryUI : MonoBehaviour {
 			
 			case InventoryState.UseItem:
 
-				chosenItem = GameManager.playerData.inventory.items [new_i];
+				chosenItem = GameManager.userData.GetCurrentPlayerData().inventory.items [new_i];
 				break;
 		}
 
@@ -828,7 +839,7 @@ public class InventoryUI : MonoBehaviour {
 		// Setting the state back to browse
 
 
-		GameManager.playerData.inventory.myState = InventoryState.Browse;
+		GameManager.userData.GetCurrentPlayerData().inventory.myState = InventoryState.Browse;
 		frameGreen.SetActive (true);
 		frameOrange.SetActive (false);
 
@@ -878,7 +889,7 @@ public class InventoryUI : MonoBehaviour {
 			return;
 		}
 
-		if (GameManager.playerData.inventory.myState != InventoryState.UseItem) 
+		if (GameManager.userData.GetCurrentPlayerData().inventory.myState != InventoryState.UseItem) 
 		{	
 			return;
 		}

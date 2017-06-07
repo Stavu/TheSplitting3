@@ -276,7 +276,7 @@ public class ActionBoxManager : MonoBehaviour {
 
 			// if the interaction is use item, and there are no items in the inventory, it will be in 0.5 alpha
 
-			if ((currentPhysicalInteractable.myInteractionList[i].myVerb == "Use Item") && (GameManager.playerData.inventory.items.Count == 0)) 
+			if ((currentPhysicalInteractable.myInteractionList[i].myVerb == "Use Item") && (GameManager.userData.GetCurrentPlayerData().inventory.items.Count == 0)) 
 			{
 				obj.GetComponent<Text> ().color = new Color (1f, 1f, 1f, 0.5f); 
 			}

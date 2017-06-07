@@ -36,6 +36,9 @@ public class CutsceneManager : MonoBehaviour {
 		Cutscene cutScene = new DanielScene ("daniel_scene");
 		stringCutsceneMap.Add (cutScene.myName, cutScene.MyCutscene());
 
+		Cutscene cutScene_switch_player = new ChangePlayerScene ("switch_player_cutscene");
+		stringCutsceneMap.Add (cutScene_switch_player.myName, cutScene_switch_player.MyCutscene());
+
 	}
 	
 	// Update is called once per frame
@@ -44,7 +47,7 @@ public class CutsceneManager : MonoBehaviour {
 	{
 		if(Input.GetKeyDown(KeyCode.G))
 		{
-			PlayCutscene ("daniel_scene");	
+			PlayCutscene ("switch_player_cutscene");	
 		}
 	}
 

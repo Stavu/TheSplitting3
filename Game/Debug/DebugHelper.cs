@@ -34,6 +34,7 @@ public class DebugHelper : MonoBehaviour {
 
 
 
+
 	// Use this for initialization
 	public void Initialize () 
 	{
@@ -48,7 +49,13 @@ public class DebugHelper : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		
+
+		if (Input.GetKeyDown (KeyCode.K)) 
+		{
+			AsyncLoad ();
+		}
+
+
 	}
 
 
@@ -77,13 +84,10 @@ public class DebugHelper : MonoBehaviour {
 
 		for (int i = 0; i < dropDownMenu.options.Count; i++) 
 		{
-
 			if (dropDownMenu.options [i].text == currentRoom.myName) 
 			{
-				dropDownMenu.value = i;			
-			
+				dropDownMenu.value = i;				
 			}
-
 		}
 
 		dropDownMenu.onValueChanged.AddListener (MoveToRoom);
@@ -94,7 +98,6 @@ public class DebugHelper : MonoBehaviour {
 
 
 	// move to room
-
 
 	public void MoveToRoom(int roomNum)
 	{
@@ -109,6 +112,22 @@ public class DebugHelper : MonoBehaviour {
 
 
 
+
+	AsyncOperation operation;
+
+	// Async Load
+
+	public void AsyncLoad()
+	{	
+		Scene currentScene = SceneManager.GetActiveScene ();
+
+		operation = SceneManager.LoadSceneAsync ("TestScene", LoadSceneMode.Additive);	
+		//operation.allowSceneActivation = false;
+
+		SceneManager.SetActiveScene (currentScene);
+
+		
+	}
 
 
 

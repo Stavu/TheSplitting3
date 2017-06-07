@@ -33,7 +33,6 @@ public class PlayerManager : MonoBehaviour {
 	public static List<Player> playerList;
 
 
-
 	// Use this for initialization
 
 	public void Initialize () 
@@ -45,7 +44,6 @@ public class PlayerManager : MonoBehaviour {
 		EventsHandler.cb_noKeyPressed += StopPlayer;
 
 		playerGameObjectMap = new Dictionary<Player, GameObject> ();
-
 
 		// When first loading the game - create one and assign player
 
@@ -59,8 +57,6 @@ public class PlayerManager : MonoBehaviour {
 			myPlayer = playerList [0];
 		}
 	}
-
-
 
 
 	public void OnDestroy()
@@ -85,24 +81,22 @@ public class PlayerManager : MonoBehaviour {
 
 
 	public void CreatePlayer(Room myRoom)	
-	{
-		
+	{		
 		//myPlayer = new Player("Daniel", new Vector2(1,1), new Vector3(entrancePoint.x,entrancePoint.y,0));
 
 		myPlayer.myPos = entrancePoint;
-
 		CreatePlayerObject (myPlayer);
-
 	}
 
 
 
 	public void CreatePlayerObject(Player myPlayer)
 	{
-
 		//Debug.Log ("created character object");
 
-		playerObject = (Instantiate (Resources.Load<GameObject>("Prefabs/Characters/" + myPlayer.myName))).GetComponent<PlayerObject>();
+		playerObject = (Instantiate (Resources.Load<GameObject>("Prefabs/Characters/" + myPlayer.myName))).AddComponent<PlayerObject>();
+
+		Debug.Log (myPlayer.myName);
 
 		playerObject.gameObject.name = myPlayer.myName;
 		playerObject.transform.position = myPlayer.myPos;
@@ -110,15 +104,13 @@ public class PlayerManager : MonoBehaviour {
 		//obj.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.furniture_character_layer;
 	
 		playerGameObjectMap.Add (myPlayer,playerObject.gameObject);
-
 	}
 
 
-
+	// -------- MOVE PLAYER --------- // 
 
 	public void MovePlayer(Direction myDirection)
 	{
-
 		if (GameManager.instance.inputState != InputState.Character) 
 		{
 			return;			
@@ -132,44 +124,42 @@ public class PlayerManager : MonoBehaviour {
 
 		Vector3 newPos = new Vector3 (-1000, -1000, -1000); 
 
-
 		// check the new position according to the diretion 
 
 		switch (myDirection) 
 		{
 
-		case Direction.left:
+			case Direction.left:
 
-			newPos = new Vector3 ((myPlayer.myPos.x - playerSpeed), myPlayer.myPos.y, myPlayer.myPos.z);
-			offsetX = -0.5f;
-			playerGameObjectMap [myPlayer].transform.localScale = new Vector3(1,1,1);
+				newPos = new Vector3 ((myPlayer.myPos.x - playerSpeed), myPlayer.myPos.y, myPlayer.myPos.z);
+				offsetX = -0.5f;
+				playerGameObjectMap [myPlayer].transform.localScale = new Vector3(1,1,1);
 
-			break;
-
-
-		case Direction.right:
-
-			newPos = new Vector3 ((myPlayer.myPos.x + playerSpeed), myPlayer.myPos.y, myPlayer.myPos.z);
-			offsetX = 0.5f;
-			playerGameObjectMap [myPlayer].transform.localScale = new Vector3(-1,1,1);
-
-			break;
+				break;
 
 
-		case Direction.up:
+			case Direction.right:
 
-			newPos = new Vector3 (myPlayer.myPos.x, (myPlayer.myPos.y + playerSpeed), myPlayer.myPos.z);
-			offsetY = 0.5f;
+				newPos = new Vector3 ((myPlayer.myPos.x + playerSpeed), myPlayer.myPos.y, myPlayer.myPos.z);
+				offsetX = 0.5f;
+				playerGameObjectMap [myPlayer].transform.localScale = new Vector3(-1,1,1);
 
-			break;
+				break;
 
 
-		case Direction.down:
+			case Direction.up:
 
-			newPos = new Vector3 (myPlayer.myPos.x, (myPlayer.myPos.y - playerSpeed), myPlayer.myPos.z);
+				newPos = new Vector3 (myPlayer.myPos.x, (myPlayer.myPos.y + playerSpeed), myPlayer.myPos.z);
+				offsetY = 0.5f;
 
-			break;
+				break;
 
+
+			case Direction.down:
+
+				newPos = new Vector3 (myPlayer.myPos.x, (myPlayer.myPos.y - playerSpeed), myPlayer.myPos.z);
+
+				break;
 		}
 
 
@@ -180,7 +170,6 @@ public class PlayerManager : MonoBehaviour {
 			StopPlayer (InputManager.instance.lastDirection);
 			return;
 		}
-
 
 		if (tile != null)
 		{
@@ -197,7 +186,6 @@ public class PlayerManager : MonoBehaviour {
 				}
 			}				
 
-
 			// CHARACTER - if there a character at this tile
 
 			if (tile.myCharacter != null) 
@@ -209,8 +197,7 @@ public class PlayerManager : MonoBehaviour {
 
 					return;
 				}
-			}				
-
+			}		
 
 			// if there's no character at this tile
 
@@ -218,7 +205,6 @@ public class PlayerManager : MonoBehaviour {
 			{
 				EventsHandler.Invoke_cb_playerLeavePhysicalInteractable ();
 			}	
-
 
 			// TILE INTERACTION - If the next tile is interactable
 
@@ -237,23 +223,22 @@ public class PlayerManager : MonoBehaviour {
 				}
 			}
 
-
 			if (GameActionManager.instance.currentTileInteraction != null) 
 			{
 				EventsHandler.Invoke_cb_playerLeaveTileInteraction ();
 
 			}
 										
-
 			// Walk to new pos
 
 			myPlayer.ChangePosition (newPos);
 			myPlayer.myDirection = myDirection;
 			UpdatePlayerObjectPosition (myPlayer, myDirection);
-
 		}
-
 	}
+
+
+
 
 
 	// When character has stopped 
@@ -266,24 +251,85 @@ public class PlayerManager : MonoBehaviour {
 
 	// Updating the character object position
 
-
 	public void UpdatePlayerObjectPosition(Player myPlayer, Direction myDirection)
 	{		
 		playerObject.MovePlayerObject (myPlayer, myDirection);
 	}
 
 
+	// Updating the character sorting layer
 
 	public void UpdatePlayerSortingLayer(Player myPlayer)
+	{		
+		Tile currentTile = RoomManager.instance.myRoom.MyGrid.GetTileAt(myPlayer.myPos);
+		playerGameObjectMap[myPlayer].GetComponent<SpriteRenderer> ().sortingOrder = -currentTile.y * 10;
+	}
+			
+
+
+	// --- SWITCH PLAYER --- //
+
+
+	public void ChangeCharacterToPlayer()
 	{
 		
-		Tile currentTile = RoomManager.instance.myRoom.MyGrid.GetTileAt(myPlayer.myPos);
-
-		playerGameObjectMap[myPlayer].GetComponent<SpriteRenderer> ().sortingOrder = -currentTile.y * 10;
-
-
 	}
 
-			
+
+	public void SwitchPlayer(string newPlayer)
+	{
+
+		if (myPlayer.myName == newPlayer) 
+		{
+			Debug.LogError ("switched to the same player");
+			return;
+		}
+
+		foreach (Player player in playerList) 
+		{
+			if (player.myName == newPlayer) 
+			{	
+
+				Debug.Log ("switch player");
+				myPlayer = player;
+				Debug.Log (myPlayer.myName);
+
+				// check if player is already in the room
+
+				if (GameManager.userData.CheckIfCharacterExistsInRoom (player.myName)) 
+				{
+					Debug.Log ("character exists in room");
+					// catch character game object and transfer it to the player
+
+					Character character = (Character)PI_Handler.instance.name_PI_map [player.myName];
+					GameObject characterObject = PI_Handler.instance.PI_gameObjectMap [character];
+
+					if (characterObject.GetComponent<PlayerObject> () == null) 
+					{
+						characterObject.AddComponent<PlayerObject> ();
+					}
+
+					myPlayer.myPos = characterObject.transform.position;
+
+					playerObject = characterObject.GetComponent<PlayerObject>();
+
+					playerGameObjectMap.Clear ();
+					playerGameObjectMap.Add (player,characterObject);
+				}			
+
+
+				EventsHandler.Invoke_cb_playerSwitched (player);
+				return;	
+			}
+		}
+
+		Debug.LogError ("couldn't find player");
+	}
+
+
+
+
+
+
 
 }

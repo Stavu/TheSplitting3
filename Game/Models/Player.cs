@@ -8,7 +8,7 @@ using System;
 public class Player : ISpeaker, IWalker {
 
 
-
+	public string identificationName;
 	public string myName;
 	public Vector2 mySize;
 
@@ -147,10 +147,8 @@ public class Player : ISpeaker, IWalker {
 
 	public void ChangePosition(Vector3 myPos)
 	{
-
 		this.myPos = myPos;
 		EventsHandler.Invoke_cb_characterMove (this);
-
 	}
 
 

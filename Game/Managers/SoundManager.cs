@@ -467,8 +467,8 @@ public class SoundManager : MonoBehaviour {
 		{
 			cb_playSound (soundName,numberOfPlays);
 		}
-
 	}
+
 
 	public static Action<string> cb_stopSound; 
 
@@ -478,8 +478,8 @@ public class SoundManager : MonoBehaviour {
 		{
 			cb_stopSound (soundName);
 		}
-
 	}
+
 
 	public static Action cb_leftRoom_start;
 
@@ -489,7 +489,6 @@ public class SoundManager : MonoBehaviour {
 		{
 			cb_leftRoom_start ();
 		}
-
 	}
 
 
@@ -501,7 +500,6 @@ public class SoundManager : MonoBehaviour {
 		{
 			cb_enteredRoom_start ();
 		}
-
 	}
 
 
@@ -513,7 +511,6 @@ public class SoundManager : MonoBehaviour {
 		{
 			cb_setSound (soundOff);
 		}
-
 	}
 
 
@@ -525,7 +522,6 @@ public class SoundManager : MonoBehaviour {
 		{
 			cb_setMusic (musicOff);
 		}
-
 	}
 
 

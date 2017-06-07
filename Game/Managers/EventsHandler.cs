@@ -307,6 +307,20 @@ public static class EventsHandler
 	// Player 
 
 
+
+
+	public static Action<Player> cb_playerSwitched;
+
+	public static void Invoke_cb_playerSwitched(Player player)
+	{
+		if(cb_playerSwitched != null)
+		{
+			cb_playerSwitched (player);
+		}
+
+	}
+
+
 	public static Action<Player> cb_characterMove; 
 
 	public static void Invoke_cb_characterMove(Player player)

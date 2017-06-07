@@ -243,7 +243,7 @@ public class InteractionManager : MonoBehaviour {
 
 		Tile tempTile = RoomManager.instance.myRoom.MyGrid.GetTileAt ((int)entrancePoint.x, (int)entrancePoint.y);
 
-		Debug.Log (entrancePoint);
+		//Debug.Log (entrancePoint);
 
 		// Errors with destination tile
 
@@ -264,7 +264,6 @@ public class InteractionManager : MonoBehaviour {
 
 		//SceneManager.LoadScene(SceneManager.GetActiveScene().name);	
 	}
-
 
 
 
@@ -294,16 +293,12 @@ public class InteractionManager : MonoBehaviour {
 
 
 
-
 	// Pick up item
 
 	public void PickUpItem (InventoryItem inventoryItem)
 	{		
-		GameManager.playerData.inventory.AddItem (inventoryItem);
-
-		// SoundEventHandler.Invoke_cb_pickUpItem(inventoryItem.fileName);
+		GameManager.userData.GetCurrentPlayerData().inventory.AddItem (inventoryItem);
 	}
-
 
 
 	// Use item (we still don't know what item it is)

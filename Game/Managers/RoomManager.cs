@@ -24,8 +24,6 @@ public class RoomManager : MonoBehaviour {
 	// Singleton //
 
 
-
-
 	public Room myRoom;
 	public Dictionary <string,ISpeaker> nameSpeakerMap;
 
@@ -36,11 +34,9 @@ public class RoomManager : MonoBehaviour {
 
 
 
-
 	public void Initialize ()
 	{	
 		//EventsHandler.cb_furnitureChanged += OnFurnitureChanged;	
-
 	}
 	
 
@@ -55,20 +51,16 @@ public class RoomManager : MonoBehaviour {
 	void Update () 
 	{
 
-
 	}
 
 
-
-	public void BuildRoom () {
-
-
+	public void BuildRoom () 
+	{
 		CreateRoom ();
 		nameSpeakerMap = new Dictionary<string, ISpeaker> ();
 
 		if (myRoom.RoomState == RoomState.Real) 
 		{
-
 			// REAL ROOM
 
 			myRoom.myFurnitureList.ForEach (furn => EventsHandler.Invoke_cb_furnitureChanged (furn));
@@ -83,18 +75,15 @@ public class RoomManager : MonoBehaviour {
 
 		} else {
 
-
 			// SHADOW ROOM
 
 			myRoom.myMirrorRoom.myFurnitureList_Shadow.ForEach (furn => EventsHandler.Invoke_cb_furnitureChanged (furn));
 			myRoom.myMirrorRoom.myTileInteractionList_Shadow.ForEach (tileInt => EventsHandler.Invoke_cb_tileInteractionChanged (tileInt));
 
-
 			// MIRROR ROOM
 
 			myRoom.myFurnitureList.ForEach (furn => EventsHandler.Invoke_cb_furnitureChanged (furn));
 			myRoom.myTileInteractionList.ForEach (tileInt => EventsHandler.Invoke_cb_tileInteractionChanged (tileInt));
-
 
 			// PERSISTENT INTERACTABLES
 
@@ -108,7 +97,6 @@ public class RoomManager : MonoBehaviour {
 			myRoom.myMirrorRoom.myTileInteractionList_Persistant.ForEach (tileInt => EventsHandler.Invoke_cb_tileInteractionChanged (tileInt));
 
 			SwitchObjectByShadowState (true);
-
 		}
 
 		// adding the player to the speaker map
@@ -116,9 +104,7 @@ public class RoomManager : MonoBehaviour {
 		nameSpeakerMap.Add (PlayerManager.myPlayer.myName, PlayerManager.myPlayer);
 
 		EventsHandler.Invoke_cb_inputStateChanged ();
-
 	}
-
 
 
 	void CreateRoom()	
@@ -134,9 +120,10 @@ public class RoomManager : MonoBehaviour {
 
 
 
+	// --- ROOM OBJECT --- //
+
 	public void CreateRoomObject(Room room)
 	{
-
 		bgObject = new GameObject (room.myName);
 
 		bgObject.AddComponent<SpriteRenderer> ().sprite = Resources.Load <Sprite> ("Sprites/Rooms/" + room.bgName);
@@ -145,7 +132,6 @@ public class RoomManager : MonoBehaviour {
 		bgObject.GetComponent<SpriteRenderer> ().sortingOrder = -10;
 		bgObject.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.room_layer;
 		bgObject.transform.SetParent (this.transform);
-
 
 		if (myRoom.myMirrorRoom != null) 
 		{		
@@ -157,23 +143,18 @@ public class RoomManager : MonoBehaviour {
 			bgObject_Shadow.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.room_layer;
 			bgObject_Shadow.transform.SetParent (this.transform);
 		}
-
 	}
-
 
 
 	// -- SWITCH BETWEEN SHADOW AND MIRROR -- //
 
 	public void SwitchObjectByShadowState(bool immediately)
 	{
-
 		List<SpriteRenderer> fadeInSprites = new List<SpriteRenderer> ();
 		List<SpriteRenderer> fadeOutSprites = new List<SpriteRenderer> ();
 
-
 		if (myRoom.myMirrorRoom.inTheShadow == true) 
 		{
-
 			//fadeOutSprites.Add (bgObject.GetComponent<SpriteRenderer>());
 			fadeInSprites.Add (bgObject_Shadow.GetComponent<SpriteRenderer>());
 
@@ -205,7 +186,6 @@ public class RoomManager : MonoBehaviour {
 				SpriteRenderer sr = PI_Handler.instance.PI_gameObjectMap [furn].GetComponentInChildren<SpriteRenderer>();
 				fadeInSprites.Add (sr);
 			}
-
 		}
 
 
@@ -218,11 +198,8 @@ public class RoomManager : MonoBehaviour {
 		} else {
 
 			StartCoroutine (Utilities.FadeBetweenSprites (fadeOutSprites, fadeInSprites));
-
 		}
-
 	}
-
 
 
 }

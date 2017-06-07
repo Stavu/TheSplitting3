@@ -59,7 +59,7 @@ public class RoomStarter : MonoBehaviour {
 		{
 			case "doorTest":
 
-				if (GameManager.playerData.CheckIfEventExists ("pottery_broke") == true) 
+				if (GameManager.userData.CheckIfEventExists ("pottery_broke") == true) 
 				{
 					SoundManager.instance.PlaySound ("pottery_break", 0);
 				}
@@ -97,7 +97,7 @@ public class RoomStarter : MonoBehaviour {
 
 		// adding the room to rooms visited list
 
-		bool firstTimeinRoom = GameManager.playerData.AddToRoomsVisited (room.myName);
+		bool firstTimeinRoom = GameManager.userData.AddToRoomsVisited (room.myName);
 
 		switch (room.myName) 
 		{

@@ -101,11 +101,11 @@ public class Character : PhysicalInteractable, ISpeaker, IWalker {
 
 
 
+	// ---- CHARACTER ---- //
 
 
 	public Character(string myName, int x, int y)
-	{
-		
+	{		
 		// Constructor
 
 		this.identificationName = myName;
@@ -114,22 +114,15 @@ public class Character : PhysicalInteractable, ISpeaker, IWalker {
 		this.x = x;
 		this.y = y;
 
-
 		myInteractionList = new List<Interaction> ();
 		graphicStates = new List<GraphicState> ();
 
 		myTextColor = Color.cyan;
-
-
 	}
-
-
-
 
 
 	public void ChangePos(Vector2 newPos)
 	{
-
 		this.x = (int)newPos.x;
 		this.y = (int)newPos.y;
 
@@ -138,12 +131,15 @@ public class Character : PhysicalInteractable, ISpeaker, IWalker {
 		Tile newTile = RoomManager.instance.myRoom.MyGrid.GetTileAt((int)newPos.x, (int)newPos.y);
 			
 		newTile.myCharacter = this;
-
 	}
 
 
 
+
 }
+
+
+
 
 
 
@@ -158,8 +154,6 @@ public interface ISpeaker
 	Color speakerTextColor {get; set;}
 
 }
-
-
 
 
 public interface IWalker

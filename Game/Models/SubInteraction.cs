@@ -41,6 +41,7 @@ public class SubInteraction : IConditionable {
 	public string eventToAdd;
 	public string eventToRemove;
 
+	public string newPlayer;
 
 	public string rawText;
 	public string RawText 
@@ -53,10 +54,7 @@ public class SubInteraction : IConditionable {
 		set 
 		{
 			rawText = value;
-
 			textList = Utilities.SeparateText (rawText);
-			
-
 		}
 	}
 
@@ -82,24 +80,19 @@ public class SubInteraction : IConditionable {
 
 	public SubInteraction (string interactionType)
 	{
-
 		this.interactionType = interactionType;
 		conditionList = new List<Condition>();
-
 	}
 
 
 
 	public void RemoveConditionFromList(Condition condition)
 	{
-
 		if (condition == null) 
 		{
-
 			Debug.LogError ("condition is null");
 			return;
 		}
-
 
 		if (conditionList.Contains (condition) == false) 
 		{
@@ -108,7 +101,6 @@ public class SubInteraction : IConditionable {
 		}
 
 		conditionList.Remove (condition);
-
 	}
 
 
@@ -120,24 +112,10 @@ public class SubInteraction : IConditionable {
 
 	public void SubInteract ()
 	{
-
-		/*
-		// Check if passed the conditions, if not, return
-
-		bool passedConditions = Utilities.EvaluateConditions (conditionList);
-
-		if (passedConditions == false) 
-		{
-			//Debug.Log ("Did not pass conditions");
-			return;
-		}
-		*/
-
-
+		
 		switch (interactionType) 
 		{
-
-
+			
 			case "showMonologue":
 
 				//Debug.Log ("SubInteract: Show monologue");
@@ -283,22 +261,24 @@ public class SubInteraction : IConditionable {
 
 			case "addEvent":
 
-				GameManager.playerData.AddEventToList (eventToAdd);
+				GameManager.userData.AddEventToList (eventToAdd);
 
 				break;
 
 
 			case "removeEvent":
 
-				GameManager.playerData.RemoveEventFromList (eventToRemove);
+				GameManager.userData.RemoveEventFromList (eventToRemove);
 
 				break;
 
 
+			case "switchPlayer":
+
+				PlayerManager.instance.SwitchPlayer (newPlayer);
+				break;
 		}
-
 	}
-
 
 
 	public void ResetDataFields()
@@ -308,18 +288,10 @@ public class SubInteraction : IConditionable {
 		this.destinationRoomName = string.Empty;
 
 		this.inventoryItem = null;
-
 	}
 
 
-
-
-
-
 }
-
-
-
 
 
 
@@ -328,8 +300,5 @@ public class SubInteraction : IConditionable {
 
 public interface ISubinteractable
 {	
-
 	List<SubInteraction> SubIntList { get; set; }
-
-
 }

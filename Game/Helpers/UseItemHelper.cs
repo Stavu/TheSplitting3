@@ -22,13 +22,10 @@ public class UseItemHelper {
 
 			case "compass":
 
-
 				switch (physicalInt.identificationName) 
 				{
-
 					case "door_abandoned_main_shadow":
 						
-
 						DialogueSentence sentence = new DialogueSentence (PlayerManager.myPlayer.myName, "This item is no good.", false);
 						List<DialogueSentence> list = new List<DialogueSentence> ();
 						list.Add (sentence);
@@ -36,16 +33,15 @@ public class UseItemHelper {
 						InteractionManager.instance.DisplayText (list);
 
 						InventoryItem picture = new InventoryItem ("missing_picture", "Missing Picture");
-						GameManager.playerData.inventory.AddItem (picture);
+
+						GameManager.userData.GetCurrentPlayerData().inventory.AddItem (picture);
 
 						break;
-
 
 
 					default:
 
 						break;
-
 				}
 
 			break;
@@ -54,13 +50,10 @@ public class UseItemHelper {
 
 				/* -------- MISSING PICTURE -------- */
 
-
-			case "missing_picture":
-				
+			case "missing_picture":				
 
 				switch (physicalInt.identificationName) 
 				{
-
 					case "door_abandoned_main_shadow":
 
 						DialogueSentence sentence2 = new DialogueSentence (PlayerManager.myPlayer.myName, "pic on door.", false);
@@ -68,27 +61,18 @@ public class UseItemHelper {
 						list2.Add (sentence2);
 
 						InteractionManager.instance.DisplayText (list2);
-
-					
+											
 						break;
 
 
 					default:
 
 						break;
-
 				}
 
 				break;
-
-
 		}
-
-
-
 	}
-
-
 
 
 }

@@ -18,15 +18,11 @@ public class GameData {
 	ItemData itemData;
 
 
-
-
 	public GameData()
-	{
-		
+	{		
 		CreateItemLookAtMap ();
 		CreateDialogueOptionData ();
 		CreateDialogueTreesData ();
-
 	}
 
 
@@ -52,16 +48,12 @@ public class GameData {
 
 		foreach (ItemData_LookAt lookAt in itemData.lookAtList) 
 		{
-
-			itemLookAtMap.Add (lookAt.itemName, lookAt.textList);
-			
+			itemLookAtMap.Add (lookAt.itemName, lookAt.textList);			
 		}
 
 		foreach (ItemData_Combine combine in itemData.combineList) 
 		{
-
 			itemCombineMap.Add (combine.itemName, combine.itemsToCombineList);
-
 		}
 
 

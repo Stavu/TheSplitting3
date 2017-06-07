@@ -6,43 +6,25 @@ using System;
 
 
 [Serializable]
-public class PlayerData {
-
-
-	public string currentRoom;
-	public Inventory inventory;
+public class UserData {
 
 
 	List<string> gameEventsList;
 	public List<string> roomsVisitedList;
 	public List<PI_AnimationState> animationStateList;
+	public List<PlayerData> playerDataList;
+
+	//public string currentPlayer;
 
 
-	public PlayerData()
-	{
-		inventory = new Inventory ();
+
+	public UserData()
+	{		
 		gameEventsList = new List<string> ();
 		roomsVisitedList = new List<string> ();
 		animationStateList = new List<PI_AnimationState> ();
+		playerDataList = new List<PlayerData> ();
 	}
-
-
-
-	// check if item exists
-
-	public bool CheckIfItemExists(string itemName)
-	{
-		foreach (InventoryItem item in inventory.items) 
-		{
-			if (item.fileName == itemName) 
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 
 
 	// check if event exists
@@ -51,7 +33,6 @@ public class PlayerData {
 	{
 		return gameEventsList.Contains (eventName);
 	}
-
 
 
 	// check if character exists
@@ -68,7 +49,6 @@ public class PlayerData {
 
 		return false;
 	}
-
 
 
 	/// <summary>
@@ -92,6 +72,25 @@ public class PlayerData {
 	}
 
 
+	// 
+
+
+	public PlayerData GetCurrentPlayerData()
+	{
+		string myPlayer = PlayerManager.myPlayer.myName;
+
+		foreach (PlayerData playerData in playerDataList) 
+		{
+			if (playerData.playerName == myPlayer) 
+			{
+				return playerData;
+			}
+		}
+
+		Debug.LogError("playerData is null");
+		return null;
+	}
+
 
 	// Add Event
 
@@ -103,7 +102,6 @@ public class PlayerData {
 			GameManager.instance.SaveData ();
 		}
 	}
-
 
 
 	// Remove Event
@@ -118,13 +116,10 @@ public class PlayerData {
 	}
 
 
-
 	// Add animation state
-
 
 	public void AddAnimationState(string physicalInateractable,string animationState)
 	{		
-
 		//Debug.Log ("add animation state");
 
 		foreach (PI_AnimationState state in animationStateList) 
@@ -144,10 +139,7 @@ public class PlayerData {
 		animationStateList.Add (pi_animationState);
 
 		GameManager.instance.SaveData ();
-
 	}
-
-
 
 
 	public string GetAnimationState(string physicalInateractable)
@@ -168,11 +160,42 @@ public class PlayerData {
 
 		return string.Empty;
 	}
-
-
-
-
 }
+
+
+
+
+[Serializable]
+public class PlayerData {
+
+
+	public string playerName;
+	public string currentRoom;
+	public Inventory inventory;
+
+	public PlayerData(string playerName)
+	{
+		this.playerName = playerName;
+		inventory = new Inventory ();
+	}
+
+	// check if item exists
+
+	public bool CheckIfItemExists(string itemName)
+	{
+		foreach (InventoryItem item in inventory.items) 
+		{
+			if (item.fileName == itemName) 
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+}
+
+
 
 
 

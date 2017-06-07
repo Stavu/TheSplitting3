@@ -193,7 +193,6 @@ public class TileInspector : MonoBehaviour {
 			}
 
 			persistentToggle.onValueChanged.AddListener (TileInteractionePersistantToggleClicked);
-
 		} 
 
 		// Inspector toggles 
@@ -215,12 +214,10 @@ public class TileInspector : MonoBehaviour {
 	// Persistency
 
 	public void TileInteractionePersistantToggleClicked(bool isPersistent)
-	{
-	
+	{	
 		TileInteraction tileInt = InspectorManager.instance.chosenTileInteraction;
 
 		EditorRoomHelper.SetTileInteractionPersistency (isPersistent,tileInt);
-
 	}
 
 
@@ -230,7 +227,6 @@ public class TileInspector : MonoBehaviour {
 
 	public void CheckTileInspectorToggles(bool boolean)
 	{
-
 		if (textInputCheckBox.isOn == true) 
 		{
 			enterRoomCheckBox.isOn = false;

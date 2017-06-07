@@ -37,8 +37,7 @@ public class SceneLoader : MonoBehaviour {
 		{
 			GameObject obj = Instantiate (staticManagers);
 			obj.name = "StaticManagers";
-		}
-			
+		}			
 
 		GameManager.instance.CreateInventoryItemData ();
 
@@ -58,9 +57,8 @@ public class SceneLoader : MonoBehaviour {
 		DialogueManager.instance.Initialize ();
 		//SoundManager.instance.Initialize ();
 		RoomStarter.instance.Initialize();
-
-	
-		GameManager.instance.CreatePlayerData ();
+			
+		GameManager.instance.CreateUserData ();
 
 		RoomManager.instance.BuildRoom ();
 

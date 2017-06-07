@@ -60,7 +60,6 @@ public class SettingsUI : MonoBehaviour {
 
 	public void CreateSettings()
 	{
-
 		// If there's already an inventory, display error
 
 		if (settingsObject != null) 
@@ -70,14 +69,13 @@ public class SettingsUI : MonoBehaviour {
 
 		// Creating inventory
 
-		Inventory inventory = GameManager.playerData.inventory;
+		Inventory inventory = GameManager.userData.GetCurrentPlayerData().inventory;
 		inventory.myState = InventoryState.Closed; //FIXME
 
 		settingsObject = Instantiate (Resources.Load<GameObject> ("Prefabs/settingsUI"));
 
 		musicText = settingsObject.transform.Find ("MusicText").gameObject;
 		soundText = settingsObject.transform.Find ("SoundText").gameObject;
-
 	}
 
 
@@ -86,7 +84,6 @@ public class SettingsUI : MonoBehaviour {
 
 	public void OnSettingsKeyPressed()
 	{
-
 		if (ActionBoxManager.instance.currentActionBox != null) 
 		{
 			return;

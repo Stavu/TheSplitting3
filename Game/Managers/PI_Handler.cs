@@ -23,7 +23,7 @@ public class PI_Handler : MonoBehaviour {
 
 
 	public Dictionary<PhysicalInteractable,GameObject> PI_gameObjectMap;
-	public Dictionary<string,PhysicalInteractable> PI_nameMap;
+	public Dictionary<string,PhysicalInteractable> name_PI_map;
 
 
 
@@ -38,7 +38,7 @@ public class PI_Handler : MonoBehaviour {
 
 
 		PI_gameObjectMap = new Dictionary<PhysicalInteractable, GameObject> ();
-		PI_nameMap = new Dictionary<string, PhysicalInteractable> ();
+		name_PI_map = new Dictionary<string, PhysicalInteractable> ();
 	}
 
 
@@ -51,7 +51,7 @@ public class PI_Handler : MonoBehaviour {
 
 
 		PI_gameObjectMap.Clear ();
-		PI_nameMap.Clear ();
+		name_PI_map.Clear ();
 	}
 
 
@@ -67,7 +67,7 @@ public class PI_Handler : MonoBehaviour {
 	{
 
 		PI_gameObjectMap.Add (physicalInteractable, obj);
-		PI_nameMap.Add (name, physicalInteractable);
+		name_PI_map.Add (name, physicalInteractable);
 
 	}
 
@@ -91,7 +91,7 @@ public class PI_Handler : MonoBehaviour {
 
 			obj = Instantiate (GameManager.stringPrefabMap [myPhysicalInteractable.fileName]);
 			sr = obj.GetComponentInChildren<SpriteRenderer> ();
-			string state = GameManager.playerData.GetAnimationState (myPhysicalInteractable.identificationName);
+			string state = GameManager.userData.GetAnimationState (myPhysicalInteractable.identificationName);
 
 			PI_Handler.instance.AddPIToMap (myPhysicalInteractable, obj, PI_name);
 
@@ -155,7 +155,7 @@ public class PI_Handler : MonoBehaviour {
 			{
 				RoomManager.instance.myRoom.ChangePIInTiles (physicalInteractable, graphicState);
 				physicalInteractable.currentGraphicState = graphicState;
-				GameManager.playerData.AddAnimationState (physicalInteractable.identificationName, state);
+				GameManager.userData.AddAnimationState (physicalInteractable.identificationName, state);
 			
 			}
 		}
@@ -167,9 +167,9 @@ public class PI_Handler : MonoBehaviour {
 
 	public void SetPIAnimationState(string PI_name, string state, GameObject obj = null)
 	{
-		if (PI_nameMap.ContainsKey (PI_name)) 
+		if (name_PI_map.ContainsKey (PI_name)) 
 		{
-			PhysicalInteractable physicalInteractable = PI_nameMap [PI_name];
+			PhysicalInteractable physicalInteractable = name_PI_map [PI_name];
 
 			if(obj == null)
 			{				

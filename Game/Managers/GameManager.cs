@@ -6,7 +6,6 @@ using UnityEngine;
 
 public enum InputState
 {
-
 	Character,
 	Inventory,
 	ActionBox,
@@ -16,14 +15,13 @@ public enum InputState
 	Map,
 	Cutscene,
 	NoInput
-
 }
 
 
 
 public class GameManager : MonoBehaviour
 {
-
+	
 	// Singleton //
 
 	public static GameManager instance { get; protected set; }
@@ -40,22 +38,18 @@ public class GameManager : MonoBehaviour
 	// Singleton //
 
 
-
 	public static bool actionBoxActive = false;
 	public static bool textBoxActive = false;
 	public static bool inventoryOpen = false;
 	public static bool settingsOpen = false;
 	public static bool dialogueTreeBoxActive = false;
 
-
 	public static Dictionary<string,Color> speakerColorMap;
-
 
 	public static Room roomToLoad;
 	public Dictionary<string,Room> stringRoomMap = new Dictionary<string, Room> ();
 
-
-	public static PlayerData playerData;
+	public static UserData userData;
 	public static GameData gameData;
 
 	public static Dictionary<string,GameObject> stringPrefabMap;
@@ -64,14 +58,11 @@ public class GameManager : MonoBehaviour
 
 
 
-
 	// Use this for initialization
 
 	public void Initialize ()
 	{
-
-		//EventsHandler.cb_spacebarPressed += SetInputState;
-
+		
 		CreateRooms ();
 
 		if (roomToLoad == null) 
@@ -90,34 +81,24 @@ public class GameManager : MonoBehaviour
 		{
 			LoadPrefabs ();
 		}
-
 	}
-
 
 
 	// Update is called once per frame
 
 	void Update ()
 	{
-
-		if (Input.GetKeyDown (KeyCode.R)) {
-
+		if (Input.GetKeyDown (KeyCode.R)) 
+		{
 			CreateNewData ();
-
 		}
-
 
 		if (Input.GetKeyDown (KeyCode.B)) 
 		{
-
 			RoomManager.instance.myRoom.myMirrorRoom.inTheShadow = !RoomManager.instance.myRoom.myMirrorRoom.inTheShadow;
 			RoomManager.instance.SwitchObjectByShadowState(false);
-
 		}
-
 	}
-
-
 
 	public void CreateRooms ()
 	{
@@ -136,8 +117,7 @@ public class GameManager : MonoBehaviour
 
 
 	public void LoadPrefabs()
-	{
-							
+	{							
 		stringPrefabMap = new Dictionary<string, GameObject> ();
 
 		GameObject[] furnitureArray = Resources.LoadAll<GameObject> ("Prefabs/Furniture");
@@ -151,10 +131,8 @@ public class GameManager : MonoBehaviour
 		foreach (GameObject obj in characterArray) 
 		{
 			stringPrefabMap.Add (obj.name, obj);
-
 		}
 	}
-
 
 
 	public void CreateInventoryItemData()
@@ -169,30 +147,28 @@ public class GameManager : MonoBehaviour
 
 
 
-
-
 	/* ----- SAVING AND LOADING ----- */
 
 
-
-	public void CreatePlayerData ()
+	public void CreateUserData ()
 	{
-		if (playerData != null) 
+		if (userData != null) 
 		{
 			//Debug.Log ("playerData is not null");
 			return;
 		}
 
 		if (PlayerPrefs.HasKey ("PlayerData")) 
-		{
-			
+		{			
 			//Debug.Log ("Loading data from memory");
-			playerData = JsonUtility.FromJson<PlayerData> (PlayerPrefs.GetString ("PlayerData"));
+			userData = JsonUtility.FromJson<UserData> (PlayerPrefs.GetString ("PlayerData"));
 
-			//Debug.Log(PlayerPrefs.GetString ("PlayerData"));
-			foreach (InventoryItem item in playerData.inventory.items) 
+			foreach (PlayerData playerData in userData.playerDataList) 
 			{
-				item.Initialize ();
+				foreach (InventoryItem item in playerData.inventory.items) 
+				{
+					item.Initialize ();
+				}
 			}
 
 		} else {
@@ -202,33 +178,32 @@ public class GameManager : MonoBehaviour
 	}
 
 
-
 	public void CreateNewData ()
 	{
-
 		Debug.Log ("Creating new data");
 
-		playerData = new PlayerData ();
+		userData = new UserData ();
+
+		foreach (Player player in PlayerManager.playerList) 
+		{
+			userData.playerDataList.Add (new PlayerData (player.myName));
+		}
 
 		SaveData ();
-
 	}
 
 
-
 	public void SaveData ()
-	{
-		
+	{		
 		Debug.Log ("Saving data");
 
-		if (playerData != null) 
+		if (userData != null) 
 		{
-			string data = JsonUtility.ToJson (playerData);
+			string data = JsonUtility.ToJson (userData);
 			PlayerPrefs.SetString ("PlayerData", data);
 
 			Debug.Log ("data " + data);
 		}
-
 	}
 
 

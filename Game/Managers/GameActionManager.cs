@@ -89,7 +89,7 @@ public class GameActionManager : MonoBehaviour {
 			case InputState.Inventory:
 
 				
-				switch (GameManager.playerData.inventory.myState) 
+				switch (GameManager.userData.GetCurrentPlayerData().inventory.myState) 
 				{
 
 					case InventoryState.UseItem:
