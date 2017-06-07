@@ -175,11 +175,22 @@ public static class EventsHandler
 	}
 
 
+	// Shadow state
+
+
+	public static Action<bool> cb_shadowStateChanged;
+
+	public static void Invoke_cb_shadowStateChanged(bool intoShadows)
+	{
+		if(cb_shadowStateChanged != null)
+		{
+			cb_shadowStateChanged (intoShadows);
+		}
+	}
+
 
 
 	// Room Manager 
-
-
 
 
 	public static Action<Room> cb_roomCreated; 
@@ -192,7 +203,6 @@ public static class EventsHandler
 		}
 
 	}
-
 
 
 	public static Action<Room> cb_entered_room; 

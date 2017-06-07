@@ -129,7 +129,6 @@ public class SettingsUI : MonoBehaviour {
 			return;
 		}
 
-
 		// Catch the index of the old chosen item, before changing it
 
 	
@@ -161,17 +160,16 @@ public class SettingsUI : MonoBehaviour {
 
 			case Direction.right:
 
-
 				if (chosenText == soundText) 
 				{
 					if (SoundManager.soundIsOff == true) 
 					{
-						SoundManager.soundIsOff = false;
+						SoundManager.Invoke_cb_setSound (false);
 						soundText.transform.Find ("SoundToggleText").GetComponent<Text> ().text = "On";
 					
 					} else {
 
-						SoundManager.soundIsOff = true;
+						SoundManager.Invoke_cb_setSound (true);
 						soundText.transform.Find ("SoundToggleText").GetComponent<Text> ().text = "Off";
 					}
 				}
@@ -180,23 +178,19 @@ public class SettingsUI : MonoBehaviour {
 				{
 					if (SoundManager.musicIsOff == true) 
 					{
-						SoundManager.musicIsOff = false;
+						SoundManager.Invoke_cb_setMusic (false);
 						musicText.transform.Find ("MusicToggleText").GetComponent<Text> ().text = "On";
 
 					} else {
 
-						SoundManager.musicIsOff = true;
+						SoundManager.Invoke_cb_setMusic (true);
 						musicText.transform.Find ("MusicToggleText").GetComponent<Text> ().text = "Off";
 					}
 				}
 
 				break;
-
 		}
 	}
-
-
-
 
 
 

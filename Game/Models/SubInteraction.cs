@@ -260,7 +260,6 @@ public class SubInteraction : IConditionable {
 				break;
 
 
-
 			case "showInventoryText":
 				
 				InteractionManager.instance.DisplayInventoryText (textList);
@@ -280,7 +279,6 @@ public class SubInteraction : IConditionable {
 				InteractionManager.instance.OpenInventory_CombineItem ();
 
 				break;
-
 			
 
 			case "addEvent":

@@ -55,7 +55,6 @@ public class GameManager : MonoBehaviour
 	public Dictionary<string,Room> stringRoomMap = new Dictionary<string, Room> ();
 
 
-
 	public static PlayerData playerData;
 	public static GameData gameData;
 

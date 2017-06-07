@@ -50,14 +50,18 @@ public class SoundManager : MonoBehaviour {
 	int currentMusicChannel = 0;
 
 
-
 	void OnDestroy()
 	{
+		cb_setMusic -= SetMusic;
+		cb_setSound -= SetSound;
+
 		cb_playSound -= PlaySound;
 		cb_stopSound -= StopSound;
 		cb_leftRoom_start -= StopLoopSounds;
 		cb_enteredRoom_start -= ActivateLoopSounds;
+
 		EventsHandler.cb_roomCreated -= SwitchMusic;
+		EventsHandler.cb_shadowStateChanged -= SwitchShadowStateMusic;
 	}
 
 	
@@ -68,16 +72,22 @@ public class SoundManager : MonoBehaviour {
 		
 	}
 
-
 	public void RegisterSounds()
 	{		
+		cb_setMusic += SetMusic;
+		cb_setSound += SetSound;
+
 		cb_playSound += PlaySound;
 		cb_stopSound += StopSound;
 		cb_leftRoom_start += StopLoopSounds;
 		cb_enteredRoom_start += ActivateLoopSounds;
+
 		EventsHandler.cb_roomCreated += SwitchMusic;
+		EventsHandler.cb_shadowStateChanged += SwitchShadowStateMusic;
 	}
 
+
+	// Loading Sounds //
 
 	public void LoadAllSounds()
 	{
@@ -121,13 +131,52 @@ public class SoundManager : MonoBehaviour {
 
 
 
+
+	// ------ SET SOUND AND MUSIC ------ //
+
+
+	// Set music on/off in settings
+
+	public void SetMusic(bool musicOff)
+	{
+		Debug.Log ("SetMusic");
+
+		foreach (AudioSource audioSource in audioSources_music) 
+		{
+			audioSource.mute = musicOff;
+		}
+
+		musicIsOff = musicOff;
+	}
+
+
+	// Set sound on/off in settings
+
+	public void SetSound(bool soundOff)
+	{
+		Debug.Log ("SetSound");
+
+		foreach (AudioSource audioSource in audioSources) 
+		{
+			audioSource.mute = soundOff;
+		}
+
+		foreach (AudioSource audioSource in audioSources_loop) 
+		{
+			audioSource.mute = soundOff;
+		}
+
+		soundIsOff = soundOff;
+	}
+
+
 	// ------ MUSIC ------ // 
 
 
+	// SWITCH BETWEEN ROOMS MUSIC
 
 	public void SwitchMusic(Room nextRoom)
-	{		
-	
+	{	
 		if (audioSources_music [currentMusicChannel].clip == null) 
 		{
 			audioSources_music [currentMusicChannel].clip = stringAudioClipMusicMap [nextRoom.myMusic];
@@ -135,20 +184,49 @@ public class SoundManager : MonoBehaviour {
 			return;
 		}			
 
-		if (audioSources_music [currentMusicChannel].clip.name == nextRoom.myMusic) 
+		if (nextRoom.roomState == RoomState.Mirror) 
 		{
-			Debug.Log ("same music");
-			return;
+			if (nextRoom.myMirrorRoom.inTheShadow == true) 
+			{
+				// SHADOW ROOM
+
+				if (audioSources_music [currentMusicChannel].clip.name == nextRoom.myMirrorRoom.myShadowMusic) 
+				{
+					Debug.Log ("same music");
+					return;
+				}
+
+			} else {
+
+				// MIRROR ROOM
+
+				if (audioSources_music [currentMusicChannel].clip.name == nextRoom.myMusic) 
+				{
+					Debug.Log ("same music");
+					return;
+				}
+			}
+
+		} else 
+		{
+			// REAL ROOM
+
+			if (audioSources_music [currentMusicChannel].clip.name == nextRoom.myMusic) 
+			{
+				Debug.Log ("same music");
+				return;
+			}
 		}
 
 		string clipName = nextRoom.myMusic;
+		float fadeSpeed = NavigationManager.fadeSpeed;
 
 		// if next room is in shadow state
 
 		if (nextRoom.roomState == RoomState.Mirror) 
 		{
 			if (nextRoom.myMirrorRoom.inTheShadow == true) 
-			{
+			{				
 				clipName = nextRoom.myMirrorRoom.myShadowMusic;
 			}
 		}
@@ -159,14 +237,61 @@ public class SoundManager : MonoBehaviour {
 			return;
 		}
 
-		StartCoroutine (CrossFadeMusic (clipName));
+		StartCoroutine (CrossFadeMusic (clipName,fadeSpeed));
+	}
+
+
+
+	// SWITCH SHADOW STATE MUSIC
+
+	public void SwitchShadowStateMusic(bool intoShadows)
+	{	
+		Room myRoom = RoomManager.instance.myRoom;
+
+		string clipName;
+		float fadeSpeed = NavigationManager.fadeSpeed * 2;
+
+		if (myRoom.roomState == RoomState.Real) 
+		{
+			Debug.Log ("the room is real.");
+			return;
+		}
+
+		if (myRoom.myMirrorRoom == null) 
+		{
+			Debug.Log ("mirror room is null.");
+			return;
+		}
+
+		if (myRoom.myMusic == myRoom.myMirrorRoom.myShadowMusic) 
+		{
+			Debug.Log ("same music");
+			return;
+		}
+
+		if (intoShadows == true) 
+		{
+			clipName = myRoom.myMirrorRoom.myShadowMusic;
+
+		} else {		
+
+			clipName = myRoom.myMusic;
+		}
+
+		if (stringAudioClipMusicMap.ContainsKey (clipName) == false) 
+		{
+			Debug.LogError ("couldn't find clip name");
+			return;
+		}
+
+		StartCoroutine (CrossFadeMusic (clipName,fadeSpeed));
 	}
 
 
 
 	// -- CROSS FADE MUSIC -- //
 
-	IEnumerator CrossFadeMusic(string nextClip)
+	IEnumerator CrossFadeMusic(string nextClip, float fadeSpeed)
 	{
 		int nextMusicChannel = currentMusicChannel == 0 ? 1 : 0;
 		audioSources_music [nextMusicChannel].clip = stringAudioClipMusicMap [nextClip];
@@ -179,7 +304,7 @@ public class SoundManager : MonoBehaviour {
 			audioSources_music[currentMusicChannel].volume = 1-i;
 			audioSources_music [nextMusicChannel].volume = i;
 
-			i += Time.deltaTime / NavigationManager.fadeSpeed;
+			i += Time.deltaTime / fadeSpeed;
 
 			yield return new WaitForFixedUpdate ();
 		}
@@ -263,38 +388,12 @@ public class SoundManager : MonoBehaviour {
 	}
 
 
-
-	// Set sound on/off in settings
-
-	public void SetSound(bool soundOff)
-	{
-		Debug.Log ("SetSound");
-
-		foreach (AudioSource audioSource in audioSources) 
-		{
-			audioSource.mute = soundOff;
-
-		}
-	
-		foreach (AudioSource audioSource in audioSources_loop) 
-		{
-			audioSource.mute = soundOff;
-
-		}
-
-		soundIsOff = soundOff;
-
-	}
-
-
-
 	// When leaving a room, stopping loop sounds
 
 	public void StopLoopSounds()
 	{		
 		StartCoroutine(FadeOutLoopSounds());
 	}
-
 
 
 	// ---- FADE IN & OUT ---- //
@@ -321,7 +420,6 @@ public class SoundManager : MonoBehaviour {
 		}
 
 		stringAudioSourceLoopMap.Clear();
-
 	}
 
 
@@ -351,10 +449,7 @@ public class SoundManager : MonoBehaviour {
 		{
 			audioSource.volume = 1;	
 		}
-
 	}
-
-
 
 
 
@@ -405,6 +500,30 @@ public class SoundManager : MonoBehaviour {
 		if(cb_enteredRoom_start != null)
 		{
 			cb_enteredRoom_start ();
+		}
+
+	}
+
+
+	public static Action<bool> cb_setSound;
+
+	public static void Invoke_cb_setSound(bool soundOff)
+	{
+		if(cb_setSound != null)
+		{
+			cb_setSound (soundOff);
+		}
+
+	}
+
+
+	public static Action<bool> cb_setMusic;
+
+	public static void Invoke_cb_setMusic(bool musicOff)
+	{
+		if(cb_setMusic != null)
+		{
+			cb_setMusic (musicOff);
 		}
 
 	}

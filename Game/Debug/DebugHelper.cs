@@ -29,26 +29,18 @@ public class DebugHelper : MonoBehaviour {
 
 
 
-
 	public GameObject roomSelect; 
 	Dropdown dropDownMenu;
 
 
 
-
-
 	// Use this for initialization
-	public void Initialize () {
-		
-
+	public void Initialize () 
+	{
 		CreateRoomSelect ();
 
 		Button toEditorButton = gameObject.transform.Find ("ToEditorButton").GetComponent<Button> ();
 		toEditorButton.onClick.AddListener(() => SceneManager.LoadScene("LevelEditor"));
-
-		Button muteSoundButton = gameObject.transform.Find ("MuteSoundButton").GetComponent<Button> ();
-		muteSoundButton.onClick.AddListener(() => SoundManager.instance.SetSound(!SoundManager.soundIsOff));
-
 	}
 
 

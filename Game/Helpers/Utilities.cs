@@ -253,8 +253,7 @@ public class Utilities {
 
 
 	public static IEnumerator FadeBetweenSprites(List<SpriteRenderer> fadeOutSprites, List<SpriteRenderer> fadeInSprites)
-	{
-		
+	{		
 		float speed = 1f;
 		float inter = 0;
 
@@ -274,8 +273,7 @@ public class Utilities {
 
 			inter += Time.deltaTime / speed;
 		
-			yield return new WaitForFixedUpdate ();
-		
+			yield return new WaitForFixedUpdate ();		
 		}
 
 		SwitchBetweenSprites (fadeOutSprites, fadeInSprites);
@@ -283,10 +281,8 @@ public class Utilities {
 
 
 
-
 	public static void SwitchBetweenSprites(List<SpriteRenderer> outSprites, List<SpriteRenderer> inSprites)
 	{
-
 		foreach (SpriteRenderer sr in outSprites) 
 		{
 			sr.color = Color.clear;
@@ -296,7 +292,6 @@ public class Utilities {
 		{
 			sr.color = Color.white;
 		}
-
 	}
 
 

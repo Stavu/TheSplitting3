@@ -50,7 +50,6 @@ public class TileInspector : MonoBehaviour {
 	}
 
 
-
 	// ----- TILE INSPECTOR ----- // 
 
 
@@ -100,7 +99,6 @@ public class TileInspector : MonoBehaviour {
 		// delete ubtton
 
 		deleteButton = panel.FindChild ("DeleteButton").GetComponent<Button> ();
-
 
 
 		// SIZE AND POSITION //
@@ -258,9 +256,6 @@ public class TileInspector : MonoBehaviour {
 
 
 
-
-
-
 	// ----- SUBMIT ----- //
 
 	public void SubmitTileInteraction()
@@ -270,13 +265,11 @@ public class TileInspector : MonoBehaviour {
 
 		if (interactionTextInput.interactable == true) 		
 		{
-
 			SubInteraction subInteraction = new SubInteraction ("showMonologue");
 			subInteraction.RawText = interactionTextInput.text;
 			Debug.Log ("raw " + subInteraction.RawText);
 
 			InspectorManager.instance.chosenTileInteraction.mySubInt = subInteraction;
-
 		}
 
 
@@ -285,12 +278,10 @@ public class TileInspector : MonoBehaviour {
 
 		if (destinationRoomInput.interactable == true)		
 		{
-
 			SubInteraction subInteraction = new SubInteraction ("moveToRoom");
 			subInteraction.destinationRoomName = destinationRoomInput.text;
 
 			InspectorManager.instance.chosenTileInteraction.mySubInt = subInteraction;
-
 		}
 
 
@@ -305,59 +296,42 @@ public class TileInspector : MonoBehaviour {
 			InspectorManager.instance.chosenTileInteraction.walkable = false;
 		}
 
-
-
 		DestroyTileInspector ();
 		//CreateTileInspector (InspectorManager.instance.chosenTileInteraction);
-
 	}
-
 
 
 
 	// change size
 
-
 	public void ChangeTileInteractionWidth(string x)
 	{
-
 		int newX = int.Parse (x);
 		EditorRoomManager.instance.ChangeInteractableWidth (newX, InspectorManager.instance.chosenTileInteraction);
-
 	}
-
 
 
 	public void ChangeTileInteractionHeight(string y)
 	{
 		int newY = int.Parse (y);
 		EditorRoomManager.instance.ChangeInteractableHeight (newY, InspectorManager.instance.chosenTileInteraction);
-
 	}
-
-
 
 
 	// change position
 
-
 	public void ChangeTileInteractionX(string x)
 	{
-
 		int newX = int.Parse (x);
 		EditorRoomManager.instance.ChangeInteractableTileX (newX, InspectorManager.instance.chosenTileInteraction);
-
 	}
-
 
 
 	public void ChangeTileInteractionY(string y)
 	{
 		int newY = int.Parse (y);
 		EditorRoomManager.instance.ChangeInteractableTileY (newY, InspectorManager.instance.chosenTileInteraction);
-
 	}
-
 
 
 	public void DeleteTileInteraction()
@@ -375,7 +349,6 @@ public class TileInspector : MonoBehaviour {
 
 		EventsHandler.Invoke_cb_tileLayoutChanged ();
 		//DestroyTileInspector ();
-
 	}
 
 
@@ -390,11 +363,6 @@ public class TileInspector : MonoBehaviour {
 			Destroy (tileInspectorObject);
 		}
 	}
-
-
-
-
-
 
 
 

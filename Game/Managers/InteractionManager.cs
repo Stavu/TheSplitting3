@@ -271,8 +271,7 @@ public class InteractionManager : MonoBehaviour {
 	// Shadows
 
 	public void ChangeShadowState(bool inTheShadow)
-	{
-		
+	{		
 		EventsHandler.Invoke_cb_inputStateChanged ();
 		//GameManager.instance.inputState = InputState.Character;
 
@@ -290,8 +289,7 @@ public class InteractionManager : MonoBehaviour {
 		RoomManager.instance.myRoom.myMirrorRoom.inTheShadow = inTheShadow;
 		RoomManager.instance.SwitchObjectByShadowState (false);
 
-		// SoundEventHandler.Invoke_cb_intoShadows;
-		// SoundEventHandler.Invoke_cb_outOfShadows;
+		EventsHandler.Invoke_cb_shadowStateChanged (inTheShadow);
 	}
 
 
