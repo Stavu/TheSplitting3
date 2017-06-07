@@ -129,12 +129,7 @@ public class ActionBoxManager : MonoBehaviour {
 		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_UL").GetComponent<RectTransform> ().anchoredPosition = positionsList [3];
 		currentPhysicalInteractableFrame.transform.FindChild ("FramePiece_UR").GetComponent<RectTransform> ().anchoredPosition = positionsList [4];
 
-
-
-
-
 	}
-
 
 
 
@@ -154,7 +149,6 @@ public class ActionBoxManager : MonoBehaviour {
 
 	public void OpenActionBox()
 	{
-
 		currentActionBox = Instantiate (ActionBoxPrefab, PositionActionBox() ,Quaternion.identity);
 
 		setInteractionButtons ();
@@ -163,7 +157,6 @@ public class ActionBoxManager : MonoBehaviour {
 		//GameManager.instance.inputState = InputState.ActionBox;
 
 		EventsHandler.Invoke_cb_inputStateChanged ();
-
 	}
 
 

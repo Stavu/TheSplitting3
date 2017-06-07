@@ -109,6 +109,19 @@ public static class EventsHandler
 
 
 
+	public static Action cb_key_m_pressed;
+
+	public static void Invoke_cb_key_m_pressed()
+	{
+		if(cb_key_m_pressed != null)
+		{
+			cb_key_m_pressed ();
+		}
+
+	}
+
+
+
 
 	// Player Manager 
 

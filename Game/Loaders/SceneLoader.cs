@@ -65,7 +65,7 @@ public class SceneLoader : MonoBehaviour {
 		FindObjectOfType<DebugHelper> ().Initialize ();
 		InventoryUI.instance.Initialize ();
 		SettingsUI.instance.Initialize ();
-
+		MapUI.instance.Initialize ();
 
 		// Testing 
 

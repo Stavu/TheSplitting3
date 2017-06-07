@@ -166,6 +166,12 @@ public class GameActionManager : MonoBehaviour {
 			return;
 		}
 
+		if (GameManager.instance.inputState == InputState.Map) 
+		{
+			MapUI.instance.CloseMap();
+			return;
+		}
+
 		ActionBoxManager.instance.CloseActionBox ();
 
 		/*
@@ -238,6 +244,12 @@ public class GameActionManager : MonoBehaviour {
 		if (GameManager.settingsOpen == true) 
 		{
 			GameManager.instance.inputState = InputState.Settings;
+			return;
+		}
+
+		if (GameManager.mapOpen == true) 
+		{
+			GameManager.instance.inputState = InputState.Map;
 			return;
 		}
 

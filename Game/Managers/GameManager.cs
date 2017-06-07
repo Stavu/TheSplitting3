@@ -42,6 +42,8 @@ public class GameManager : MonoBehaviour
 	public static bool textBoxActive = false;
 	public static bool inventoryOpen = false;
 	public static bool settingsOpen = false;
+	public static bool mapOpen = false;
+
 	public static bool dialogueTreeBoxActive = false;
 
 	public static Dictionary<string,Color> speakerColorMap;

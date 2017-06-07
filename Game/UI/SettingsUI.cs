@@ -64,14 +64,9 @@ public class SettingsUI : MonoBehaviour {
 
 		if (settingsObject != null) 
 		{
-			Debug.LogError ("There's already an inventory object");
+			Debug.LogError ("There's already a settings object");
 		}
-
-		// Creating inventory
-
-		Inventory inventory = GameManager.userData.GetCurrentPlayerData().inventory;
-		inventory.myState = InventoryState.Closed; //FIXME
-
+			
 		settingsObject = Instantiate (Resources.Load<GameObject> ("Prefabs/settingsUI"));
 
 		musicText = settingsObject.transform.Find ("MusicText").gameObject;
@@ -84,7 +79,17 @@ public class SettingsUI : MonoBehaviour {
 
 	public void OnSettingsKeyPressed()
 	{
-		if (ActionBoxManager.instance.currentActionBox != null) 
+		if (GameManager.actionBoxActive) 
+		{
+			return;
+		}
+
+		if (GameManager.inventoryOpen) 
+		{
+			return;
+		}
+
+		if (GameManager.mapOpen) 
 		{
 			return;
 		}

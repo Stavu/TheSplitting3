@@ -309,11 +309,20 @@ public class InventoryUI : MonoBehaviour {
 	public void OnInventoryKeyPressed()
 	{
 
-		if (ActionBoxManager.instance.currentActionBox != null) 
+		if (GameManager.actionBoxActive) 
 		{
 			return;
 		}
 
+		if (GameManager.settingsOpen) 
+		{
+			return;
+		}
+
+		if (GameManager.mapOpen) 
+		{
+			return;
+		}
 
 		if (GameManager.inventoryOpen == false)
 		{		
