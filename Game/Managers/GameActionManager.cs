@@ -160,6 +160,11 @@ public class GameActionManager : MonoBehaviour {
 			return;
 		}
 
+		if (GameManager.instance.inputState == InputState.Settings) 
+		{
+			SettingsUI.instance.CloseSettings();
+			return;
+		}
 
 		ActionBoxManager.instance.CloseActionBox ();
 
@@ -170,7 +175,6 @@ public class GameActionManager : MonoBehaviour {
 		}
 		*/
 
-	
 	}
 
 
@@ -228,6 +232,12 @@ public class GameActionManager : MonoBehaviour {
 		if (GameManager.inventoryOpen == true) 
 		{
 			GameManager.instance.inputState = InputState.Inventory;
+			return;
+		}
+
+		if (GameManager.settingsOpen == true) 
+		{
+			GameManager.instance.inputState = InputState.Settings;
 			return;
 		}
 

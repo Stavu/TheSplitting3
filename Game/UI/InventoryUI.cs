@@ -23,9 +23,6 @@ public class InventoryUI : MonoBehaviour {
 
 
 
-
-
-
 	GameObject inventoryObject;
 	GameObject itemsContainer;
 
@@ -37,7 +34,6 @@ public class InventoryUI : MonoBehaviour {
 	// Zoom in window
 
 	GameObject zoomInWindow;
-
 
 	GameObject itemBigICon;
 	GameObject itemTitle;

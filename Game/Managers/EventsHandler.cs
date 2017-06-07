@@ -82,6 +82,8 @@ public static class EventsHandler
 	}
 
 
+	// UI
+
 	public static Action cb_key_i_pressed;
 
 	public static void Invoke_cb_key_i_pressed()
@@ -89,6 +91,18 @@ public static class EventsHandler
 		if(cb_key_i_pressed != null)
 		{
 			cb_key_i_pressed ();
+		}
+
+	}
+
+
+	public static Action cb_key_p_pressed;
+
+	public static void Invoke_cb_key_p_pressed()
+	{
+		if(cb_key_p_pressed != null)
+		{
+			cb_key_p_pressed ();
 		}
 
 	}

@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
 	public static bool actionBoxActive = false;
 	public static bool textBoxActive = false;
 	public static bool inventoryOpen = false;
+	public static bool settingsOpen = false;
 	public static bool dialogueTreeBoxActive = false;
 
 

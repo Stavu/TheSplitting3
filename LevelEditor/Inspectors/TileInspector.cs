@@ -133,7 +133,6 @@ public class TileInspector : MonoBehaviour {
 		{			
 			if (currentTileInteraction.mySubInt.RawText != string.Empty) 
 			{
-
 				//Debug.Log ("CreateTileInspector: insert raw text" + currentTileInteraction.mySubInt.RawText);
 
 				textInputCheckBox.isOn = true;
@@ -158,7 +157,6 @@ public class TileInspector : MonoBehaviour {
 				destinationRoomInput.interactable = true;
 
 				destinationRoomInput.text = currentTileInteraction.mySubInt.destinationRoomName;
-
 			}
 		}
 
@@ -194,15 +192,11 @@ public class TileInspector : MonoBehaviour {
 			} else {
 
 				persistentToggle.isOn = false;
-
 			}
 
 			persistentToggle.onValueChanged.AddListener (TileInteractionePersistantToggleClicked);
 
 		} 
-
-
-
 
 		// Inspector toggles 
 
@@ -250,14 +244,11 @@ public class TileInspector : MonoBehaviour {
 			enterRoomCheckBox.interactable = true;
 		}
 
-
 		if (enterRoomCheckBox.isOn == true) 
 		{
-
 			textInputCheckBox.isOn = false;
 			textInputCheckBox.interactable = false;
 			interactionTextInput.interactable = false;
-
 
 		} else {
 

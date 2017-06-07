@@ -158,6 +158,11 @@ public class InputManager : MonoBehaviour {
 			EventsHandler.Invoke_cb_key_i_pressed ();
 		} 
 
+		if (Input.GetKeyDown (KeyCode.P)) 
+		{
+			EventsHandler.Invoke_cb_key_p_pressed ();
+		} 
+
 	}
 
 
