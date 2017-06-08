@@ -24,6 +24,39 @@ public class UserData {
 		playerDataList = new List<PlayerData> ();
 	}
 
+	// Get current Player Data 
+
+	public PlayerData GetCurrentPlayerData()
+	{
+		string myPlayer = PlayerManager.myPlayer.identificationName;
+
+		foreach (PlayerData playerData in playerDataList) 
+		{
+			if (playerData.playerName == myPlayer) 
+			{
+				return playerData;
+			}
+		}
+
+		Debug.LogError("playerData is null");
+		return null;
+	}
+
+
+	public PlayerData GetPlayerDataByPlayerName(string playerName)
+	{
+		foreach (PlayerData playerData in GameManager.userData.playerDataList) 
+		{
+			if (playerData.playerName == playerName) 
+			{
+				return playerData;
+			}			
+		}
+
+		return null;
+	}
+
+
 
 	// check if event exists
 
@@ -69,24 +102,6 @@ public class UserData {
 		return false;
 	}
 
-
-	// Get current Player Data 
-
-	public PlayerData GetCurrentPlayerData()
-	{
-		string myPlayer = PlayerManager.myPlayer.identificationName;
-
-		foreach (PlayerData playerData in playerDataList) 
-		{
-			if (playerData.playerName == myPlayer) 
-			{
-				return playerData;
-			}
-		}
-
-		Debug.LogError("playerData is null");
-		return null;
-	}
 
 
 	// Add Event

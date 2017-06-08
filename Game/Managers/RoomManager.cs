@@ -59,26 +59,12 @@ public class RoomManager : MonoBehaviour {
 		CreateRoom ();
 		nameSpeakerMap = new Dictionary<string, ISpeaker> ();
 
+
 		if (myRoom.RoomState == RoomState.Real) 
 		{
 			// REAL ROOM
 
 			myRoom.myFurnitureList.ForEach (furn => EventsHandler.Invoke_cb_furnitureChanged (furn));
-
-			myRoom.myCharacterList.ForEach (character => {
-				EventsHandler.Invoke_cb_characterChanged (character);
-				nameSpeakerMap.Add (character.identificationName, character);
-			});
-
-			foreach (Player player in PlayerManager.playerList) 
-			{
-				if (player.isActive == false) 
-				{
-					EventsHandler.Invoke_cb_inactivePlayerChanged (player);
-					nameSpeakerMap.Add (player.identificationName, player);
-				}
-			}
-
 			myRoom.myTileInteractionList.ForEach (tileInt => EventsHandler.Invoke_cb_tileInteractionChanged (tileInt));
 
 		} else {
@@ -96,16 +82,42 @@ public class RoomManager : MonoBehaviour {
 			// PERSISTENT INTERACTABLES
 
 			myRoom.myMirrorRoom.myFurnitureList_Persistant.ForEach (furn => EventsHandler.Invoke_cb_furnitureChanged (furn));
-
-			myRoom.myCharacterList.ForEach (character => {
-				EventsHandler.Invoke_cb_characterChanged (character);
-				nameSpeakerMap.Add (character.identificationName, character);
-			});
-
 			myRoom.myMirrorRoom.myTileInteractionList_Persistant.ForEach (tileInt => EventsHandler.Invoke_cb_tileInteractionChanged (tileInt));
 
 			SwitchObjectByShadowState (true);
 		}
+
+
+		// Characters
+
+		myRoom.myCharacterList.ForEach (character => {
+			EventsHandler.Invoke_cb_characterChanged (character);
+			nameSpeakerMap.Add (character.identificationName, character);
+		});
+
+
+		// Players
+
+		foreach (Player player in PlayerManager.playerList) 
+		{
+			if ((player.isActive == false) && (player.currentRoom == myRoom.myName))
+			{
+				Debug.Log ("Player in room");
+
+				Vector3 playerCurrentPos = GameManager.userData.GetPlayerDataByPlayerName (player.identificationName).currentPos;
+
+				if (playerCurrentPos == Vector3.zero) 
+				{
+					playerCurrentPos = player.startingPos;
+				}
+
+				PlayerManager.instance.ParkPlayerInTiles (player, playerCurrentPos);
+
+				EventsHandler.Invoke_cb_inactivePlayerChanged (player);
+				nameSpeakerMap.Add (player.identificationName, player);
+			}
+		}
+
 
 		// adding the player to the speaker map
 
@@ -117,8 +129,6 @@ public class RoomManager : MonoBehaviour {
 
 	void CreateRoom()	
 	{
-		//Debug.Log ("created grid");
-	
 		myRoom = new Room(GameManager.roomToLoad);
 		EventsHandler.Invoke_cb_roomCreated (myRoom);
 		Utilities.AdjustOrthographicCamera (myRoom);

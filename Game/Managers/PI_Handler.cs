@@ -66,6 +66,17 @@ public class PI_Handler : MonoBehaviour {
 	{
 		PI_gameObjectMap.Add (physicalInteractable, obj);
 		name_PI_map.Add (name, physicalInteractable);
+
+		if (physicalInteractable is Player) 
+		{
+			Player player = (Player)physicalInteractable;
+
+			if (PlayerManager.instance.playerGameObjectMap.ContainsKey (player) == false) 
+			{
+				PlayerManager.instance.playerGameObjectMap.Add (player, obj);
+			}
+		}
+
 	}
 
 
@@ -75,7 +86,7 @@ public class PI_Handler : MonoBehaviour {
 
 		bool useIdentifiactionName = ((myPhysicalInteractable.identificationName != null) && (myPhysicalInteractable.identificationName != string.Empty));
 		string PI_name = useIdentifiactionName ? myPhysicalInteractable.identificationName : myPhysicalInteractable.fileName;			
-
+			
 		myPhysicalInteractable.myPos = new Vector3 (myPhysicalInteractable.x + myPhysicalInteractable.mySize.x/2, myPhysicalInteractable.y, 0);
 
 		GameObject obj = null;
@@ -83,8 +94,10 @@ public class PI_Handler : MonoBehaviour {
 
 
 		// Animated Object
-
+	
 		if (GameManager.stringPrefabMap.ContainsKey (myPhysicalInteractable.fileName)) {
+
+			//Debug.Log ("found file name " + myPhysicalInteractable.fileName);
 
 			obj = Instantiate (GameManager.stringPrefabMap [myPhysicalInteractable.fileName]);
 			sr = obj.GetComponentInChildren<SpriteRenderer> ();
@@ -106,7 +119,7 @@ public class PI_Handler : MonoBehaviour {
 
 		} else {
 			
-			// if not animated object
+			// if not animated object (furniture)
 
 			obj = new GameObject (myPhysicalInteractable.fileName);
 			GameObject childObj = new GameObject ("Image");
@@ -129,13 +142,10 @@ public class PI_Handler : MonoBehaviour {
 		if (myPhysicalInteractable.walkable == true) 
 		{
 			sr.sortingOrder = (int) -(myPhysicalInteractable.y + myPhysicalInteractable.mySize.y) * 10;
-
 		}
 
 		sr.sortingLayerName = Constants.furniture_character_layer;
-
 	}
-
 
 
 	// Change Current Graphic State

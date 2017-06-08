@@ -132,12 +132,7 @@ public class Character : PhysicalInteractable, ISpeaker, IWalker {
 			
 		newTile.myCharacter = this;
 	}
-
-
-
-
 }
-
 
 
 

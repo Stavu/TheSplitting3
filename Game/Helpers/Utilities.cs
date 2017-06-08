@@ -439,20 +439,14 @@ public class Utilities {
 		//up left
 		positions.Add(new Vector3 (-frameBounds.x, frameBounds.y,0));
 
-
-
 		return positions;
 	}
 
 
 
 
-
-
-
 	public static List<GraphicState> GetGraphicStateList (PhysicalInteractable physicalInteractable)
 	{
-
 
 		GameObject obj = null;
 		List<GraphicState> graphicStateList = new List<GraphicState> ();

@@ -14,7 +14,6 @@ public class Player : PhysicalInteractable, ISpeaker, IWalker {
 
 	//public Vector3 myPos;
 
-
 	public Color myTextColor;
 
 	[NonSerialized]
@@ -25,6 +24,9 @@ public class Player : PhysicalInteractable, ISpeaker, IWalker {
 	public Vector2 targetPos;
 
 	public bool isActive = false;
+	public string startingRoom;
+	public Vector3 startingPos;
+
 	public string currentRoom;
 
 
@@ -111,13 +113,13 @@ public class Player : PhysicalInteractable, ISpeaker, IWalker {
 
 	// Constructor
 
-	public Player(string myName, Vector2 mySize, Vector3 myPos)
+	public Player(string myName, Vector2 mySize)
 	{
 		this.identificationName = myName;
 		this.fileName = myName;
 
 		this.mySize = mySize;	
-		this.myPos = myPos;	
+		//this.myPos = myPos;	
 
 		/*
 		if (myName == "Daniel") 
@@ -128,6 +130,10 @@ public class Player : PhysicalInteractable, ISpeaker, IWalker {
 		*/
 
 		myTextColor = Color.white;
+
+		myInteractionList = new List<Interaction> ();
+		graphicStates = new List<GraphicState> ();
+
 	}
 
 

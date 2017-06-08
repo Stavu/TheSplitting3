@@ -161,6 +161,9 @@ public class Room {
 
 	public void CreateRoomInteractables()
 	{
+
+		Debug.Log ("CreateRoomInteractables");
+
 		// Furniture
 
 		foreach (Furniture furn in myFurnitureList) 

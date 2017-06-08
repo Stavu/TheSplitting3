@@ -29,8 +29,7 @@ public class SceneLoader : MonoBehaviour {
 
 
 	void CreateManagers()
-	{
-		
+	{		
 		Instantiate (managers);
 
 		if(GameObject.Find("StaticManagers") == null)
@@ -39,7 +38,7 @@ public class SceneLoader : MonoBehaviour {
 			obj.name = "StaticManagers";
 		}			
 
-		PlayerManager.instance.CreatePlayers ();
+		//PlayerManager.instance.CreatePlayers ();
 		GameManager.instance.CreateInventoryItemData ();
 		GameManager.instance.CreateUserData ();
 

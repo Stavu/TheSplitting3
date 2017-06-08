@@ -36,7 +36,7 @@ public class ChangePlayerScene : Cutscene
 
 		// move to room
 
-		PlayerManager.instance.SwitchPlayer ("llehctiM");
+		PlayerManager.instance.SwitchPlayer ("Daniel");
 		//InteractionManager.instance.MoveToRoom ("test_mom", new Vector2 (15, 15));
 	
 		///////////

@@ -180,16 +180,15 @@ public class InventoryUI : MonoBehaviour {
 
 	void Update () 
 	{
+		/*
 		if(Input.GetKeyDown(KeyCode.A))
 		{
-
 			Debug.Log ("currentInteraction " + currentInteraction.myVerb);
 			Debug.Log ("chosenItem " + chosenItem.fileName);
 			Debug.Log ("interactionList" + chosenItem.inventoryItemInteractionList.Count);
 			Debug.Log ("interactionObjectMap " + myInteractionObjectMap.Count);
-
-
 		}
+		*/
 	}
 
 

@@ -74,14 +74,13 @@ public class TileManager : MonoBehaviour {
 			GameObject obj = Instantiate (TilePrefab, tiles.transform);
 
 			obj.transform.position = new Vector3 (tile.x,tile.y,0);
-			obj.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.room_layer;
+			obj.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.tiles_layer;
 
 			tileGameObjectMap.Add(tile, obj);
 
 			// adding object to hirarchy under TileManager
 		
 			obj.name = "Tile " + tile.x + "," + tile.y;
-
 
 		}
 

@@ -14,34 +14,30 @@ public class Tile {
 
 	public Furniture myFurniture; 
 	public Character myCharacter;
+	public Player myInactivePlayer;
 	public TileInteraction myTileInteraction;
 
 	public bool walkable;
 
 
 
-
 	public Tile(int x, int y)
 	{
-
 		this.x = x;
 		this.y = y;
 
 		//Debug.Log ("Created new tile at" + this.x + this.y); 
-
 	}
 
 
 	public void PlaceFurnitureInTile(Furniture furniture)
-	{
-		
+	{		
 		if (furniture == null) 
 		{
 			Debug.LogError("Tile: PlaceRoomObject myObject is null");
 		
 			return;
 		}
-
 
 		if(myFurniture != null)
 		{
@@ -54,24 +50,20 @@ public class Tile {
 
 		}
 
-
 		// if everything's okay, set myFurniture
 
 		myFurniture = furniture;
-
 	}
 
 
 	public void PlaceCharacterInTile(Character character)
 	{
-
 		if (character == null) 
 		{
 			Debug.LogError("Tile: PlaceRoomObject myObject is null");
 
 			return;
 		}
-
 
 		if(myCharacter != null)
 		{
@@ -81,19 +73,41 @@ public class Tile {
 
 				return;
 			}
-
 		}
 
-
-		// if everything's okay, set myFurniture
+		// if everything's okay, set myCharacter
 
 		myCharacter = character;
-
 	}
 
 
 
+	public void PlaceInactivePlayerInTile(Player player)
+	{
 
+		//Debug.Log ("place ip in tile");
+
+		if (player == null) 
+		{
+			Debug.LogError("Tile: PlaceRoomObject myObject is null");
+
+			return;
+		}
+
+		if(myInactivePlayer != null)
+		{
+			if (myInactivePlayer != player) 
+			{
+				Debug.LogError("Tile: PlaceRoomObject myRoomObject exists");
+
+				return;
+			}
+		}
+
+		// if everything's okay, setmyInactivePlayer
+
+		myInactivePlayer = player;
+	}
 
 
 	public void PlaceTileInteraction(TileInteraction tileInteraction)

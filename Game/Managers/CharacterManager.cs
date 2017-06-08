@@ -89,7 +89,6 @@ public class CharacterManager : MonoBehaviour {
 
 	public void MoveToTargetTile(IWalker walker, Vector2 myTargetPos)
 	{
-
 		Tile currentTile = RoomManager.instance.myRoom.MyGrid.GetTileAt ((int)walker.speakerPos.x, (int)walker.speakerPos.y);
 
 		if (currentTile.myCharacter == walker) 
@@ -100,7 +99,6 @@ public class CharacterManager : MonoBehaviour {
 		walker.walkerTargetPos = myTargetPos;
 
 		StartCoroutine (MoveCoroutine (walker));
-
 	}
 
 

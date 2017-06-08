@@ -168,6 +168,8 @@ public class GameManager : MonoBehaviour
 
 			// setting current player
 
+			PlayerManager.instance.CreatePlayers ();
+
 			Player currentPlayer = PlayerManager.instance.GetPlayerByName(userData.currentActivePlayer);
 
 			if (currentPlayer != null) 
@@ -201,6 +203,8 @@ public class GameManager : MonoBehaviour
 	{
 		Debug.Log ("Creating new data");
 
+		PlayerManager.instance.CreatePlayers ();
+
 		userData = new UserData ();
 
 		foreach (Player player in PlayerManager.playerList) 
@@ -213,8 +217,8 @@ public class GameManager : MonoBehaviour
 				userData.currentActivePlayer = player.identificationName;
 			}
 
-			data.currentRoom = player.currentRoom;
-
+			data.currentRoom = player.startingRoom;
+			player.currentRoom = player.startingRoom;
 		}
 
 		SaveData ();
@@ -223,14 +227,14 @@ public class GameManager : MonoBehaviour
 
 	public void SaveData ()
 	{		
-		Debug.Log ("Saving data");
+		//Debug.Log ("Saving data");
 
 		if (userData != null) 
 		{
 			string data = JsonUtility.ToJson (userData);
 			PlayerPrefs.SetString ("PlayerData", data);
 
-			Debug.Log ("data " + data);
+			//Debug.Log ("data " + data);
 		}
 	}
 

@@ -61,26 +61,62 @@ public class PlayerManager : MonoBehaviour {
 
 	void Update () 
 	{
-		
+		if (Input.GetKeyDown (KeyCode.A)) 
+		{
+			if (myPlayer.identificationName == "Daniel") 
+			{
+				SwitchPlayer ("llehctiM");
+			
+			} else {
+				
+				SwitchPlayer ("Daniel");
+			}
+		}
 	}
 
 
 	// Create Players
 
-
 	public void CreatePlayers()
 	{
-		// When first loading the game - create one and assign player
+		// When first loading the game - create list and assign player
 
 		if (playerList == null) 
-		{
+		{			
 			playerList = new List<Player> ();
 
-			Player player_daniel = new Player ("Daniel", new Vector2 (1, 1), new Vector3(3.5f,3.5f,0));
-			player_daniel.currentRoom = "test_mom";
+			Player player_daniel = new Player ("Daniel", new Vector2 (2, 1));
+			player_daniel.startingRoom = "test_mom";
+			player_daniel.startingPos = new Vector3 (15f, 3f, 0);
 
-			Player player_llehctiM = new Player ("llehctiM", new Vector2 (1, 1), new Vector3 (entrancePoint.x, entrancePoint.y, 0));
-			player_llehctiM.currentRoom = "doorTest";
+
+			// hardcoded stuff
+
+			GraphicState defaultGraphicState = new GraphicState ();
+
+			defaultGraphicState.graphicStateName = "default";
+
+			defaultGraphicState.frameExtents = new Vector2 (1, 2);
+			defaultGraphicState.frameOffsetX = 0;
+			defaultGraphicState.frameOffsetY = 0;
+
+			defaultGraphicState.coordsList = new List<Coords> ();
+
+			player_daniel.graphicStates.Add (defaultGraphicState);
+
+
+			Interaction interaction = new Interaction ();
+			interaction.myVerb = "Look At";
+			SubInteraction subInt = new SubInteraction ("showMonologue");
+			subInt.rawText = "hi daniel.";
+			subInt.textList = Utilities.SeparateText (subInt.rawText);
+			interaction.SubIntList.Add (subInt);
+			player_daniel.myInteractionList.Add (interaction);
+
+
+			Player player_llehctiM = new Player ("llehctiM", new Vector2 (2, 1));
+			player_llehctiM.startingRoom = "test_mom";
+			player_llehctiM.startingPos = new Vector3 (15f, 6f, 0);
 
 			playerList.Add (player_daniel);
 			playerList.Add (player_llehctiM);
@@ -91,17 +127,32 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 
-	// Create Character 
 
+	// Create Character 
 
 	public void CreatePlayer(Room myRoom)	
 	{		
 		//myPlayer = new Player("Daniel", new Vector2(1,1), new Vector3(entrancePoint.x,entrancePoint.y,0));
 
-		myPlayer.myPos = entrancePoint;
+		PlayerData playerData = GameManager.userData.GetPlayerDataByPlayerName (myPlayer.identificationName);
+
+		if (playerData.currentPos != Vector3.zero)
+		{
+			myPlayer.myPos = playerData.currentPos;
+
+		} else {
+
+			myPlayer.myPos = myPlayer.startingPos;
+		}
+
 		CreatePlayerObject (myPlayer);
 	}
 
+
+
+
+
+	// Player object
 
 	public void CreatePlayerObject(Player myPlayer)
 	{
@@ -120,7 +171,10 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 
+
+
 	// -------- MOVE PLAYER --------- // 
+
 
 	public void MovePlayer(Direction myDirection)
 	{
@@ -208,6 +262,20 @@ public class PlayerManager : MonoBehaviour {
 				}
 			}		
 
+
+			// INACTIVE PLAYER - if there an inactive player at this tile
+
+			if (tile.myInactivePlayer != null) 
+			{
+				if (tile.myInactivePlayer.walkable == false) {		
+					EventsHandler.Invoke_cb_playerHitPhysicalInteractable (tile.myInactivePlayer, tile);
+					StopPlayer (InputManager.instance.lastDirection);
+
+					return;
+				}
+			} 
+
+
 			// if there's no character at this tile
 
 			if (ActionBoxManager.instance.currentPhysicalInteractable != null) 
@@ -245,8 +313,6 @@ public class PlayerManager : MonoBehaviour {
 			UpdatePlayerObjectPosition (myPlayer, myDirection);
 		}
 	}
-
-
 
 
 
@@ -294,47 +360,54 @@ public class PlayerManager : MonoBehaviour {
 			return;
 		}
 
-		foreach (Player player in playerList) 
+		Player player = GetPlayerByName (newPlayer);
+						
+		Debug.Log ("switch player");
+
+
+		// ---- switcharoo ---- //
+
+		myPlayer.isActive = false;
+
+		// Park Player 
+
+		ParkPlayerInTiles (myPlayer, myPlayer.myPos);
+
+		// switch
+
+		myPlayer = player;
+
+		// remove from tiles 
+
+		RemovePlayerFromTiles (myPlayer);
+
+		// new player is active
+
+		myPlayer.isActive = true;
+	
+
+		Debug.Log (myPlayer.identificationName);
+
+		// check if player is already in the room
+
+		if (myPlayer.currentRoom == RoomManager.instance.myRoom.myName) 
 		{
-			if (player.identificationName == newPlayer) 
-			{	
+			// if new player is in room
 
-				Debug.Log ("switch player");
-				myPlayer = player;
-				Debug.Log (myPlayer.identificationName);
+			Debug.Log ("player exists in room");
 
-				// check if player is already in the room
-
-				if (GameManager.userData.CheckIfCharacterExistsInRoom (player.identificationName)) 
-				{
-					Debug.Log ("character exists in room");
-					// catch character game object and transfer it to the player
-
-					Character character = (Character)PI_Handler.instance.name_PI_map [player.identificationName];
-					GameObject characterObject = PI_Handler.instance.PI_gameObjectMap [character];
-
-					if (characterObject.GetComponent<PlayerObject> () == null) 
-					{
-						characterObject.AddComponent<PlayerObject> ();
-					}
-
-					myPlayer.myPos = characterObject.transform.position;
-
-					playerObject = characterObject.GetComponent<PlayerObject>();
-
-					playerGameObjectMap.Clear ();
-					playerGameObjectMap.Add (player,characterObject);
-				}			
-
-
-				EventsHandler.Invoke_cb_playerSwitched (player);
-				return;	
+			if (playerGameObjectMap [myPlayer].GetComponent<PlayerObject> () == null) 
+			{
+				playerGameObjectMap[myPlayer].AddComponent<PlayerObject>();
 			}
+
+			playerObject = playerGameObjectMap [myPlayer].GetComponent<PlayerObject>();
+
 		}
 
-		Debug.LogError ("couldn't find player");
+		EventsHandler.Invoke_cb_playerSwitched (player);
+		return;	
 	}
-
 
 
 	// Get player by name
@@ -353,18 +426,66 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 
-
 	// Save player position to player data when player has moved
 
 	public void SavePlayerPosition(Player player)
 	{
-		foreach (PlayerData playerData in GameManager.userData.playerDataList) 
+		GameManager.userData.GetPlayerDataByPlayerName (player.identificationName).currentPos = player.myPos;
+		GameManager.instance.SaveData ();
+	}
+
+
+
+
+	public void ParkPlayerInTiles(Player player, Vector3 currentPos)
+	{
+		Room myRoom = RoomManager.instance.myRoom;
+
+		player.x = Mathf.FloorToInt(currentPos.x);
+		player.y = Mathf.FloorToInt(currentPos.y);		
+
+		List<Tile> PlayerTiles = myRoom.GetMyTiles(myRoom.myGrid,player.mySize, player.x, player.y);
+
+		PlayerTiles.ForEach(tile => Debug.Log(tile.x + "," + tile.y));
+		PlayerTiles.ForEach (tile => tile.PlaceInactivePlayerInTile (player));
+
+		if (myRoom.roomState == RoomState.Mirror) 
 		{
-			if (playerData.playerName == player.identificationName) 
-			{
-				playerData.currentPos = player.myPos;
-			}			
+			List<Tile> PlayerTiles_shadow = myRoom.GetMyTiles(myRoom.myMirrorRoom.shadowGrid,player.mySize, player.x, player.y);
+			PlayerTiles_shadow.ForEach (tile => tile.PlaceInactivePlayerInTile (player));
 		}
+
+		EventsHandler.cb_tileLayoutChanged ();
+	}
+
+
+
+
+	public void RemovePlayerFromTiles(Player player)
+	{		
+		Room myRoom = RoomManager.instance.myRoom;
+
+		foreach (Tile tile in myRoom.myGrid.gridArray) 
+		{
+			if(tile.myInactivePlayer == player)
+			{
+				tile.myInactivePlayer = null;
+			}
+		}
+
+		if (myRoom.roomState == RoomState.Mirror) 
+		{
+			foreach (Tile tile_shadow in myRoom.myMirrorRoom.shadowGrid.gridArray) 
+			{
+				if(tile_shadow.myInactivePlayer == player)
+				{
+					tile_shadow.myInactivePlayer = null;
+				}
+			}
+		}
+
+		EventsHandler.cb_tileLayoutChanged ();
+
 	}
 
 
