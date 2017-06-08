@@ -37,35 +37,23 @@ public class PlayerManager : MonoBehaviour {
 
 	public void Initialize () 
 	{		
-		EventsHandler.cb_roomCreated += CreatePlayer;
-		EventsHandler.cb_playerCreated += CreatePlayerObject;
-		EventsHandler.cb_keyPressed += MovePlayer;
-		//EventsHandler.cb_characterMove += UpdatePlayerObjectPosition;
-		EventsHandler.cb_noKeyPressed += StopPlayer;
+		EventsHandler.cb_roomCreated 	+= CreatePlayer;
+		EventsHandler.cb_playerCreated 	+= CreatePlayerObject;
+		EventsHandler.cb_keyPressed 	+= MovePlayer;
+		EventsHandler.cb_noKeyPressed 	+= StopPlayer;
+		EventsHandler.cb_playerMove		+= SavePlayerPosition;
 
 		playerGameObjectMap = new Dictionary<Player, GameObject> ();
-
-		// When first loading the game - create one and assign player
-
-		if (playerList == null) 
-		{
-			playerList = new List<Player> ();
-
-			playerList.Add (new Player ("Daniel", new Vector2 (1, 1), new Vector3(3.5f,3.5f,0)));
-			playerList.Add (new Player ("llehctiM", new Vector2 (1, 1), new Vector3 (entrancePoint.x, entrancePoint.y, 0)));
-
-			myPlayer = playerList [0];
-		}
 	}
 
 
 	public void OnDestroy()
 	{	
-		EventsHandler.cb_roomCreated -= CreatePlayer;
-		EventsHandler.cb_playerCreated -= CreatePlayerObject;
-		EventsHandler.cb_keyPressed -= MovePlayer;
-		//EventsHandler.cb_characterMove -= UpdatePlayerObjectPosition;
-		EventsHandler.cb_noKeyPressed -= StopPlayer;
+		EventsHandler.cb_roomCreated 	-= CreatePlayer;
+		EventsHandler.cb_playerCreated 	-= CreatePlayerObject;
+		EventsHandler.cb_keyPressed 	-= MovePlayer;
+		EventsHandler.cb_noKeyPressed 	-= StopPlayer;
+		EventsHandler.cb_playerMove 	-= SavePlayerPosition;
 	}
 
 	
@@ -74,6 +62,32 @@ public class PlayerManager : MonoBehaviour {
 	void Update () 
 	{
 		
+	}
+
+
+	// Create Players
+
+
+	public void CreatePlayers()
+	{
+		// When first loading the game - create one and assign player
+
+		if (playerList == null) 
+		{
+			playerList = new List<Player> ();
+
+			Player player_daniel = new Player ("Daniel", new Vector2 (1, 1), new Vector3(3.5f,3.5f,0));
+			player_daniel.currentRoom = "test_mom";
+
+			Player player_llehctiM = new Player ("llehctiM", new Vector2 (1, 1), new Vector3 (entrancePoint.x, entrancePoint.y, 0));
+			player_llehctiM.currentRoom = "doorTest";
+
+			playerList.Add (player_daniel);
+			playerList.Add (player_llehctiM);
+
+			myPlayer = player_llehctiM;
+			myPlayer.isActive = true;
+		}
 	}
 
 
@@ -89,16 +103,15 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 
-
 	public void CreatePlayerObject(Player myPlayer)
 	{
 		//Debug.Log ("created character object");
 
-		playerObject = (Instantiate (Resources.Load<GameObject>("Prefabs/Characters/" + myPlayer.myName))).AddComponent<PlayerObject>();
+		playerObject = (Instantiate (Resources.Load<GameObject>("Prefabs/Characters/" + myPlayer.fileName))).AddComponent<PlayerObject>();
 
-		Debug.Log (myPlayer.myName);
+		Debug.Log (myPlayer.fileName);
 
-		playerObject.gameObject.name = myPlayer.myName;
+		playerObject.gameObject.name = myPlayer.fileName;
 		playerObject.transform.position = myPlayer.myPos;
 
 		//obj.GetComponent<SpriteRenderer> ().sortingLayerName = Constants.furniture_character_layer;
@@ -128,7 +141,6 @@ public class PlayerManager : MonoBehaviour {
 
 		switch (myDirection) 
 		{
-
 			case Direction.left:
 
 				newPos = new Vector3 ((myPlayer.myPos.x - playerSpeed), myPlayer.myPos.y, myPlayer.myPos.z);
@@ -136,7 +148,6 @@ public class PlayerManager : MonoBehaviour {
 				playerGameObjectMap [myPlayer].transform.localScale = new Vector3(1,1,1);
 
 				break;
-
 
 			case Direction.right:
 
@@ -146,14 +157,12 @@ public class PlayerManager : MonoBehaviour {
 
 				break;
 
-
 			case Direction.up:
 
 				newPos = new Vector3 (myPlayer.myPos.x, (myPlayer.myPos.y + playerSpeed), myPlayer.myPos.z);
 				offsetY = 0.5f;
 
 				break;
-
 
 			case Direction.down:
 
@@ -279,7 +288,7 @@ public class PlayerManager : MonoBehaviour {
 	public void SwitchPlayer(string newPlayer)
 	{
 
-		if (myPlayer.myName == newPlayer) 
+		if (myPlayer.identificationName == newPlayer) 
 		{
 			Debug.LogError ("switched to the same player");
 			return;
@@ -287,21 +296,21 @@ public class PlayerManager : MonoBehaviour {
 
 		foreach (Player player in playerList) 
 		{
-			if (player.myName == newPlayer) 
+			if (player.identificationName == newPlayer) 
 			{	
 
 				Debug.Log ("switch player");
 				myPlayer = player;
-				Debug.Log (myPlayer.myName);
+				Debug.Log (myPlayer.identificationName);
 
 				// check if player is already in the room
 
-				if (GameManager.userData.CheckIfCharacterExistsInRoom (player.myName)) 
+				if (GameManager.userData.CheckIfCharacterExistsInRoom (player.identificationName)) 
 				{
 					Debug.Log ("character exists in room");
 					// catch character game object and transfer it to the player
 
-					Character character = (Character)PI_Handler.instance.name_PI_map [player.myName];
+					Character character = (Character)PI_Handler.instance.name_PI_map [player.identificationName];
 					GameObject characterObject = PI_Handler.instance.PI_gameObjectMap [character];
 
 					if (characterObject.GetComponent<PlayerObject> () == null) 
@@ -328,7 +337,35 @@ public class PlayerManager : MonoBehaviour {
 
 
 
+	// Get player by name
 
+	public Player GetPlayerByName(string name)
+	{
+		foreach (Player player in playerList) 
+		{
+			if (player.identificationName == name) 
+			{
+				return player;
+			}
+		}
+
+		return null;
+	}
+
+
+
+	// Save player position to player data when player has moved
+
+	public void SavePlayerPosition(Player player)
+	{
+		foreach (PlayerData playerData in GameManager.userData.playerDataList) 
+		{
+			if (playerData.playerName == player.identificationName) 
+			{
+				playerData.currentPos = player.myPos;
+			}			
+		}
+	}
 
 
 

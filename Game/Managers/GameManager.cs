@@ -69,7 +69,7 @@ public class GameManager : MonoBehaviour
 
 		if (roomToLoad == null) 
 		{
-			roomToLoad = stringRoomMap ["test1"];
+			roomToLoad = stringRoomMap [PlayerManager.myPlayer.currentRoom];
 		}
 
 		speakerColorMap = new Dictionary<string, Color> ();
@@ -160,13 +160,28 @@ public class GameManager : MonoBehaviour
 			return;
 		}
 
+		// Loading data
+
 		if (PlayerPrefs.HasKey ("PlayerData")) 
-		{			
-			//Debug.Log ("Loading data from memory");
+		{				
 			userData = JsonUtility.FromJson<UserData> (PlayerPrefs.GetString ("PlayerData"));
+
+			// setting current player
+
+			Player currentPlayer = PlayerManager.instance.GetPlayerByName(userData.currentActivePlayer);
+
+			if (currentPlayer != null) 
+			{				
+				PlayerManager.myPlayer = currentPlayer;
+			}
+
+			// Player data 
 
 			foreach (PlayerData playerData in userData.playerDataList) 
 			{
+				// set current room of the player according to current room from data
+				PlayerManager.instance.GetPlayerByName (playerData.playerName).currentRoom = playerData.currentRoom;
+
 				foreach (InventoryItem item in playerData.inventory.items) 
 				{
 					item.Initialize ();
@@ -174,7 +189,9 @@ public class GameManager : MonoBehaviour
 			}
 
 		} else {
-			
+
+			// Creating new data 
+
 			CreateNewData ();
 		}
 	}
@@ -187,8 +204,17 @@ public class GameManager : MonoBehaviour
 		userData = new UserData ();
 
 		foreach (Player player in PlayerManager.playerList) 
-		{
-			userData.playerDataList.Add (new PlayerData (player.myName));
+		{	
+			PlayerData data = new PlayerData(player.identificationName);
+			userData.playerDataList.Add (data);
+
+			if (player.isActive == true) 
+			{
+				userData.currentActivePlayer = player.identificationName;
+			}
+
+			data.currentRoom = player.currentRoom;
+
 		}
 
 		SaveData ();

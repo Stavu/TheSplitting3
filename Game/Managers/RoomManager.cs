@@ -70,8 +70,16 @@ public class RoomManager : MonoBehaviour {
 				nameSpeakerMap.Add (character.identificationName, character);
 			});
 
-			myRoom.myTileInteractionList.ForEach (tileInt => EventsHandler.Invoke_cb_tileInteractionChanged (tileInt));
+			foreach (Player player in PlayerManager.playerList) 
+			{
+				if (player.isActive == false) 
+				{
+					EventsHandler.Invoke_cb_inactivePlayerChanged (player);
+					nameSpeakerMap.Add (player.identificationName, player);
+				}
+			}
 
+			myRoom.myTileInteractionList.ForEach (tileInt => EventsHandler.Invoke_cb_tileInteractionChanged (tileInt));
 
 		} else {
 
@@ -101,7 +109,7 @@ public class RoomManager : MonoBehaviour {
 
 		// adding the player to the speaker map
 
-		nameSpeakerMap.Add (PlayerManager.myPlayer.myName, PlayerManager.myPlayer);
+		nameSpeakerMap.Add (PlayerManager.myPlayer.identificationName, PlayerManager.myPlayer);
 
 		EventsHandler.Invoke_cb_inputStateChanged ();
 	}

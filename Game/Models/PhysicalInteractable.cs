@@ -39,7 +39,7 @@ public class PhysicalInteractable : Interactable {
 	}
 
 
-
+	// -- Coords List -- //
 
 	public List<Coords> GetMyCoordsList()
 	{	

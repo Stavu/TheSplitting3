@@ -256,6 +256,19 @@ public static class EventsHandler
 	}
 
 
+	public static Action<Player> cb_inactivePlayerChanged; 
+
+	public static void Invoke_cb_inactivePlayerChanged(Player player)
+	{
+		if(cb_inactivePlayerChanged != null)
+		{
+			cb_inactivePlayerChanged (player);
+		}
+
+		Invoke_cb_tileLayoutChanged ();	
+	}
+
+
 
 
 	public static Action<TileInteraction> cb_tileInteractionChanged; 
@@ -334,13 +347,13 @@ public static class EventsHandler
 	}
 
 
-	public static Action<Player> cb_characterMove; 
+	public static Action<Player> cb_playerMove; 
 
-	public static void Invoke_cb_characterMove(Player player)
+	public static void Invoke_cb_playerMove(Player player)
 	{
-		if(cb_characterMove != null)
+		if(cb_playerMove != null)
 		{
-			cb_characterMove (player);
+			cb_playerMove (player);
 		}
 
 	}

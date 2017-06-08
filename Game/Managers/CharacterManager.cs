@@ -200,7 +200,6 @@ public class CharacterManager : MonoBehaviour {
 
 		switch (lastDirection) 
 		{
-
 			case Direction.left:
 
 				myAnimator.PlayInFixedTime ("Idle_left");

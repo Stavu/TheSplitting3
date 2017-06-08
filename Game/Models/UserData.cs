@@ -7,15 +7,13 @@ using System;
 
 [Serializable]
 public class UserData {
-
-
+	
 	List<string> gameEventsList;
 	public List<string> roomsVisitedList;
 	public List<PI_AnimationState> animationStateList;
 	public List<PlayerData> playerDataList;
 
-	//public string currentPlayer;
-
+	public string currentActivePlayer;
 
 
 	public UserData()
@@ -72,12 +70,11 @@ public class UserData {
 	}
 
 
-	// 
-
+	// Get current Player Data 
 
 	public PlayerData GetCurrentPlayerData()
 	{
-		string myPlayer = PlayerManager.myPlayer.myName;
+		string myPlayer = PlayerManager.myPlayer.identificationName;
 
 		foreach (PlayerData playerData in playerDataList) 
 		{
@@ -164,13 +161,12 @@ public class UserData {
 
 
 
-
 [Serializable]
 public class PlayerData {
-
-
+	
 	public string playerName;
 	public string currentRoom;
+	public Vector3 currentPos;
 	public Inventory inventory;
 
 	public PlayerData(string playerName)
@@ -197,12 +193,9 @@ public class PlayerData {
 
 
 
-
-
 [Serializable]
 public class PI_AnimationState
 {
-
 	public string myName;
 	public string animationState;
 

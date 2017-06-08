@@ -34,7 +34,7 @@ public class TileManager : MonoBehaviour {
 		//EventsHandler.cb_furnitureChanged += ColorTiles;
 		//EventsHandler.cb_characterChanged += ColorTiles;
 		//EventsHandler.cb_tileInteractionChanged += ColorTiles;
-		EventsHandler.cb_characterMove += FindPlayerTile;
+		EventsHandler.cb_playerMove += FindPlayerTile;
 		EventsHandler.cb_roomCreated += CreateTileObject;
 		EventsHandler.cb_tileLayoutChanged += ColorTiles;
 
@@ -48,7 +48,7 @@ public class TileManager : MonoBehaviour {
 		//EventsHandler.cb_furnitureChanged -= ColorTiles;
 		//EventsHandler.cb_characterChanged -= ColorTiles;
 		//EventsHandler.cb_tileInteractionChanged -= ColorTiles;
-		EventsHandler.cb_characterMove -= FindPlayerTile;
+		EventsHandler.cb_playerMove -= FindPlayerTile;
 		EventsHandler.cb_roomCreated -= CreateTileObject;
 		EventsHandler.cb_tileLayoutChanged -= ColorTiles;
 	}

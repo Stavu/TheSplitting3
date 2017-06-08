@@ -30,12 +30,11 @@ public class PI_Handler : MonoBehaviour {
 	// Use this for initialization
 	public void Initialize () 
 	{
-
 		EventsHandler.cb_newAnimationState += ChangeCurrentGraphicState;
 
 		EventsHandler.cb_furnitureChanged += CreatePIGameObject;
 		EventsHandler.cb_characterChanged += CreatePIGameObject;
-
+		EventsHandler.cb_inactivePlayerChanged += CreatePIGameObject;
 
 		PI_gameObjectMap = new Dictionary<PhysicalInteractable, GameObject> ();
 		name_PI_map = new Dictionary<string, PhysicalInteractable> ();
@@ -48,7 +47,7 @@ public class PI_Handler : MonoBehaviour {
 
 		EventsHandler.cb_furnitureChanged -= CreatePIGameObject;
 		EventsHandler.cb_characterChanged -= CreatePIGameObject;
-
+		EventsHandler.cb_inactivePlayerChanged -= CreatePIGameObject;
 
 		PI_gameObjectMap.Clear ();
 		name_PI_map.Clear ();
@@ -65,10 +64,8 @@ public class PI_Handler : MonoBehaviour {
 
 	public void AddPIToMap(PhysicalInteractable physicalInteractable, GameObject obj, string name)
 	{
-
 		PI_gameObjectMap.Add (physicalInteractable, obj);
 		name_PI_map.Add (name, physicalInteractable);
-
 	}
 
 

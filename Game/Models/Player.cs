@@ -5,28 +5,14 @@ using System;
 
 
 
-public class Player : ISpeaker, IWalker {
+public class Player : PhysicalInteractable, ISpeaker, IWalker {
 
 
-	public string identificationName;
-	public string myName;
-	public Vector2 mySize;
+	//public string identificationName;
+	//public string myName;
+	//public Vector2 mySize;
 
-	public Vector3 myPos;
-
-	/*
-	public Vector3 myPos
-	{ 
-		get {return _myPos;} 
-		set {
-
-			_myPos = value;
-
-			invokePlayerMove ();
-		
-		} 
-	}
-	*/
+	//public Vector3 myPos;
 
 
 	public Color myTextColor;
@@ -38,14 +24,17 @@ public class Player : ISpeaker, IWalker {
 	public Queue<Vector2> path;
 	public Vector2 targetPos;
 
+	public bool isActive = false;
+	public string currentRoom;
 
 
+	// Speaker
 
 	public string speakerName 
 	{
-		get { return myName; }
+		get { return identificationName; }
 
-		set { myName = value; }
+		set { identificationName = value; }
 	}
 
 
@@ -73,6 +62,7 @@ public class Player : ISpeaker, IWalker {
 	}
 
 
+	// Walker 
 
 	public float walkerSpeed
 	{
@@ -119,14 +109,13 @@ public class Player : ISpeaker, IWalker {
 
 
 
-
+	// Constructor
 
 	public Player(string myName, Vector2 mySize, Vector3 myPos)
 	{
-		
-		// Constructor
+		this.identificationName = myName;
+		this.fileName = myName;
 
-		this.myName = myName;
 		this.mySize = mySize;	
 		this.myPos = myPos;	
 
@@ -139,25 +128,25 @@ public class Player : ISpeaker, IWalker {
 		*/
 
 		myTextColor = Color.white;
-
 	}
 
 
 
+	// When user is moving the player
 
 	public void ChangePosition(Vector3 myPos)
 	{
 		this.myPos = myPos;
-		EventsHandler.Invoke_cb_characterMove (this);
+		EventsHandler.Invoke_cb_playerMove (this);
 	}
 
 
-
+	// When cutscene is moving the player
 
 	public void ChangePos(Vector2 newPos)
 	{		
 		this.myPos = Utilities.GetCharacterPosOnTile (this, newPos);
+		EventsHandler.Invoke_cb_playerMove (this);
 	}
-
 
 }
