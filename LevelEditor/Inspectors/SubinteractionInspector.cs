@@ -8,7 +8,6 @@ public class SubinteractionInspector : MonoBehaviour {
 
 	// Declerations
 
-
 	GameObject subinteractionPanelObject;
 
 	Transform panel;
@@ -94,7 +93,6 @@ public class SubinteractionInspector : MonoBehaviour {
 		currentSubint = subInt;
 
 		OpenSubinteractionPanel (currentSubint);
-
 	}
 
 
@@ -103,8 +101,7 @@ public class SubinteractionInspector : MonoBehaviour {
 
 
 	public void OpenSubinteractionPanel(SubInteraction subInt)
-	{		
-
+	{
 		Debug.Log ("open sub interaction panel");
 		// SubInteraction type dropdown
 
@@ -250,9 +247,6 @@ public class SubinteractionInspector : MonoBehaviour {
 					textInputSmall.text = subInt.eventToRemove;
 
 					break;
-
-
-
 			}
 
 		} else {
@@ -261,7 +255,6 @@ public class SubinteractionInspector : MonoBehaviour {
 			// If subint is null, set first value on dropdown
 
 			SetSubinteractionType (0);
-
 		}
 
 
@@ -278,18 +271,13 @@ public class SubinteractionInspector : MonoBehaviour {
 		// Submit button
 
 		submitButton.onClick.AddListener (SubmitSubinteraction);
-
-
-
 	}
-
 
 
 	// Set subinteraction type - hide all fields, then decide what's active according to type
 
 	public void SetSubinteractionType(int type)
-	{
-		
+	{		
 		textInputBig.gameObject.SetActive (false);
 		textInputSmall.gameObject.SetActive (false);
 		moveToRoom.gameObject.SetActive (false);
@@ -343,8 +331,7 @@ public class SubinteractionInspector : MonoBehaviour {
 				GameObject prefab = Resources.Load<GameObject> ("Prefabs/Furniture/" + furn.fileName);
 				Debug.Log ("create prefab");
 			
-				animationList = Utilities.GetAnimationClipNames (prefab);
-							
+				animationList = Utilities.GetAnimationClipNames (prefab);							
 
 				playAnimation.Find ("AnimationDropdown").GetComponent<Dropdown> ().AddOptions (animationList);
 
@@ -388,12 +375,8 @@ public class SubinteractionInspector : MonoBehaviour {
 				textInputSmall.gameObject.SetActive (true);
 
 				break;
-
 		}
-
 	}
-
-
 
 
 	// Cancel //
@@ -408,13 +391,10 @@ public class SubinteractionInspector : MonoBehaviour {
 	}
 		
 
-
 	// Submit //
 
 	public void SubmitSubinteraction()
 	{
-
-
 		if (currentSubint == null) 
 		{
 			Debug.Log ("SubmitSubinteraction: currentSubInt is null");
@@ -425,7 +405,6 @@ public class SubinteractionInspector : MonoBehaviour {
 			currentSubint = new SubInteraction (subIntType);
 
 			subinteractable.SubIntList.Add (currentSubint);
-
 		} 
 
 
@@ -525,7 +504,6 @@ public class SubinteractionInspector : MonoBehaviour {
 				break;
 
 
-
 			case "addEvent":
 
 				currentSubint.eventToAdd = textInputSmall.text;
@@ -538,15 +516,9 @@ public class SubinteractionInspector : MonoBehaviour {
 				currentSubint.eventToRemove = textInputSmall.text;
 
 				break;
-
-
 		}
-
 
 		EventsHandler.Invoke_cb_subinteractionChanged ();
 		Destroy (subinteractionPanelObject);
-
 	}
-
-
 }

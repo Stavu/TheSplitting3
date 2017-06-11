@@ -15,12 +15,9 @@ public class Utilities {
 
 	public static void AdjustOrthographicCamera(Room room)
 	{
-
 		Camera.main.orthographicSize = 12; 
 
 		Camera.main.transform.position = new Vector3 ((room.myWidth / 2), (room.myHeight / 2), -10);
-
-
 	}
 
 

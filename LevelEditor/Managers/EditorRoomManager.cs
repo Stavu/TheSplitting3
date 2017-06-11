@@ -244,6 +244,11 @@ public class EditorRoomManager : MonoBehaviour {
 	}
 
 
+	public void ChangeMapArea (string mapArea = "None")
+	{
+		room.mapArea = mapArea;
+	}
+
 
 	// Room background 
 

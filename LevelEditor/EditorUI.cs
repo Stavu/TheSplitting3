@@ -29,6 +29,7 @@ public class EditorUI : MonoBehaviour {
 
 	Dropdown backgroundDropdown;
 	Dropdown musicDropdown;
+	Dropdown mapAreaDropdown;
 
 	public GameObject interactableSelectPrefab;
 	public GameObject interactableButtonPrefab;
@@ -49,13 +50,26 @@ public class EditorUI : MonoBehaviour {
 
 	Toggle shadowToggle;
 
+	List<string> mapAreaList;
+
+
 
 	// Use this for initialization
 
 	public void CreateUI () {
-		
-		CreateBgSelect ();
 
+		mapAreaList = new List<string> 
+		{
+			"None",
+			"Asylum",
+			"Asylum_mirror",
+			"Asylum_outside",
+			"Asylum_outside_shadow",
+			"Abandoned_wing",
+			"Abandoned_wing_mirror"
+		};
+
+		CreateBgSelect ();
 	}
 
 	// Update is called once per frame
@@ -97,6 +111,7 @@ public class EditorUI : MonoBehaviour {
 		roomNameInput = transform.Find ("RoomNameInput").GetComponent<InputField> ();
 		backgroundDropdown = transform.Find ("Dropdown").GetComponent<Dropdown> ();
 		musicDropdown = transform.Find ("MusicDropdown").GetComponent<Dropdown> ();
+		mapAreaDropdown = transform.Find ("MapAreaDropdown").GetComponent<Dropdown> ();
 		furnButton = transform.Find ("FurnitureButton").GetComponent<Button>();
 		characterButton = transform.Find ("CharacterButton").GetComponent<Button>();
 		tileIntButton = transform.Find ("TileInteractionButton").GetComponent<Button> ();
@@ -144,7 +159,6 @@ public class EditorUI : MonoBehaviour {
 		musicDropdown.AddOptions (clipNameList);
 		musicDropdown.onValueChanged.AddListener (NewMusicSelected);
 
-
 		// set music dropdown value 
 
 		string roomMusicName = myRoom.myMusic;
@@ -166,6 +180,24 @@ public class EditorUI : MonoBehaviour {
 			Debug.LogError ("can't find clip name in list");
 		}
 
+
+		// MAP AREA DROPDOWN
+
+		mapAreaDropdown.AddOptions (mapAreaList);
+		mapAreaDropdown.onValueChanged.AddListener (NewMapAreaSelected);
+
+		// set map area dropdown value 
+
+		string roomMapArea = myRoom.mapArea;
+
+		if (mapAreaList.Contains (roomMapArea) == true) 
+		{
+			mapAreaDropdown.value = mapAreaList.IndexOf (roomMapArea);
+
+		} else {
+
+			Debug.LogError ("can't find map area in list");
+		}
 
 		furnButton.onClick.AddListener (CreateFurnitureSelect);
 
@@ -202,7 +234,6 @@ public class EditorUI : MonoBehaviour {
 		}
 
 		shadowToggle.onValueChanged.AddListener (SetShadowState);
-
 	}
 
 
@@ -214,14 +245,18 @@ public class EditorUI : MonoBehaviour {
 		EditorRoomManager.instance.ChangeRoomMusic (spriteName);
 	}
 
-
 	public void NewBackgroundSelected(int optionNum)
 	{
 		string clipName = backgroundDropdown.options [optionNum].text;
 		EditorRoomManager.instance.ChangeRoomBackground (clipName);
 	}
 
+	public void NewMapAreaSelected(int optionNum)
+	{
+		string mapArea = mapAreaDropdown.options [optionNum].text;
+		EditorRoomManager.instance.ChangeMapArea (mapArea);
 
+	}
 
 
 	// CREATING BACKGROUND //
@@ -265,10 +300,6 @@ public class EditorUI : MonoBehaviour {
 
 			button.GetComponent<Button> ().onClick.AddListener (() => SetFurnitureBuildMode(sprite.name));
 		}
-
-
-
-
 	}
 
 
@@ -297,7 +328,6 @@ public class EditorUI : MonoBehaviour {
 
 	public void SetFurnitureBuildMode(string furnitureName)
 	{
-
 		BuildController.instance.furnitureName = furnitureName;
 
 		Destroy (interactableSelect);
@@ -306,22 +336,11 @@ public class EditorUI : MonoBehaviour {
 		// set to build Furniture mode
 
 		BuildController.instance.mode = BuildController.Mode.buildFurniture;
-
-
 	}
-
-
-
-
-
-
-
-
 
 
 	public void SetCharacterBuildMode(string characterName)
 	{
-
 		BuildController.instance.characterName = characterName;
 
 		Destroy (interactableSelect);
@@ -330,53 +349,32 @@ public class EditorUI : MonoBehaviour {
 		// set to build Furniture mode
 
 		BuildController.instance.mode = BuildController.Mode.buildCharacter;
-
-
 	}
-
-
-
-
-
 
 
 	// CREATE TILE INTERACTION //
 
-
 	public void SetTileInteractionMode()
 	{
-
 		// set to build tileInteraction mode
 
 		BuildController.instance.mode = BuildController.Mode.buildTileInteraction;
-
 	}
-
-
-
-
-
 
 
 	// ROOM NAME
 
 	public void RoomNameChanged(string name)
 	{
-
 		EditorRoomManager.instance.room.myName = name;
-
 	}
-
 
 
 	// --------------- MIRROR ROOM ---------------- //
 
 
-
-
 	public void FlipRoom ()
 	{
-
 		Room newRoom = EditorRoomHelper.CreateFlippedRoom (EditorRoomManager.instance.room);
 
 		string roomString = JsonUtility.ToJson (newRoom);
@@ -386,24 +384,20 @@ public class EditorUI : MonoBehaviour {
 		EditorRoomManager.roomToLoad = roomString;
 		EditorRoomManager.loadRoomFromMemory = true;
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-
 	}
 
 
 	public void SetRoomState(int i)
 	{
-
 		EditorRoomManager.instance.room.RoomState = (RoomState)i;
 
 		if (EditorRoomManager.instance.room.RoomState == RoomState.Real) 
 		{
-
 			shadowToggle.interactable = false;
 
 		} else {
 			
 			shadowToggle.interactable = true;
-
 		}		
 	}
 
@@ -421,15 +415,10 @@ public class EditorUI : MonoBehaviour {
 	}
 
 
-
-
-
 	// ----- ALERT ----- //
-
 
 	public static void DisplayAlert(string textString, UnityEngine.Events.UnityAction action)
 	{
-
 		GameObject alertObject = Instantiate(Resources.Load<GameObject>("Prefabs/Editor/Alert"));
 
 		Text alertText = alertObject.transform.Find ("Panel").Find ("Text").GetComponent<Text> ();
@@ -441,7 +430,6 @@ public class EditorUI : MonoBehaviour {
 		yesButton.onClick.AddListener (action);
 		yesButton.onClick.AddListener (() => Destroy(alertObject));
 		noButton.onClick.AddListener (() => Destroy(alertObject));
-
 	}
 
 
@@ -456,7 +444,6 @@ public class EditorUI : MonoBehaviour {
 
 		okButton.onClick.AddListener (() => Destroy(alertObject));
 	}
-
 
 
 }

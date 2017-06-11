@@ -491,7 +491,7 @@ public class PhysicalInteractableInspector : MonoBehaviour {
 			}
 
 
-			if (myRoom.myMirrorRoom != null) 
+			if (myRoom.roomState == RoomState.Mirror) 
 			{
 				// Removing from Tiles
 

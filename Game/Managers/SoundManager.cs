@@ -177,11 +177,14 @@ public class SoundManager : MonoBehaviour {
 
 	public void SwitchMusic(Room nextRoom)
 	{	
-		if (audioSources_music [currentMusicChannel].clip == null) 
+		if (audioSources_music [currentMusicChannel].clip == null)
 		{
-			audioSources_music [currentMusicChannel].clip = stringAudioClipMusicMap [nextRoom.myMusic];
-			audioSources_music [currentMusicChannel].Play ();
-			return;
+			if (stringAudioClipMusicMap.ContainsKey (nextRoom.myMusic)) 
+			{
+				audioSources_music [currentMusicChannel].clip = stringAudioClipMusicMap [nextRoom.myMusic];
+				audioSources_music [currentMusicChannel].Play ();
+				return;
+			}
 		}			
 
 		if (nextRoom.roomState == RoomState.Mirror) 

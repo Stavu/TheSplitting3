@@ -242,7 +242,7 @@ public class InteractionInspector : MonoBehaviour {
 		// New subinteraction button
 
 		newSubIntButton.onClick.AddListener (() => InspectorManager.subinteractionInspector.CreateSubinteractionPanel (loadedInteraction));
-
+			
 
 		// Cancel button
 
@@ -252,7 +252,6 @@ public class InteractionInspector : MonoBehaviour {
 		// Submit button
 
 		submitButton.onClick.AddListener (SubmitInteraction);
-
 	}
 
 
@@ -260,37 +259,27 @@ public class InteractionInspector : MonoBehaviour {
 	public void ChangeTitleText(string titleName)
 	{
 		loadedInteraction.myVerb = titleName;
-
 	}
-
 
 
 	public void RemoveCondition (IConditionable conditionable, Condition condition)
 	{
-
 		conditionable.RemoveConditionFromList (condition);
 		CreateInteractionPanel ();
-
 	}
 
 
 	public void RemoveSubinteraction (SubInteraction subInt)
 	{
-
 		loadedInteraction.RemoveSubinteractionFromList (subInt);
 		CreateInteractionPanel ();
-
 	}
-
 
 
 	public void PopulateConditionContainer(IConditionable conditionable, Transform container)
 	{
-
-
 		for (int i = 0; i < conditionable.ConditionList.Count; i++) 
 		{
-
 			GameObject obj = Instantiate (conditionItemPrefab);
 			obj.transform.SetParent (container);
 
@@ -299,7 +288,6 @@ public class InteractionInspector : MonoBehaviour {
 
 			switch (cond.myType) 
 			{
-
 				case ConditionType.HasItem:
 
 					condString = cond.hasItem;
@@ -341,46 +329,34 @@ public class InteractionInspector : MonoBehaviour {
 
 					break;
 
+
+				case ConditionType.IsCurrentPlayer:
+
+					condString = cond.playerName;
+
+					break;
 			}
 
-
 			obj.GetComponent<Text> ().text = string.Format ("{0} - {1}", cond.myType, condString);
-
 
 			// Give the remove button (inside the condition) an event listener
 
 			obj.transform.Find ("Button").GetComponent<Button> ().onClick.AddListener (() => RemoveCondition(conditionable,cond));
-
 		}	
-
-
-
 	}
-
-
 
 
 	public void DestroyInteractionPanel()
 	{
-
 		if (interactionPanelObject != null) 
 		{
-
 			Destroy(interactionPanelObject);
-
-
 		}
-
 	}
-
-
-
-
 
 
 	public List<string> LoadInventoryItems()
 	{
-
 		Sprite[] itemSprites = Resources.LoadAll<Sprite> ("Sprites/Inventory/Small_items");
 		List<string> itemStringList = new List<string> ();
 
@@ -396,24 +372,12 @@ public class InteractionInspector : MonoBehaviour {
 	}
 
 
-
-
-
 	public void SubmitInteraction()
 	{
-
-
 		// create interaction 
 
 		Interaction interaction;
-
-
 		interaction = loadedInteraction;
-
-
-
-
-
 
 		PhysicalInteractable currentPhysicalInteractable = null;
 
@@ -427,7 +391,6 @@ public class InteractionInspector : MonoBehaviour {
 
 		}
 
-
 		// If this is a new interaction, add to interaction list
 
 		if (currentPhysicalInteractable != null)
@@ -435,10 +398,8 @@ public class InteractionInspector : MonoBehaviour {
 			if (currentPhysicalInteractable.myInteractionList.Contains (interaction) == false) 
 			{
 				currentPhysicalInteractable.myInteractionList.Add (interaction);
-
 			} 
 		}
-
 
 		DestroyInteractionPanel ();
 

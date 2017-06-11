@@ -102,7 +102,7 @@ public class RoomManager : MonoBehaviour {
 		{
 			if ((player.isActive == false) && (player.currentRoom == myRoom.myName))
 			{
-				Debug.Log ("Player in room");
+				Debug.Log ("Player in room " + player.identificationName);
 
 				Vector3 playerCurrentPos = GameManager.userData.GetPlayerDataByPlayerName (player.identificationName).currentPos;
 

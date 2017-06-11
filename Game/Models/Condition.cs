@@ -17,8 +17,8 @@ public enum ConditionType
 	EventDidntOccur,
 	CharacterNotInRoom,
 	InTheShadow,
-	NotInTheShadow
-
+	NotInTheShadow,
+	IsCurrentPlayer
 }
 
 
@@ -35,6 +35,7 @@ public class Condition {
 	public string lacksItem;
 	public string eventDidntOccur;
 	public string characterNotInRoom;
+	public string playerName;
 
 
 
@@ -95,7 +96,14 @@ public class Condition {
 
 			case ConditionType.NotInTheShadow:
 
-				break;		
+				break;
+
+
+			case ConditionType.IsCurrentPlayer:
+
+				playerName = myString;
+
+				break;
 		}
 	}
 
@@ -135,6 +143,12 @@ public class Condition {
 
 				return RoomManager.instance.myRoom.myMirrorRoom.inTheShadow;					
 
+			
+			case ConditionType.IsCurrentPlayer:
+
+				return GameManager.userData.CheckIfCurrentPlayer (playerName);
+
+				break;
 
 
 			// Negative Conditions

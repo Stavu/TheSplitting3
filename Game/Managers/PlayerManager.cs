@@ -151,7 +151,6 @@ public class PlayerManager : MonoBehaviour {
 
 
 
-
 	// Player object
 
 	public void CreatePlayerObject(Player myPlayer)
@@ -353,7 +352,6 @@ public class PlayerManager : MonoBehaviour {
 
 	public void SwitchPlayer(string newPlayer)
 	{
-
 		if (myPlayer.identificationName == newPlayer) 
 		{
 			Debug.LogError ("switched to the same player");
@@ -377,14 +375,10 @@ public class PlayerManager : MonoBehaviour {
 
 		myPlayer = player;
 
-		// remove from tiles 
-
-		RemovePlayerFromTiles (myPlayer);
-
 		// new player is active
 
 		myPlayer.isActive = true;
-	
+
 
 		Debug.Log (myPlayer.identificationName);
 
@@ -392,18 +386,29 @@ public class PlayerManager : MonoBehaviour {
 
 		if (myPlayer.currentRoom == RoomManager.instance.myRoom.myName) 
 		{
+			
+			// remove new player from tiles 
+
+			RemovePlayerFromTiles (myPlayer);
+
+
 			// if new player is in room
 
 			Debug.Log ("player exists in room");
 
-			if (playerGameObjectMap [myPlayer].GetComponent<PlayerObject> () == null) 
-			{
-				playerGameObjectMap[myPlayer].AddComponent<PlayerObject>();
+			if (playerGameObjectMap [myPlayer].GetComponent<PlayerObject> () == null) {
+				playerGameObjectMap [myPlayer].AddComponent<PlayerObject> ();
 			}
 
-			playerObject = playerGameObjectMap [myPlayer].GetComponent<PlayerObject>();
+			playerObject = playerGameObjectMap [myPlayer].GetComponent<PlayerObject> ();
+
+		} else {
+
+			InteractionManager.instance.MoveToRoom (myPlayer.currentRoom, new Vector2 (myPlayer.myPos.x, myPlayer.myPos.y));
 
 		}
+
+		Debug.Log ("after else");
 
 		EventsHandler.Invoke_cb_playerSwitched (player);
 		return;	
@@ -455,7 +460,7 @@ public class PlayerManager : MonoBehaviour {
 			PlayerTiles_shadow.ForEach (tile => tile.PlaceInactivePlayerInTile (player));
 		}
 
-		EventsHandler.cb_tileLayoutChanged ();
+		EventsHandler.Invoke_cb_tileLayoutChanged ();
 	}
 
 
@@ -484,7 +489,7 @@ public class PlayerManager : MonoBehaviour {
 			}
 		}
 
-		EventsHandler.cb_tileLayoutChanged ();
+		EventsHandler.Invoke_cb_tileLayoutChanged ();
 
 	}
 

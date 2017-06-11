@@ -55,8 +55,6 @@ public class MapUI : MonoBehaviour {
 	}
 
 
-
-
 	public void CreateMap()
 	{
 		// If there's already an inventory, display error
@@ -74,9 +72,7 @@ public class MapUI : MonoBehaviour {
 		bg_abandonedWing_mirror = mapObject.transform.Find ("BG").Find ("BG_AbandonedWing_Mirror").gameObject;
 		bg_asylum = mapObject.transform.Find ("BG").Find ("BG_Asylum").gameObject;
 		bg_asylum_mirror = mapObject.transform.Find ("BG").Find ("BG_Asylum_Mirror").gameObject;
-
 	}
-
 
 
 	// When pressing p
@@ -100,6 +96,11 @@ public class MapUI : MonoBehaviour {
 
 		if (GameManager.mapOpen == false)
 		{		
+			if ((RoomManager.instance.myRoom.mapArea == string.Empty) || (RoomManager.instance.myRoom.mapArea == "None"))
+			{
+				Debug.Log ("no map");
+			}
+
 			OpenMap ();
 
 		} else {
@@ -107,7 +108,6 @@ public class MapUI : MonoBehaviour {
 			CloseMap ();
 		}
 	}
-
 
 
 	public void OpenMap()
@@ -120,13 +120,10 @@ public class MapUI : MonoBehaviour {
 
 		EventsHandler.Invoke_cb_inputStateChanged ();
 	}
-
-
-
+		
 
 	void SetMapBG()
 	{
-
 		bg_asylumOutside.SetActive (false);
 		bg_asylumOutside_shadow.SetActive (false);
 		bg_abandonedWing.SetActive (false);
@@ -134,33 +131,54 @@ public class MapUI : MonoBehaviour {
 		bg_asylum.SetActive (false);
 		bg_asylum_mirror.SetActive (false);
 
-
-		switch (RoomManager.instance.myRoom.myName) 
+		switch (RoomManager.instance.myRoom.mapArea) 
 		{
 
-			case "test1":
-
-				bg_asylumOutside.SetActive (true);
-
-				break;
-
-
-			case "test_mom":
+			case "Asylum":
 
 				bg_asylum.SetActive (true);
 
 				break;
 
 
+			case "Asylum_mirror":
+
+				bg_asylum_mirror.SetActive (true);
+
+				break;
 
 
+			case "Asylum_outside":
 
+				bg_asylumOutside.SetActive (true);
+
+				break;
+
+
+			case "Asylum_outside_shadow":
+
+				bg_asylumOutside_shadow.SetActive (true);
+
+				break;
+
+
+			case "Abandoned_wing":
+
+				bg_abandonedWing.SetActive (true);
+
+				break;
+
+
+			case "Abandoned_wing_mirror":
+
+				bg_abandonedWing_mirror.SetActive (true);
+
+				break;
 		}
 	}
 
 
-	// ----- CLOSE SETTINGS ----- //
-
+	// ----- CLOSE MAP ----- //
 
 	public void CloseMap()
 	{
@@ -168,6 +186,8 @@ public class MapUI : MonoBehaviour {
 
 		GameManager.mapOpen = false;
 		EventsHandler.Invoke_cb_inputStateChanged ();
-
 	}
+
+
+
 }

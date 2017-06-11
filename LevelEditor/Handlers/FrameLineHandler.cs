@@ -49,8 +49,8 @@ public class FrameLineHandler : MonoBehaviour {
 		lineObj.transform.SetParent (this.transform);
 
 		LineRenderer lr = lineObj.AddComponent<LineRenderer> ();
-		lr.loop = true;
-		lr.positionCount = 4;
+		//lr.loop = true;
+		//lr.positionCount = 4;
 		lr.widthMultiplier = 0.1f;
 
 

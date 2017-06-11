@@ -18,6 +18,7 @@ public class Room {
 
 	public string myName;
 	public string myMusic;
+	public string mapArea;
 
 	public int myWidth;
 	public int myHeight;
@@ -144,6 +145,7 @@ public class Room {
 
 		this.myMirrorRoom = clone.myMirrorRoom;
 		this.RoomState = clone.RoomState;
+		this.mapArea = clone.mapArea;
 
 		myGrid = new Grid (myWidth,myHeight);
 

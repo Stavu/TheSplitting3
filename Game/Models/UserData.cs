@@ -57,6 +57,17 @@ public class UserData {
 	}
 
 
+	// -- CONDITIONS -- //
+
+
+
+	// check current player 
+
+	public bool	CheckIfCurrentPlayer(string playerName)
+	{
+		return PlayerManager.myPlayer.identificationName == playerName;
+	}
+
 
 	// check if event exists
 
@@ -101,7 +112,6 @@ public class UserData {
 		//Debug.Log ("already existed");
 		return false;
 	}
-
 
 
 	// Add Event
